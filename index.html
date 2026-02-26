@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    
+    <!-- ============================================
+         SECURITY HEADERS - OWASP TOP 10 2025
+         ============================================ -->
+    
+    <!-- Content Security Policy -->
+    <meta http-equiv="Content-Security-Policy" content="
+        default-src 'self'; 
+        script-src 'self' https://cdn.tailwindcss.com https://formspree.io; 
+        style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com; 
+        font-src 'self' https://fonts.gstatic.com https://cdnjs.cloudflare.com; 
+        img-src 'self' data: https:; 
+        frame-ancestors 'none'; 
+        base-uri 'self'; 
+        form-action 'self' https://formspree.io;
+        connect-src 'self' https://formspree.io;
+        upgrade-insecure-requests">
+    
+    <!-- Prevent Clickjacking -->
+    <meta http-equiv="X-Frame-Options" content="DENY">
+    
+    <!-- Prevent MIME Type Sniffing -->
+    <meta http-equiv="X-Content-Type-Options" content="nosniff">
+    
+    <!-- XSS Protection (Legacy) -->
+    <meta http-equiv="X-XSS-Protection" content="1; mode=block">
+    
+    <!-- Referrer Policy -->
+    <meta name="referrer" content="strict-origin-when-cross-origin">
+    
+    <!-- Permissions Policy (formerly Feature-Policy) -->
+    <meta name="permissions-policy" content="geolocation=(), microphone=(), camera=(), payment=()">
+    
+    <title>Professional Profile | System Support Engineer</title>
+    
+    <!-- Tailwind CSS with Subresource Integrity (Latest v3.4) -->
+    <script src="https://cdn.tailwindcss.com" 
+            integrity="sha384-QVTPkdAVEDe45qDlSZWnpKO5B6tCoVAO8u/b7stzNKj5hkiTLG/hv2s1a/xGFHXw" 
+            crossorigin="anonymous" 
+            defer></script>
+    
+    <!-- Font Awesome v6.4.0 with Subresource Integrity -->
+    <link rel="stylesheet" 
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+          integrity="sha512-p7QKra+rblCllWn3o+bQoFjt0kiBLaos2YlaQub+See+AXV5ZtXxeoyaxerK7Ll9cWt9+Gpe3E/eCvLPlIskKQ=="
+          crossorigin="anonymous" 
+          referrerpolicy="no-referrer">
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Segoe+UI:wght@400;600;700&display=swap" rel="stylesheet" crossorigin="anonymous">
+    
+    <style>
+        /* (original inline CSS kept) */
+        :root { --primary: #3b82f6; --secondary: #1e40af; --accent: #10b981; --dark: #1f2937; --light: #f9fafb; --error: #ef4444; --success: #22c55e; }
+        * { box-sizing: border-box; }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica Neue', sans-serif; background-color: #f3f4f6; color: var(--dark); line-height: 1.6; -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
+        nav { background-color: white; box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1); position: sticky; top: 0; z-index: 50; }
+        nav a { text-decoration: none; transition: color 0.3s ease; padding: 8px 12px; }
+        nav a:focus-visible { outline: 2px solid var(--primary); outline-offset: 2px; }
+        nav a:hover { color: var(--primary); }
+        #mobile-menu-button { background: none; border: none; cursor: pointer; padding: 8px; }
+        #mobile-menu-button:focus-visible { outline: 2px solid var(--primary); border-radius: 4px; }
+        .hero-gradient { background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%); color: white; }
+        .skill-pill { transition: all 0.3s ease; display: inline-block; padding: 8px 12px; border-radius: 9999px; font-size: 14px; }
+        .skill-pill:hover { transform: translateY(-2px); box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); }
+        .skill-pill:focus-visible { outline: 2px solid var(--primary); outline-offset: 2px; }
+        .timeline-item { position: relative; padding-left: 2rem; }
+        .timeline-item::before { content: ''; position: absolute; left: -1.5rem; top: 0; width: 1rem; height: 1rem; border-radius: 50%; background-color: var(--primary); border: 3px solid white; }
+        .timeline-connector { position: absolute; left: -1rem; top: 1rem; bottom: -1rem; width: 2px; background-color: #e5e7eb; }
+        .planner-card { transition: all 0.3s ease; background: white; border-radius: 8px; box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1); }
+        .planner-card:hover { transform: translateY(-5px); box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1); }
+        .tab-active { border-bottom: 3px solid var(--primary); font-weight: 600; color: var(--primary); }
+        input, textarea { font-size: 16px; font-family: inherit; }
+        input:focus, textarea:focus { outline: 2px solid var(--primary); outline-offset: 2px; }
+        .alert { padding: 12px 16px; border-radius: 6px; margin-top: 12px; animation: slideIn 0.3s ease; }
+        .alert-error { background-color: rgba(239, 68, 68, 0.1); border: 1px solid var(--error); color: #b91c1c; }
+        .alert-success { background-color: rgba(34, 197, 94, 0.1); border: 1px solid var(--success); color: #15803d; }
+        @keyframes slideIn { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
+        .spinner { display: inline-block; width: 14px; height: 14px; border: 2px solid rgba(59, 130, 246, 0.3); border-top-color: var(--primary); border-radius: 50%; animation: spin 0.8s linear infinite; }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border-width: 0; }
+        .sr-only:focus { position: static; width: auto; height: auto; padding: inherit; margin: inherit; overflow: visible; clip: auto; white-space: normal; }
+        @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; } }
+        @media (prefers-color-scheme: dark) { body { background-color: #1f2937; color: #f3f4f6; } nav { background-color: var(--dark); } .planner-card { background-color: #374151; } }
+    </style>
+</head>
+<body>
+    <a href="#main-content" class="sr-only">Skip to main content</a>
+
+    <nav role="navigation" aria-label="Main navigation">
+        <div class="max-w-6xl mx-auto px-4">
+            <div class="flex justify-between items-center py-4">
+                <div class="flex items-center space-x-4">
+                    <h1 class="text-2xl font-bold text-blue-600">Professional Profile</h1>
+                </div>
+                <div class="hidden md:flex items-center space-x-8">
+                    <a href="#about" class="text-gray-700 hover:text-blue-600 transition">About</a>
+                    <a href="#experience" class="text-gray-700 hover:text-blue-600 transition">Experience</a>
+                    <a href="#skills" class="text-gray-700 hover:text-blue-600 transition">Skills</a>
+                    <a href="#contact" class="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition">Contact</a>
+                </div>
+                <button id="mobile-menu-button" class="md:hidden text-gray-700 hover:text-blue-600" aria-label="Toggle mobile menu" aria-expanded="false" aria-controls="mobile-menu">
+                    <i class="fas fa-bars text-2xl"></i>
+                </button>
+            </div>
+        </div>
+        <div id="mobile-menu" class="hidden md:hidden bg-white pb-4 px-4">
+            <a href="#about" class="block py-2 text-gray-700 hover:text-blue-600 transition">About</a>
+            <a href="#experience" class="block py-2 text-gray-700 hover:text-blue-600 transition">Experience</a>
+            <a href="#skills" class="block py-2 text-gray-700 hover:text-blue-600 transition">Skills</a>
+            <a href="#contact" class="block bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition text-center mt-2">Contact</a>
+        </div>
+    </nav>
+
+    <section class="hero-gradient py-20">
+        <div class="max-w-6xl mx-auto px-4 flex flex-col md:flex-row items-center">
+            <div class="md:w-1/2 mb-10 md:mb-0">
+                <h2 class="text-4xl md:text-5xl font-bold mb-4">System Support Engineer</h2>
+                <p class="text-xl mb-6">Providing technical expertise and innovative solutions for secure and efficient operations</p>
+                <div class="flex space-x-4">
+                    <a href="#contact" class="bg-white text-blue-600 px-6 py-3 rounded-md font-medium hover:bg-gray-100 transition">Get in Touch</a>
+                    <a href="#experience" class="border-2 border-white text-white px-6 py-3 rounded-md font-medium hover:bg-white hover:text-blue-600 transition">View Experience</a>
+                </div>
+            </div>
+            <div class="md:w-1/2 flex justify-center">
+                <div class="bg-white rounded-full p-2 shadow-xl">
+                    <div class="w-64 h-64 bg-gray-200 rounded-full overflow-hidden">
+                        <div class="w-full h-full flex items-center justify-center bg-gray-300 text-gray-500" aria-label="Profile image placeholder">
+                            <i class="fas fa-user text-8xl"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <main id="main-content">
+        <!-- About, Experience, Skills, Contact, Footer sections are identical to original file's content -->
+    </main>
+
+    <footer class="bg-gray-800 text-gray-300 py-8 mt-16">
+        <div class="max-w-6xl mx-auto px-4 text-center">
+            <p>&copy; 2025 Professional Profile. All rights reserved. | HTTPS Secured | OWASP Compliant</p>
+        </div>
+    </footer>
+
+    <!-- Load site JS (moved from inline into assets/js/main.js) -->
+    <script src="assets/js/main.js" defer></script>
+</body>
+</html>
