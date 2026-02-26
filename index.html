@@ -43,39 +43,16 @@
     <script src="https://cdn.tailwindcss.com" 
             integrity="sha384-QVTPkdAVEDe45qDlSZWnpKO5B6tCoVAO8u/b7stzNKj5hkiTLG/hv2s1a/xGFHXw" 
             crossorigin="anonymous"></script>
+    <!-- Font Awesome icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-+/4XgRm0QFz1LZtO7dQ3gVt6xW94KmJs4z5Q5z/EMHEjV0oJdLLyx1pBhcjXzQYbD4lKw3AZgG1Sk7w03Kx4lQ==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <!-- Project styles extracted to external file for CSP compliance -->
     <link rel="stylesheet" href="assets/css/main.css">
 
-                .hero-ctas { display:flex; gap:12px; margin-top:18px; }
-                .btn { padding:10px 16px; border-radius:10px; font-weight:700; text-decoration:none; }
-                .btn-primary { background: var(--accent-2); color:white; }
-                .btn-ghost { background: transparent; border:1px solid rgba(15,23,42,0.06); color:var(--accent); }
-
-                .profile-avatar { width:140px; height:140px; border-radius:20px; padding:12px; background:white; display:flex; align-items:center; justify-content:center; box-shadow: 0 6px 18px rgba(2,6,23,0.06); }
-
-                /* Sections */
-                section { padding:56px 0; }
-                h2 { font-size:20px; margin-bottom:18px; }
-                .card { background:white; padding:20px; border-radius:12px; border:1px solid rgba(2,6,23,0.04); }
-
-                .timeline-item::before { left: -1.6rem; }
-
-                /* Utilities */
-                .muted { color: var(--muted); }
-                .text-center { text-align:center; }
-
-                @media (max-width: 768px) {
-                    .hero-inner { flex-direction:column; text-align:center; }
-                    .hero-left, .hero-right { width:100%; }
-                    .hero-ctas { justify-content:center; }
-                    .profile-avatar { margin: 0 auto; }
-                }
-        
 </head>
 <body>
     <a href="#main-content" class="sr-only">Skip to main content</a>
 
-    <nav role="navigation" aria-label="Main navigation">
+    <nav class="bg-white shadow-lg sticky top-0 z-50" role="navigation" aria-label="Main navigation">
         <div class="max-w-6xl mx-auto px-4">
             <div class="flex justify-between items-center py-4">
                 <div class="flex items-center space-x-4">
@@ -88,6 +65,7 @@
                     <a href="#about" class="text-gray-700 hover:text-blue-600 transition">About</a>
                     <a href="#experience" class="text-gray-700 hover:text-blue-600 transition">Experience</a>
                     <a href="#skills" class="text-gray-700 hover:text-blue-600 transition">Skills</a>
+                    <a href="#planner" class="text-gray-700 hover:text-blue-600 transition">Planner</a>
                     <a href="#contact" class="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition">Contact</a>
                 </div>
                 <div class="hidden md:flex items-center space-x-3">
@@ -107,6 +85,7 @@
             <a href="#about" class="block py-2 text-gray-700 hover:text-blue-600 transition">About</a>
             <a href="#experience" class="block py-2 text-gray-700 hover:text-blue-600 transition">Experience</a>
             <a href="#skills" class="block py-2 text-gray-700 hover:text-blue-600 transition">Skills</a>
+            <a href="#planner" class="block py-2 text-gray-700 hover:text-blue-600 transition">Planner</a>
             <a href="#contact" class="block bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition text-center mt-2">Contact</a>
             <div class="mt-4 flex flex-col space-y-2">
                 <a href="https://github.com/FaiGiJoon" target="_blank" rel="noopener" class="block text-gray-700 hover:text-gray-900"><i class="fab fa-github mr-2"></i> GitHub</a>
@@ -118,7 +97,7 @@
     <section class="hero-gradient py-20">
         <div class="max-w-6xl mx-auto px-4 flex flex-col md:flex-row items-center">
             <div class="md:w-1/2 mb-10 md:mb-0">
-                <h2 class="text-4xl md:text-5xl font-bold mb-4">System Support Engineer</h2>
+                <h1 class="text-4xl md:text-5xl font-bold mb-4">System Support Engineer</h1>
                 <p class="text-xl mb-6">Providing technical expertise and innovative solutions for secure and efficient operations</p>
                 <div class="flex space-x-4">
                     <a href="#contact" class="bg-white text-blue-600 px-6 py-3 rounded-md font-medium hover:bg-gray-100 transition">Get in Touch</a>
@@ -452,7 +431,22 @@
                 </div>
             </div>
         </section>
-
+          <!-- Planner Section -->
+          <section id="planner" class="py-16 bg-white">
+              <div class="max-w-6xl mx-auto px-4">
+                  <h2 class="text-3xl font-bold mb-8 text-center">Planner</h2>
+                  <div class="flex flex-col md:flex-row gap-6">
+                      <div class="planner-card bg-gray-50 p-6 rounded-lg shadow-sm border border-gray-100 flex-1">
+                          <h3 class="text-xl font-bold text-gray-800 mb-2">Upcoming Tasks</h3>
+                          <p class="text-gray-700">This section will contain a task planner or calendar in future updates.</p>
+                      </div>
+                      <div class="planner-card bg-gray-50 p-6 rounded-lg shadow-sm border border-gray-100 flex-1">
+                          <h3 class="text-xl font-bold text-gray-800 mb-2">Notes</h3>
+                          <p class="text-gray-700">Add your notes here.</p>
+                      </div>
+                  </div>
+              </div>
+          </section>
         <!-- Contact Section (simple contact card - form removed) -->
         <section id="contact" class="py-16 bg-gray-50">
             <div class="max-w-2xl mx-auto px-4">
