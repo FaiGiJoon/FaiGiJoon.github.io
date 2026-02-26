@@ -48,6 +48,43 @@ function setupEmailLink() {
 }
 
 // ============================================
+// CONTACT FORM HANDLING
+// ============================================
+
+function setupContactForm() {
+    const form = document.getElementById('contact-form');
+    const status = document.getElementById('form-status');
+    if (!form || !status) return;
+
+    form.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const data = new FormData(form);
+        fetch(form.action, {
+            method: form.method,
+            body: data,
+            headers: { 'Accept': 'application/json' }
+        }).then(response => {
+            if (response.ok) {
+                status.textContent = 'Thanks for your message! I will be in touch soon.';
+                status.classList.remove('hidden', 'text-red-600');
+                status.classList.add('text-green-600');
+                form.reset();
+            } else {
+                response.json().then(data => {
+                    status.textContent = data.error || 'Oops! There was a problem submitting the form.';
+                    status.classList.remove('hidden', 'text-green-600');
+                    status.classList.add('text-red-600');
+                });
+            }
+        }).catch(() => {
+            status.textContent = 'Oops! There was a problem submitting the form.';
+            status.classList.remove('hidden', 'text-green-600');
+            status.classList.add('text-red-600');
+        });
+    });
+}
+
+// ============================================
 // INITIALIZATION
 // ============================================
 function init() {
@@ -59,6 +96,7 @@ function init() {
 
     setupMobileMenu();
     setupEmailLink();
+    setupContactForm();
     // UX: smooth scroll for anchor links
     document.querySelectorAll('a[href^="#"]').forEach(a => {
         a.addEventListener('click', (e) => {
