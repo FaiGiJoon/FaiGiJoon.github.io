@@ -1,0 +1,522 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    
+    <!-- ============================================
+         SECURITY HEADERS - OWASP TOP 10 2025
+         ============================================ -->
+    
+    <!-- Content Security Policy -->
+    <meta http-equiv="Content-Security-Policy" content="
+        default-src 'self'; 
+        script-src 'self' https://cdn.tailwindcss.com https://formspree.io; 
+        style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com; 
+        font-src 'self' https://fonts.gstatic.com https://cdnjs.cloudflare.com; 
+        img-src 'self' data: https:; 
+        frame-ancestors 'none'; 
+        base-uri 'self'; 
+        form-action 'self' https://formspree.io;
+        connect-src 'self' https://formspree.io;
+        upgrade-insecure-requests">
+    
+    <!-- Prevent Clickjacking -->
+    <meta http-equiv="X-Frame-Options" content="DENY">
+    
+    <!-- Prevent MIME Type Sniffing -->
+    <meta http-equiv="X-Content-Type-Options" content="nosniff">
+    
+    <!-- XSS Protection (Legacy) -->
+    <meta http-equiv="X-XSS-Protection" content="1; mode=block">
+    
+    <!-- Referrer Policy -->
+    <meta name="referrer" content="strict-origin-when-cross-origin">
+    
+    <!-- Permissions Policy (formerly Feature-Policy) -->
+    <meta name="permissions-policy" content="geolocation=(), microphone=(), camera=(), payment=()">
+    
+    <title>Professional Profile | System Support Engineer</title>
+    
+    <!-- Tailwind CSS with Subresource Integrity (Latest v3.4) -->
+    <script src="https://cdn.tailwindcss.com" 
+            integrity="sha384-QVTPkdAVEDe45qDlSZWnpKO5B6tCoVAO8u/b7stzNKj5hkiTLG/hv2s1a/xGFHXw" 
+            crossorigin="anonymous" 
+            <style>
+                /* Minimal, ultra-clean styles inspired by modern portfolios */
+                :root {
+                    --bg: #ffffff;
+                    --muted: #6b7280;
+                    --accent: #0f172a; /* deep text color */
+                    --accent-2: #2563eb; /* subtle accent */
+                    --container: 1000px;
+                }
+
+                * { box-sizing: border-box; }
+                html,body { height: 100%; }
+                body { margin:0; font-family: Inter, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial; background: #f8fafc; color: var(--accent); -webkit-font-smoothing:antialiased; }
+
+                /* Layout container */
+                .max-w-6xl { max-width: var(--container); }
+
+                nav { background: transparent; }
+                nav .max-w-6xl { display:flex; align-items:center; justify-content:space-between; }
+                .nav-links a { color: var(--muted); padding:8px 10px; border-radius:8px; font-weight:600; text-decoration:none; }
+                .nav-links a:hover { color: var(--accent-2); background: rgba(37,99,235,0.06); }
+
+                /* Hero: centered clean card */
+                .hero-gradient { background: linear-gradient(180deg, rgba(37,99,235,0.06), rgba(14,165,233,0.02)); padding:64px 0; }
+                .hero-inner { display:flex; gap:48px; align-items:center; justify-content:space-between; }
+                .hero-left { flex:1; }
+                .hero-title { font-size: clamp(28px, 4.5vw, 44px); font-weight:700; margin:0 0 12px 0; }
+                .hero-sub { color:var(--muted); margin:0 0 18px 0; max-width:60ch; }
+
+                .hero-ctas { display:flex; gap:12px; margin-top:18px; }
+                .btn { padding:10px 16px; border-radius:10px; font-weight:700; text-decoration:none; }
+                .btn-primary { background: var(--accent-2); color:white; }
+                .btn-ghost { background: transparent; border:1px solid rgba(15,23,42,0.06); color:var(--accent); }
+
+                .profile-avatar { width:140px; height:140px; border-radius:20px; padding:12px; background:white; display:flex; align-items:center; justify-content:center; box-shadow: 0 6px 18px rgba(2,6,23,0.06); }
+
+                /* Sections */
+                section { padding:56px 0; }
+                h2 { font-size:20px; margin-bottom:18px; }
+                .card { background:white; padding:20px; border-radius:12px; border:1px solid rgba(2,6,23,0.04); }
+
+                .timeline-item::before { left: -1.6rem; }
+
+                /* Utilities */
+                .muted { color: var(--muted); }
+                .text-center { text-align:center; }
+
+                @media (max-width: 768px) {
+                    .hero-inner { flex-direction:column; text-align:center; }
+                    .hero-left, .hero-right { width:100%; }
+                    .hero-ctas { justify-content:center; }
+                    .profile-avatar { margin: 0 auto; }
+                }
+            </style>
+        .skill-pill { transition: transform .18s ease, box-shadow .18s ease; display:inline-block; }
+        .skill-pill:hover { transform: translateY(-4px); box-shadow: 0 8px 20px rgba(2,6,23,0.06); }
+
+        /* Contact card */
+        .contact-card { border: 1px solid rgba(2,6,23,0.04); }
+
+        /* Small utilities */
+        .muted { color: var(--muted); }
+        .section-title { font-weight: 700; letter-spacing: -0.01em; }
+
+        /* Social buttons */
+        .social-btn { display:inline-flex; align-items:center; justify-content:center; width:36px; height:36px; border-radius:8px; color: #0f172a; background: rgba(2,6,23,0.03); transition: transform .15s ease, background .15s ease; }
+        .social-btn:hover { transform: translateY(-3px); background: rgba(2,6,23,0.06); }
+
+        @media (prefers-reduced-motion: reduce) { * { transition: none !important; animation: none !important; } }
+    </style>
+</head>
+<body>
+    <a href="#main-content" class="sr-only">Skip to main content</a>
+
+    <nav role="navigation" aria-label="Main navigation">
+        <div class="max-w-6xl mx-auto px-4">
+            <div class="flex justify-between items-center py-4">
+                <div class="flex items-center space-x-4">
+                    <a href="/" class="flex items-center space-x-3">
+                        <img src="assets/img/logo.svg" alt="Logo" class="w-8 h-8 rounded-full" />
+                        <span class="text-2xl font-bold text-blue-600">Professional Profile</span>
+                    </a>
+                </div>
+                <div class="hidden md:flex items-center space-x-6">
+                    <a href="#about" class="text-gray-700 hover:text-blue-600 transition">About</a>
+                    <a href="#experience" class="text-gray-700 hover:text-blue-600 transition">Experience</a>
+                    <a href="#skills" class="text-gray-700 hover:text-blue-600 transition">Skills</a>
+                    <a href="#contact" class="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition">Contact</a>
+                </div>
+                <div class="hidden md:flex items-center space-x-3">
+                    <a href="https://github.com/FaiGiJoon" target="_blank" rel="noopener" class="social-btn" aria-label="GitHub">
+                        <i class="fab fa-github" aria-hidden="true"></i>
+                    </a>
+                    <a href="https://www.linkedin.com/in/casper-klootwijk-837345373/" target="_blank" rel="noopener" class="social-btn" aria-label="LinkedIn">
+                        <i class="fab fa-linkedin-in" aria-hidden="true"></i>
+                    </a>
+                </div>
+                <button id="mobile-menu-button" class="md:hidden text-gray-700 hover:text-blue-600" aria-label="Toggle mobile menu" aria-expanded="false" aria-controls="mobile-menu">
+                    <i class="fas fa-bars text-2xl"></i>
+                </button>
+            </div>
+        </div>
+        <div id="mobile-menu" class="hidden md:hidden bg-white pb-4 px-4">
+            <a href="#about" class="block py-2 text-gray-700 hover:text-blue-600 transition">About</a>
+            <a href="#experience" class="block py-2 text-gray-700 hover:text-blue-600 transition">Experience</a>
+            <a href="#skills" class="block py-2 text-gray-700 hover:text-blue-600 transition">Skills</a>
+            <a href="#contact" class="block bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition text-center mt-2">Contact</a>
+            <div class="mt-4 flex flex-col space-y-2">
+                <a href="https://github.com/FaiGiJoon" target="_blank" rel="noopener" class="block text-gray-700 hover:text-gray-900"><i class="fab fa-github mr-2"></i> GitHub</a>
+                <a href="https://www.linkedin.com/in/casper-klootwijk-837345373/" target="_blank" rel="noopener" class="block text-gray-700 hover:text-blue-700"><i class="fab fa-linkedin-in mr-2"></i> LinkedIn</a>
+            </div>
+        </div>
+    </nav>
+
+    <section class="hero-gradient py-20">
+        <div class="max-w-6xl mx-auto px-4 flex flex-col md:flex-row items-center">
+            <div class="md:w-1/2 mb-10 md:mb-0">
+                <h2 class="text-4xl md:text-5xl font-bold mb-4">System Support Engineer</h2>
+                <p class="text-xl mb-6">Providing technical expertise and innovative solutions for secure and efficient operations</p>
+                <div class="flex space-x-4">
+                    <a href="#contact" class="bg-white text-blue-600 px-6 py-3 rounded-md font-medium hover:bg-gray-100 transition">Get in Touch</a>
+                    <a href="#experience" class="border-2 border-white text-white px-6 py-3 rounded-md font-medium hover:bg-white hover:text-blue-600 transition">View Experience</a>
+                </div>
+            </div>
+            <div class="md:w-1/2 flex justify-center">
+                <div class="bg-white rounded-full p-2 shadow-xl profile-avatar">
+                    <div class="w-64 h-64 bg-gray-200 rounded-full overflow-hidden flex items-center justify-center" aria-label="Profile image">
+                        <img src="assets/img/logo.svg" alt="Logo" class="w-48 h-48 object-contain" />
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <main id="main-content">
+        <!-- About Section -->
+        <section id="about" class="py-16 bg-white">
+            <div class="max-w-6xl mx-auto px-4">
+                <h2 class="text-3xl font-bold mb-8 text-center">About Me</h2>
+                <div class="flex flex-col md:flex-row gap-8">
+                    <div class="md:w-1/2">
+                        <h3 class="text-2xl font-semibold mb-4 text-blue-600">Professional Summary</h3>
+                        <p class="text-gray-700 mb-6 leading-relaxed">
+                            Experienced System Support Engineer with a proven track record in providing technical support, managing network infrastructure, and implementing innovative solutions. 
+                            Skilled in troubleshooting hardware and software issues, configuring network equipment, and delivering exceptional user support in dynamic environments.
+                        </p>
+                        <p class="text-gray-700 mb-6 leading-relaxed">
+                            Passionate about leveraging technology to solve complex problems and improve operational efficiency. 
+                            Adept at working both independently and collaboratively to ensure systems are secure, reliable, and optimized for performance.
+                        </p>
+                        <div class="bg-blue-50 p-6 rounded-lg border-l-4 border-blue-600">
+                            <h4 class="font-bold text-lg mb-2 text-blue-800">Key Strengths</h4>
+                            <ul class="list-disc pl-5 text-gray-700 space-y-2">
+                                <li>Technical troubleshooting and problem-solving</li>
+                                <li>Network configuration and management</li>
+                                <li>System administration and maintenance</li>
+                                <li>User support and training</li>
+                                <li>Process automation and optimization</li>
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <div class="md:w-1/2">
+                        <h3 class="text-2xl font-semibold mb-4 text-blue-600">Personal Details</h3>
+                        <div class="space-y-4">
+                            <div class="flex items-start">
+                                <div class="bg-blue-100 p-3 rounded-full mr-4">
+                                    <i class="fas fa-map-marker-alt text-blue-600" aria-hidden="true"></i>
+                                </div>
+                                <div>
+                                    <h4 class="font-semibold">Location</h4>
+                                    <p class="text-gray-600">Amsterdam, Netherlands</p>
+                                </div>
+                            </div>
+                            
+                            <div class="flex items-start">
+                                <div class="bg-blue-100 p-3 rounded-full mr-4">
+                                    <i class="fas fa-envelope text-blue-600" aria-hidden="true"></i>
+                                </div>
+                                <div>
+                                    <h4 class="font-semibold">Email</h4>
+                                    <!-- SECURITY: Email obfuscation to prevent spam bots -->
+                                    <p class="text-gray-600"><a href="javascript:void(0);" id="email-link" class="text-blue-600 hover:underline">Click to reveal email</a></p>
+                                </div>
+                            </div>
+                            
+                            <div class="flex items-start">
+                                <div class="bg-blue-100 p-3 rounded-full mr-4">
+                                    <i class="fas fa-phone text-blue-600" aria-hidden="true"></i>
+                                </div>
+                                <div>
+                                    <h4 class="font-semibold">Phone</h4>
+                                    <p class="text-gray-600"><a href="tel:+31612345678" class="text-blue-600 hover:underline">+31 6 1234 5678</a></p>
+                                </div>
+                            </div>
+                            
+                            <div class="flex items-start">
+                                <div class="bg-blue-100 p-3 rounded-full mr-4">
+                                    <i class="fas fa-graduation-cap text-blue-600" aria-hidden="true"></i>
+                                </div>
+                                <div>
+                                    <h4 class="font-semibold">Education</h4>
+                                    <p class="text-gray-600">MBO Level 4 ICT, ROC van Amsterdam</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <h3 class="text-2xl font-semibold mt-8 mb-4 text-blue-600">Certifications</h3>
+                        <div class="space-y-3">
+                            <div class="flex items-center bg-gray-50 p-4 rounded-lg">
+                                <div class="bg-green-100 p-2 rounded-full mr-4">
+                                    <i class="fas fa-certificate text-green-600" aria-hidden="true"></i>
+                                </div>
+                                <div>
+                                    <h4 class="font-medium">MikroTik Certified Network Associate</h4>
+                                    <p class="text-sm text-gray-500">2024</p>
+                                </div>
+                            </div>
+                            <div class="flex items-center bg-gray-50 p-4 rounded-lg">
+                                <div class="bg-green-100 p-2 rounded-full mr-4">
+                                    <i class="fas fa-certificate text-green-600" aria-hidden="true"></i>
+                                </div>
+                                <div>
+                                    <h4 class="font-medium">Google Workspace Administrator</h4>
+                                    <p class="text-sm text-gray-500">2023</p>
+                                </div>
+                            </div>
+                            <div class="flex items-center bg-gray-50 p-4 rounded-lg">
+                                <div class="bg-green-100 p-2 rounded-full mr-4">
+                                    <i class="fas fa-certificate text-green-600" aria-hidden="true"></i>
+                                </div>
+                                <div>
+                                    <h4 class="font-medium">Microsoft Azure Fundamentals</h4>
+                                    <p class="text-sm text-gray-500">2022</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Experience Section -->
+        <section id="experience" class="py-16 bg-gray-50">
+            <div class="max-w-6xl mx-auto px-4">
+                <h2 class="text-3xl font-bold mb-8 text-center">Professional Experience</h2>
+                
+                <div class="relative">
+                    <div class="border-l-2 border-blue-200 pl-8 ml-4 space-y-12">
+                        <!-- Current Position -->
+                        <div class="timeline-item">
+                            <div class="bg-white p-6 rounded-lg shadow-md">
+                                <div class="flex flex-col md:flex-row md:justify-between md:items-center mb-4">
+                                    <div>
+                                        <h3 class="text-xl font-bold text-blue-600">System Support Engineer</h3>
+                                        <p class="text-gray-700 font-medium">Reset National B.V.</p>
+                                    </div>
+                                    <div class="mt-2 md:mt-0">
+                                        <span class="bg-blue-100 text-blue-800 text-sm px-3 py-1 rounded-full">Full-time</span>
+                                        <span class="bg-gray-100 text-gray-800 text-sm px-3 py-1 rounded-full ml-2">On-site</span>
+                                    </div>
+                                </div>
+                                <div class="text-gray-500 mb-4">
+                                    <time datetime="2025-10">Oct 2025</time> - Present
+                                    <span class="mx-2">•</span>
+                                    <span>5 mos</span>
+                                </div>
+                                <div class="text-gray-700 mb-4">
+                                    <p>Reset National provides facility and security management for various clients at secured locations.</p>
+                                </div>
+                                <div class="bg-blue-50 p-4 rounded-lg">
+                                    <h4 class="font-semibold text-blue-800 mb-2">Key Responsibilities:</h4>
+                                    <ul class="list-disc pl-5 space-y-1 text-gray-700">
+                                        <li>Configure network equipment using MikroTik and managing systems remotely via PuTTY</li>
+                                        <li>Troubleshoot hardware issues and perform maintenance on IoT devices</li>
+                                        <li>Ensure systems are quickly restored to full functionality</li>
+                                        <li>Combine on-site and technical support for reliable operations</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Previous Position 1 -->
+                        <div class="timeline-item">
+                            <div class="bg-white p-6 rounded-lg shadow-md">
+                                <div class="flex flex-col md:flex-row md:justify-between md:items-center mb-4">
+                                    <div>
+                                        <h3 class="text-xl font-bold text-blue-600">Google Workspace Support / On-site Support</h3>
+                                        <p class="text-gray-700 font-medium">Prosus Group</p>
+                                    </div>
+                                    <div class="mt-2 md:mt-0">
+                                        <span class="bg-blue-100 text-blue-800 text-sm px-3 py-1 rounded-full">Full-time</span>
+                                        <span class="bg-gray-100 text-gray-800 text-sm px-3 py-1 rounded-full ml-2">On-site</span>
+                                    </div>
+                                </div>
+                                <div class="text-gray-500 mb-4">
+                                    <time datetime="2025-06">Jun 2025</time> - <time datetime="2025-10">Oct 2025</time>
+                                    <span class="mx-2">•</span>
+                                    <span>5 mos</span>
+                                </div>
+                                <div class="text-gray-700 mb-4">
+                                    <p>Worked as a first-line IT Support Specialist providing hands-on, on-site IT support to employees.</p>
+                                </div>
+                                <div class="bg-blue-50 p-4 rounded-lg">
+                                    <h4 class="font-semibold text-blue-800 mb-2">Key Achievements:</h4>
+                                    <ul class="list-disc pl-5 space-y-1 text-gray-700">
+                                        <li>Played an active role in company-wide migration from Microsoft 365 to Google Workspace</li>
+                                        <li>Supported users with all Google Workspace tools</li>
+                                        <li>Handled technical infrastructure tasks</li>
+                                        <li>Designed and built custom applications using Google AppSheet</li>
+                                        <li>Contributed to internal automation initiatives</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Previous Position 2 -->
+                        <div class="timeline-item">
+                            <div class="bg-white p-6 rounded-lg shadow-md">
+                                <div class="flex flex-col md:flex-row md:justify-between md:items-center mb-4">
+                                    <div>
+                                        <h3 class="text-xl font-bold text-blue-600">ICT Support Specialist</h3>
+                                        <p class="text-gray-700 font-medium">FedEx Logistics</p>
+                                    </div>
+                                    <div class="mt-2 md:mt-0">
+                                        <span class="bg-blue-100 text-blue-800 text-sm px-3 py-1 rounded-full">Full-time</span>
+                                        <span class="bg-gray-100 text-gray-800 text-sm px-3 py-1 rounded-full ml-2">On-site</span>
+                                    </div>
+                                </div>
+                                <div class="text-gray-500 mb-4">
+                                    <time datetime="2024-01">Jan 2024</time> - <time datetime="2025-06">Jun 2025</time>
+                                    <span class="mx-2">•</span>
+                                    <span>1 yr 6 mos</span>
+                                </div>
+                                <div class="text-gray-700 mb-4">
+                                    <p>Provided first-line IT support to employees, maintaining and monitoring warehouse IT systems.</p>
+                                </div>
+                                <div class="bg-blue-50 p-4 rounded-lg">
+                                    <h4 class="font-semibold text-blue-800 mb-2">Key Responsibilities:</h4>
+                                    <ul class="list-disc pl-5 space-y-1 text-gray-700">
+                                        <li>Maintained key systems including sorting algorithms and conveyor belts</li>
+                                        <li>Delivered customer service and technical support</li>
+                                        <li>Assisted with Microsoft 365-related challenges</li>
+                                        <li>Managed incidents and service requests</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Previous Position 3 -->
+                        <div class="timeline-item">
+                            <div class="bg-white p-6 rounded-lg shadow-md">
+                                <div class="flex flex-col md:flex-row md:justify-between md:items-center mb-4">
+                                    <div>
+                                        <h3 class="text-xl font-bold text-blue-600">Assistant Teacher</h3>
+                                        <p class="text-gray-700 font-medium">ROC van Amsterdam</p>
+                                    </div>
+                                    <div class="mt-2 md:mt-0">
+                                        <span class="bg-blue-100 text-blue-800 text-sm px-3 py-1 rounded-full">Full-time</span>
+                                        <span class="bg-gray-100 text-gray-800 text-sm px-3 py-1 rounded-full ml-2">On-site</span>
+                                    </div>
+                                </div>
+                                <div class="text-gray-500 mb-4">
+                                    <time datetime="2023-07">Jul 2023</time> - <time datetime="2023-11">Nov 2023</time>
+                                    <span class="mx-2">•</span>
+                                    <span>5 mos</span>
+                                </div>
+                                <div class="text-gray-700 mb-4">
+                                    <p>Delivered instruction to MBO Level 4 ICT students.</p>
+                                </div>
+                                <div class="bg-blue-50 p-4 rounded-lg">
+                                    <h4 class="font-semibold text-blue-800 mb-2">Teaching Subjects:</h4>
+                                    <ul class="list-disc pl-5 space-y-1 text-gray-700">
+                                        <li>Computer Networks and the OSI Model</li>
+                                        <li>Operating Systems and Server Administration</li>
+                                        <li>Virtualization and Cybersecurity fundamentals</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Skills Section -->
+        <section id="skills" class="py-16 bg-white">
+            <div class="max-w-6xl mx-auto px-4">
+                <h2 class="text-3xl font-bold mb-8 text-center">Skills & Expertise</h2>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <!-- Technical Skills -->
+                    <div class="bg-gray-50 p-6 rounded-lg shadow-sm border border-gray-100">
+                        <div class="flex items-center mb-4">
+                            <div class="bg-blue-100 p-3 rounded-full mr-4">
+                                <i class="fas fa-code text-blue-600" aria-hidden="true"></i>
+                            </div>
+                            <h3 class="text-xl font-bold text-gray-800">Technical Skills</h3>
+                        </div>
+                        <div class="flex flex-wrap gap-2">
+                            <span class="skill-pill bg-blue-100 text-blue-800 text-sm">Technical Support</span>
+                            <span class="skill-pill bg-blue-100 text-blue-800 text-sm">SIEM</span>
+                            <span class="skill-pill bg-blue-100 text-blue-800 text-sm">Network Configuration</span>
+                            <span class="skill-pill bg-blue-100 text-blue-800 text-sm">MikroTik</span>
+                            <span class="skill-pill bg-blue-100 text-blue-800 text-sm">PuTTY</span>
+                            <span class="skill-pill bg-blue-100 text-blue-800 text-sm">IoT Maintenance</span>
+                            <span class="skill-pill bg-blue-100 text-blue-800 text-sm">Google Workspace</span>
+                            <span class="skill-pill bg-blue-100 text-blue-800 text-sm">Microsoft 365</span>
+                            <span class="skill-pill bg-blue-100 text-blue-800 text-sm">Windows Server</span>
+                            <span class="skill-pill bg-blue-100 text-blue-800 text-sm">Hyper-V</span>
+                        </div>
+                    </div>
+                    
+                    <!-- Support Skills -->
+                    <div class="bg-gray-50 p-6 rounded-lg shadow-sm border border-gray-100">
+                        <div class="flex items-center mb-4">
+                            <div class="bg-green-100 p-3 rounded-full mr-4">
+                                <i class="fas fa-headset text-green-600" aria-hidden="true"></i>
+                            </div>
+                            <h3 class="text-xl font-bold text-gray-800">Support Skills</h3>
+                        </div>
+                        <div class="flex flex-wrap gap-2">
+                            <span class="skill-pill bg-green-100 text-green-800 text-sm">Helpdesk Support</span>
+                            <span class="skill-pill bg-green-100 text-green-800 text-sm">User Training</span>
+                            <span class="skill-pill bg-green-100 text-green-800 text-sm">Incident Management</span>
+                            <span class="skill-pill bg-green-100 text-green-800 text-sm">Service Desk</span>
+                            <span class="skill-pill bg-green-100 text-green-800 text-sm">Onboarding</span>
+                            <span class="skill-pill bg-green-100 text-green-800 text-sm">Technical Documentation</span>
+                            <span class="skill-pill bg-green-100 text-green-800 text-sm">Problem Solving</span>
+                        </div>
+                    </div>
+                    
+                    <!-- Languages & Other -->
+                    <div class="bg-gray-50 p-6 rounded-lg shadow-sm border border-gray-100">
+                        <div class="flex items-center mb-4">
+                            <div class="bg-purple-100 p-3 rounded-full mr-4">
+                                <i class="fas fa-language text-purple-600" aria-hidden="true"></i>
+                            </div>
+                            <h3 class="text-xl font-bold text-gray-800">Languages & Other</h3>
+                        </div>
+                        <div class="flex flex-wrap gap-2">
+                            <span class="skill-pill bg-purple-100 text-purple-800 text-sm">English (Fluent)</span>
+                            <span class="skill-pill bg-purple-100 text-purple-800 text-sm">Dutch (Native)</span>
+                            <span class="skill-pill bg-purple-100 text-purple-800 text-sm">Teaching</span>
+                            <span class="skill-pill bg-purple-100 text-purple-800 text-sm">Mentoring</span>
+                            <span class="skill-pill bg-purple-100 text-purple-800 text-sm">Process Automation</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Contact Section (simple contact card - form removed) -->
+        <section id="contact" class="py-16 bg-gray-50">
+            <div class="max-w-2xl mx-auto px-4">
+                <h2 class="text-3xl font-bold mb-8 text-center">Contact</h2>
+
+                <div class="bg-white p-8 rounded-lg shadow-md text-center">
+                    <p class="text-gray-700 mb-4">The contact form is not available yet. You can reach me directly at:</p>
+                    <a href="mailto:professional@example.com" class="text-blue-600 font-semibold">professional@example.com</a>
+                    <p class="mt-4"><a href="tel:+31612345678" class="text-gray-700">+31 6 1234 5678</a></p>
+                    <p class="mt-6 text-sm text-gray-500">Prefer social? Find me on <a href="#" class="text-blue-600">LinkedIn</a>.</p>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="bg-gray-800 text-gray-300 py-8 mt-16">
+        <div class="max-w-6xl mx-auto px-4 text-center">
+            <p>&copy; 2025 Professional Profile. All rights reserved. | HTTPS Secured | OWASP Compliant</p>
+        </div>
+    </footer>
+
+    <!-- Load site JS (moved from inline into assets/js/main.js) -->
+    <script src="assets/js/main.js" defer></script>
+</body>
+</html>

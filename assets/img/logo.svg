@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 240">
+  <defs>
+    <linearGradient id="g" x1="0" x2="1">
+      <stop offset="0" stop-color="#34d399"/>
+      <stop offset="1" stop-color="#10b981"/>
+    </linearGradient>
+  </defs>
+  <rect width="240" height="240" rx="40" fill="url(#g)" />
+  <!-- Koala face -->
+  <g transform="translate(40,48)">
+    <ellipse cx="80" cy="64" rx="64" ry="56" fill="#d1d5db" />
+    <ellipse cx="40" cy="56" rx="20" ry="22" fill="#9ca3af" />
+    <ellipse cx="120" cy="56" rx="20" ry="22" fill="#9ca3af" />
+    <ellipse cx="80" cy="86" rx="28" ry="36" fill="#6b7280" />
+    <!-- eyes -->
+    <circle cx="64" cy="60" r="6" fill="#111827" />
+    <circle cx="96" cy="60" r="6" fill="#111827" />
+    <!-- nose shine -->
+    <ellipse cx="78" cy="80" rx="12" ry="8" fill="#111827" />
+    <ellipse cx="70" cy="74" rx="3" ry="2" fill="#ffffff" opacity="0.7" />
+  </g>
+</svg>
