@@ -42,35 +42,9 @@
     <!-- Tailwind CSS with Subresource Integrity (Latest v3.4) -->
     <script src="https://cdn.tailwindcss.com" 
             integrity="sha384-QVTPkdAVEDe45qDlSZWnpKO5B6tCoVAO8u/b7stzNKj5hkiTLG/hv2s1a/xGFHXw" 
-            crossorigin="anonymous" 
-            <style>
-                /* Minimal, ultra-clean styles inspired by modern portfolios */
-                :root {
-                    --bg: #ffffff;
-                    --muted: #6b7280;
-                    --accent: #0f172a; /* deep text color */
-                    --accent-2: #2563eb; /* subtle accent */
-                    --container: 1000px;
-                }
-
-                * { box-sizing: border-box; }
-                html,body { height: 100%; }
-                body { margin:0; font-family: Inter, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial; background: #f8fafc; color: var(--accent); -webkit-font-smoothing:antialiased; }
-
-                /* Layout container */
-                .max-w-6xl { max-width: var(--container); }
-
-                nav { background: transparent; }
-                nav .max-w-6xl { display:flex; align-items:center; justify-content:space-between; }
-                .nav-links a { color: var(--muted); padding:8px 10px; border-radius:8px; font-weight:600; text-decoration:none; }
-                .nav-links a:hover { color: var(--accent-2); background: rgba(37,99,235,0.06); }
-
-                /* Hero: centered clean card */
-                .hero-gradient { background: linear-gradient(180deg, rgba(37,99,235,0.06), rgba(14,165,233,0.02)); padding:64px 0; }
-                .hero-inner { display:flex; gap:48px; align-items:center; justify-content:space-between; }
-                .hero-left { flex:1; }
-                .hero-title { font-size: clamp(28px, 4.5vw, 44px); font-weight:700; margin:0 0 12px 0; }
-                .hero-sub { color:var(--muted); margin:0 0 18px 0; max-width:60ch; }
+            crossorigin="anonymous"></script>
+    <!-- Project styles extracted to external file for CSP compliance -->
+    <link rel="stylesheet" href="assets/css/main.css">
 
                 .hero-ctas { display:flex; gap:12px; margin-top:18px; }
                 .btn { padding:10px 16px; border-radius:10px; font-weight:700; text-decoration:none; }
@@ -96,23 +70,7 @@
                     .hero-ctas { justify-content:center; }
                     .profile-avatar { margin: 0 auto; }
                 }
-            </style>
-        .skill-pill { transition: transform .18s ease, box-shadow .18s ease; display:inline-block; }
-        .skill-pill:hover { transform: translateY(-4px); box-shadow: 0 8px 20px rgba(2,6,23,0.06); }
-
-        /* Contact card */
-        .contact-card { border: 1px solid rgba(2,6,23,0.04); }
-
-        /* Small utilities */
-        .muted { color: var(--muted); }
-        .section-title { font-weight: 700; letter-spacing: -0.01em; }
-
-        /* Social buttons */
-        .social-btn { display:inline-flex; align-items:center; justify-content:center; width:36px; height:36px; border-radius:8px; color: #0f172a; background: rgba(2,6,23,0.03); transition: transform .15s ease, background .15s ease; }
-        .social-btn:hover { transform: translateY(-3px); background: rgba(2,6,23,0.06); }
-
-        @media (prefers-reduced-motion: reduce) { * { transition: none !important; animation: none !important; } }
-    </style>
+        
 </head>
 <body>
     <a href="#main-content" class="sr-only">Skip to main content</a>
@@ -296,7 +254,7 @@
                         <div class="timeline-item">
                             <div class="bg-white p-6 rounded-lg shadow-md">
                                 <div class="flex flex-col md:flex-row md:justify-between md:items-center mb-4">
-                                    <div>
+                                    <div>W
                                         <h3 class="text-xl font-bold text-blue-600">System Support Engineer</h3>
                                         <p class="text-gray-700 font-medium">Reset National B.V.</p>
                                     </div>
