@@ -56,38 +56,60 @@
     <link href="https://fonts.googleapis.com/css2?family=Segoe+UI:wght@400;600;700&display=swap" rel="stylesheet" crossorigin="anonymous">
     
     <style>
-        /* (original inline CSS kept) */
-        :root { --primary: #3b82f6; --secondary: #1e40af; --accent: #10b981; --dark: #1f2937; --light: #f9fafb; --error: #ef4444; --success: #22c55e; }
+        :root {
+            --primary: #2563eb; /* slightly deeper blue */
+            --secondary: #1e3a8a;
+            --muted: #6b7280;
+            --card: #ffffff;
+            --glass: rgba(255,255,255,0.6);
+        }
+
         * { box-sizing: border-box; }
-        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica Neue', sans-serif; background-color: #f3f4f6; color: var(--dark); line-height: 1.6; -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
-        nav { background-color: white; box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1); position: sticky; top: 0; z-index: 50; }
-        nav a { text-decoration: none; transition: color 0.3s ease; padding: 8px 12px; }
-        nav a:focus-visible { outline: 2px solid var(--primary); outline-offset: 2px; }
-        nav a:hover { color: var(--primary); }
-        #mobile-menu-button { background: none; border: none; cursor: pointer; padding: 8px; }
-        #mobile-menu-button:focus-visible { outline: 2px solid var(--primary); border-radius: 4px; }
-        .hero-gradient { background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%); color: white; }
-        .skill-pill { transition: all 0.3s ease; display: inline-block; padding: 8px 12px; border-radius: 9999px; font-size: 14px; }
-        .skill-pill:hover { transform: translateY(-2px); box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); }
-        .skill-pill:focus-visible { outline: 2px solid var(--primary); outline-offset: 2px; }
-        .timeline-item { position: relative; padding-left: 2rem; }
-        .timeline-item::before { content: ''; position: absolute; left: -1.5rem; top: 0; width: 1rem; height: 1rem; border-radius: 50%; background-color: var(--primary); border: 3px solid white; }
-        .timeline-connector { position: absolute; left: -1rem; top: 1rem; bottom: -1rem; width: 2px; background-color: #e5e7eb; }
-        .planner-card { transition: all 0.3s ease; background: white; border-radius: 8px; box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1); }
-        .planner-card:hover { transform: translateY(-5px); box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1); }
-        .tab-active { border-bottom: 3px solid var(--primary); font-weight: 600; color: var(--primary); }
-        input, textarea { font-size: 16px; font-family: inherit; }
-        input:focus, textarea:focus { outline: 2px solid var(--primary); outline-offset: 2px; }
-        .alert { padding: 12px 16px; border-radius: 6px; margin-top: 12px; animation: slideIn 0.3s ease; }
-        .alert-error { background-color: rgba(239, 68, 68, 0.1); border: 1px solid var(--error); color: #b91c1c; }
-        .alert-success { background-color: rgba(34, 197, 94, 0.1); border: 1px solid var(--success); color: #15803d; }
-        @keyframes slideIn { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
-        .spinner { display: inline-block; width: 14px; height: 14px; border: 2px solid rgba(59, 130, 246, 0.3); border-top-color: var(--primary); border-radius: 50%; animation: spin 0.8s linear infinite; }
-        @keyframes spin { to { transform: rotate(360deg); } }
-        .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border-width: 0; }
-        .sr-only:focus { position: static; width: auto; height: auto; padding: inherit; margin: inherit; overflow: visible; clip: auto; white-space: normal; }
-        @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; } }
-        @media (prefers-color-scheme: dark) { body { background-color: #1f2937; color: #f3f4f6; } nav { background-color: var(--dark); } .planner-card { background-color: #374151; } }
+        body { font-family: Inter, ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial; background-color: #f8fafc; color: #0f172a; -webkit-font-smoothing:antialiased; }
+
+        /* NAV */
+        nav { background: linear-gradient(180deg, rgba(255,255,255,0.8), rgba(255,255,255,0.6)); backdrop-filter: blur(6px); }
+        nav .text-2xl { letter-spacing: -0.02em; }
+
+        /* HERO */
+        .hero-gradient {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            color: white;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero-deco {
+            position: absolute; inset: 0; opacity: 0.12; pointer-events: none; mix-blend-mode: overlay;
+            background-image: radial-gradient(circle at 10% 20%, rgba(255,255,255,0.08), transparent 10%), radial-gradient(circle at 80% 80%, rgba(255,255,255,0.06), transparent 15%);
+        }
+
+        .profile-avatar { width: 160px; height: 160px; border-radius: 9999px; display:flex; align-items:center; justify-content:center; background: rgba(255,255,255,0.12); box-shadow: 0 8px 30px rgba(2,6,23,0.2); border: 4px solid rgba(255,255,255,0.12); }
+
+        .hero-cta a { box-shadow: 0 6px 18px rgba(16,24,40,0.08); }
+
+        /* CARDS */
+        .card { background: var(--card); border-radius: 12px; box-shadow: 0 6px 20px rgba(2,6,23,0.06); transition: transform .25s ease, box-shadow .25s ease; }
+        .card:hover { transform: translateY(-6px); box-shadow: 0 18px 40px rgba(2,6,23,0.08); }
+
+        .meta { color: var(--muted); font-size: 0.95rem; }
+
+        /* Timeline tweaks */
+        .timeline-item { position: relative; padding-left: 2.25rem; }
+        .timeline-item::before { content: ''; position: absolute; left: -1.5rem; top: 0.5rem; width: 0.9rem; height: 0.9rem; border-radius: 50%; background: var(--primary); border: 3px solid #fff; }
+
+        /* Skills */
+        .skill-pill { transition: transform .18s ease, box-shadow .18s ease; display:inline-block; }
+        .skill-pill:hover { transform: translateY(-4px); box-shadow: 0 8px 20px rgba(2,6,23,0.06); }
+
+        /* Contact card */
+        .contact-card { border: 1px solid rgba(2,6,23,0.04); }
+
+        /* Small utilities */
+        .muted { color: var(--muted); }
+        .section-title { font-weight: 700; letter-spacing: -0.01em; }
+
+        @media (prefers-reduced-motion: reduce) { * { transition: none !important; animation: none !important; } }
     </style>
 </head>
 <body>

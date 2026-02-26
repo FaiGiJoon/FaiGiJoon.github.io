@@ -59,7 +59,31 @@ function init() {
 
     setupMobileMenu();
     setupEmailLink();
-    setupContactForm();
+    // UX: smooth scroll for anchor links
+    document.querySelectorAll('a[href^="#"]').forEach(a => {
+        a.addEventListener('click', (e) => {
+            const href = a.getAttribute('href');
+            if (href.length > 1 && document.querySelector(href)) {
+                e.preventDefault();
+                document.querySelector(href).scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }
+        });
+    });
+
+    // Reveal on scroll (subtle)
+    const reveals = document.querySelectorAll('section, .card');
+    const obs = new IntersectionObserver((entries) => {
+        entries.forEach(e => {
+            if (e.isIntersecting) {
+                e.target.classList.add('opacity-100', 'translate-y-0');
+                obs.unobserve(e.target);
+            }
+        });
+    }, { threshold: 0.12 });
+    reveals.forEach(r => {
+        r.classList.add('opacity-0', 'translate-y-6', 'transition', 'duration-700');
+        obs.observe(r);
+    });
 
     console.log('✅ Application initialized securely');
 }
