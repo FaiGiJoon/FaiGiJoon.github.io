@@ -1,22 +1,22 @@
 /* Global styles extracted from index.html */
 :root {
-    /* updated color palette based on new frontend design */
-    --primary: #3b82f6;
-    --secondary: #1e40af;
-    --accent: #10b981;
-    --dark: #1f2937;
-    --light: #f9fafb;
+    /* dark palette with teal accent */
+    --primary: #14b8a6;    /* teal-400 */
+    --secondary: #0f172a;  /* slate-900 for backgrounds */
+    --accent: #10b981;     /* greenish accent kept for highlights */
+    --dark: #e2e8f0;       /* slate-300 text */
+    --light: #0f172a;      /* dark background base */
     --container: 1000px;
 
     /* backward‑compatibility in case other rules still reference old names */
     --bg: var(--light);
-    --muted: #6b7280;
+    --muted: #94a3b8;      /* slate-400 */
     --accent-2: var(--primary);
 }
 
 * { box-sizing: border-box; }
 html,body { height: 100%; }
-body { margin:0; font-family: Inter, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; background: #f3f4f6; color: var(--dark); -webkit-font-smoothing:antialiased; }
+body { margin:0; font-family: Inter, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; background: var(--light); color: var(--dark); -webkit-font-smoothing:antialiased; }
 
 /* Layout container */
 .max-w-6xl { max-width: var(--container); }
