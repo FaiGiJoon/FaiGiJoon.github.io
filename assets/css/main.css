@@ -1,15 +1,22 @@
 /* Global styles extracted from index.html */
 :root {
-    --bg: #ffffff;
-    --muted: #6b7280;
-    --accent: #0f172a; /* deep text color */
-    --accent-2: #2563eb; /* subtle accent */
+    /* updated color palette based on new frontend design */
+    --primary: #3b82f6;
+    --secondary: #1e40af;
+    --accent: #10b981;
+    --dark: #1f2937;
+    --light: #f9fafb;
     --container: 1000px;
+
+    /* backward‑compatibility in case other rules still reference old names */
+    --bg: var(--light);
+    --muted: #6b7280;
+    --accent-2: var(--primary);
 }
 
 * { box-sizing: border-box; }
 html,body { height: 100%; }
-body { margin:0; font-family: Inter, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial; background: #f8fafc; color: var(--accent); -webkit-font-smoothing:antialiased; }
+body { margin:0; font-family: Inter, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; background: #f3f4f6; color: var(--dark); -webkit-font-smoothing:antialiased; }
 
 /* Layout container */
 .max-w-6xl { max-width: var(--container); }
@@ -20,7 +27,7 @@ nav .max-w-6xl { display:flex; align-items:center; justify-content:space-between
 .nav-links a:hover { color: var(--accent-2); background: rgba(37,99,235,0.06); }
 
 /* Hero: centered clean card */
-.hero-gradient { background: linear-gradient(180deg, rgba(37,99,235,0.06), rgba(14,165,233,0.02)); padding:64px 0; }
+.hero-gradient { background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%); padding:64px 0; }
 .hero-inner { display:flex; gap:48px; align-items:center; justify-content:space-between; }
 .hero-left { flex:1; }
 .hero-title { font-size: clamp(28px, 4.5vw, 44px); font-weight:700; margin:0 0 12px 0; }
@@ -52,15 +59,43 @@ h2 { font-size:20px; margin-bottom:18px; }
 }
 
 /* Social button style */
-.social-btn { display:inline-flex; align-items:center; justify-content:center; width:36px; height:36px; border-radius:8px; color: #0f172a; background: rgba(2,6,23,0.03); transition: transform .15s ease, background .15s ease; }
+.social-btn { display:inline-flex; align-items:center; justify-content:center; width:36px; height:36px; border-radius:8px; color: var(--dark); background: rgba(2,6,23,0.03); transition: transform .15s ease, background .15s ease; }
 .social-btn:hover { transform: translateY(-3px); background: rgba(2,6,23,0.06); }
 
 /* Additional utilities moved from head */
-.skill-pill { transition: transform .18s ease, box-shadow .18s ease; display:inline-block; }
-.skill-pill:hover { transform: translateY(-4px); box-shadow: 0 8px 20px rgba(2,6,23,0.06); }
+.skill-pill { transition: all .3s ease; display:inline-block; }
+.skill-pill:hover { transform: translateY(-2px); box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
 
 /* Contact card */
 .contact-card { border: 1px solid rgba(2,6,23,0.04); }
+
+/* Timeline decorations copied from updated design */
+.timeline-item::before {
+    content: '';
+    position: absolute;
+    left: -1.5rem;
+    top: 0;
+    width: 1rem;
+    height: 1rem;
+    border-radius: 50%;
+    background-color: var(--primary);
+    border: 3px solid white;
+}
+.timeline-connector {
+    position: absolute;
+    left: -1rem;
+    top: 1rem;
+    bottom: -1rem;
+    width: 2px;
+    background-color: #e5e7eb;
+}
+
+/* Planner component styles */
+.planner-card { transition: all .3s ease; }
+.planner-card:hover { transform: translateY(-5px); box-shadow: 0 10px 15px rgba(0,0,0,0.1); }
+
+/* Tab indicator for planner */
+.tab-active { border-bottom: 3px solid var(--primary); font-weight: 600; color: var(--primary); }
 
 /* Small utilities */
 .muted { color: var(--muted); }
