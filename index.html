@@ -141,7 +141,401 @@
     </section>
 
     <main id="main-content">
-        <!-- About, Experience, Skills, Contact, Footer sections are identical to original file's content -->
+        <!-- About Section -->
+        <section id="about" class="py-16 bg-white">
+            <div class="max-w-6xl mx-auto px-4">
+                <h2 class="text-3xl font-bold mb-8 text-center">About Me</h2>
+                <div class="flex flex-col md:flex-row gap-8">
+                    <div class="md:w-1/2">
+                        <h3 class="text-2xl font-semibold mb-4 text-blue-600">Professional Summary</h3>
+                        <p class="text-gray-700 mb-6 leading-relaxed">
+                            Experienced System Support Engineer with a proven track record in providing technical support, managing network infrastructure, and implementing innovative solutions. 
+                            Skilled in troubleshooting hardware and software issues, configuring network equipment, and delivering exceptional user support in dynamic environments.
+                        </p>
+                        <p class="text-gray-700 mb-6 leading-relaxed">
+                            Passionate about leveraging technology to solve complex problems and improve operational efficiency. 
+                            Adept at working both independently and collaboratively to ensure systems are secure, reliable, and optimized for performance.
+                        </p>
+                        <div class="bg-blue-50 p-6 rounded-lg border-l-4 border-blue-600">
+                            <h4 class="font-bold text-lg mb-2 text-blue-800">Key Strengths</h4>
+                            <ul class="list-disc pl-5 text-gray-700 space-y-2">
+                                <li>Technical troubleshooting and problem-solving</li>
+                                <li>Network configuration and management</li>
+                                <li>System administration and maintenance</li>
+                                <li>User support and training</li>
+                                <li>Process automation and optimization</li>
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <div class="md:w-1/2">
+                        <h3 class="text-2xl font-semibold mb-4 text-blue-600">Personal Details</h3>
+                        <div class="space-y-4">
+                            <div class="flex items-start">
+                                <div class="bg-blue-100 p-3 rounded-full mr-4">
+                                    <i class="fas fa-map-marker-alt text-blue-600" aria-hidden="true"></i>
+                                </div>
+                                <div>
+                                    <h4 class="font-semibold">Location</h4>
+                                    <p class="text-gray-600">Amsterdam, Netherlands</p>
+                                </div>
+                            </div>
+                            
+                            <div class="flex items-start">
+                                <div class="bg-blue-100 p-3 rounded-full mr-4">
+                                    <i class="fas fa-envelope text-blue-600" aria-hidden="true"></i>
+                                </div>
+                                <div>
+                                    <h4 class="font-semibold">Email</h4>
+                                    <!-- SECURITY: Email obfuscation to prevent spam bots -->
+                                    <p class="text-gray-600"><a href="javascript:void(0);" id="email-link" class="text-blue-600 hover:underline">Click to reveal email</a></p>
+                                </div>
+                            </div>
+                            
+                            <div class="flex items-start">
+                                <div class="bg-blue-100 p-3 rounded-full mr-4">
+                                    <i class="fas fa-phone text-blue-600" aria-hidden="true"></i>
+                                </div>
+                                <div>
+                                    <h4 class="font-semibold">Phone</h4>
+                                    <p class="text-gray-600"><a href="tel:+31612345678" class="text-blue-600 hover:underline">+31 6 1234 5678</a></p>
+                                </div>
+                            </div>
+                            
+                            <div class="flex items-start">
+                                <div class="bg-blue-100 p-3 rounded-full mr-4">
+                                    <i class="fas fa-graduation-cap text-blue-600" aria-hidden="true"></i>
+                                </div>
+                                <div>
+                                    <h4 class="font-semibold">Education</h4>
+                                    <p class="text-gray-600">MBO Level 4 ICT, ROC van Amsterdam</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <h3 class="text-2xl font-semibold mt-8 mb-4 text-blue-600">Certifications</h3>
+                        <div class="space-y-3">
+                            <div class="flex items-center bg-gray-50 p-4 rounded-lg">
+                                <div class="bg-green-100 p-2 rounded-full mr-4">
+                                    <i class="fas fa-certificate text-green-600" aria-hidden="true"></i>
+                                </div>
+                                <div>
+                                    <h4 class="font-medium">MikroTik Certified Network Associate</h4>
+                                    <p class="text-sm text-gray-500">2024</p>
+                                </div>
+                            </div>
+                            <div class="flex items-center bg-gray-50 p-4 rounded-lg">
+                                <div class="bg-green-100 p-2 rounded-full mr-4">
+                                    <i class="fas fa-certificate text-green-600" aria-hidden="true"></i>
+                                </div>
+                                <div>
+                                    <h4 class="font-medium">Google Workspace Administrator</h4>
+                                    <p class="text-sm text-gray-500">2023</p>
+                                </div>
+                            </div>
+                            <div class="flex items-center bg-gray-50 p-4 rounded-lg">
+                                <div class="bg-green-100 p-2 rounded-full mr-4">
+                                    <i class="fas fa-certificate text-green-600" aria-hidden="true"></i>
+                                </div>
+                                <div>
+                                    <h4 class="font-medium">Microsoft Azure Fundamentals</h4>
+                                    <p class="text-sm text-gray-500">2022</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Experience Section -->
+        <section id="experience" class="py-16 bg-gray-50">
+            <div class="max-w-6xl mx-auto px-4">
+                <h2 class="text-3xl font-bold mb-8 text-center">Professional Experience</h2>
+                
+                <div class="relative">
+                    <div class="border-l-2 border-blue-200 pl-8 ml-4 space-y-12">
+                        <!-- Current Position -->
+                        <div class="timeline-item">
+                            <div class="bg-white p-6 rounded-lg shadow-md">
+                                <div class="flex flex-col md:flex-row md:justify-between md:items-center mb-4">
+                                    <div>
+                                        <h3 class="text-xl font-bold text-blue-600">System Support Engineer</h3>
+                                        <p class="text-gray-700 font-medium">Reset National B.V.</p>
+                                    </div>
+                                    <div class="mt-2 md:mt-0">
+                                        <span class="bg-blue-100 text-blue-800 text-sm px-3 py-1 rounded-full">Full-time</span>
+                                        <span class="bg-gray-100 text-gray-800 text-sm px-3 py-1 rounded-full ml-2">On-site</span>
+                                    </div>
+                                </div>
+                                <div class="text-gray-500 mb-4">
+                                    <time datetime="2025-10">Oct 2025</time> - Present
+                                    <span class="mx-2">•</span>
+                                    <span>5 mos</span>
+                                </div>
+                                <div class="text-gray-700 mb-4">
+                                    <p>Reset National provides facility and security management for various clients at secured locations.</p>
+                                </div>
+                                <div class="bg-blue-50 p-4 rounded-lg">
+                                    <h4 class="font-semibold text-blue-800 mb-2">Key Responsibilities:</h4>
+                                    <ul class="list-disc pl-5 space-y-1 text-gray-700">
+                                        <li>Configure network equipment using MikroTik and managing systems remotely via PuTTY</li>
+                                        <li>Troubleshoot hardware issues and perform maintenance on IoT devices</li>
+                                        <li>Ensure systems are quickly restored to full functionality</li>
+                                        <li>Combine on-site and technical support for reliable operations</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Previous Position 1 -->
+                        <div class="timeline-item">
+                            <div class="bg-white p-6 rounded-lg shadow-md">
+                                <div class="flex flex-col md:flex-row md:justify-between md:items-center mb-4">
+                                    <div>
+                                        <h3 class="text-xl font-bold text-blue-600">Google Workspace Support / On-site Support</h3>
+                                        <p class="text-gray-700 font-medium">Prosus Group</p>
+                                    </div>
+                                    <div class="mt-2 md:mt-0">
+                                        <span class="bg-blue-100 text-blue-800 text-sm px-3 py-1 rounded-full">Full-time</span>
+                                        <span class="bg-gray-100 text-gray-800 text-sm px-3 py-1 rounded-full ml-2">On-site</span>
+                                    </div>
+                                </div>
+                                <div class="text-gray-500 mb-4">
+                                    <time datetime="2025-06">Jun 2025</time> - <time datetime="2025-10">Oct 2025</time>
+                                    <span class="mx-2">•</span>
+                                    <span>5 mos</span>
+                                </div>
+                                <div class="text-gray-700 mb-4">
+                                    <p>Worked as a first-line IT Support Specialist providing hands-on, on-site IT support to employees.</p>
+                                </div>
+                                <div class="bg-blue-50 p-4 rounded-lg">
+                                    <h4 class="font-semibold text-blue-800 mb-2">Key Achievements:</h4>
+                                    <ul class="list-disc pl-5 space-y-1 text-gray-700">
+                                        <li>Played an active role in company-wide migration from Microsoft 365 to Google Workspace</li>
+                                        <li>Supported users with all Google Workspace tools</li>
+                                        <li>Handled technical infrastructure tasks</li>
+                                        <li>Designed and built custom applications using Google AppSheet</li>
+                                        <li>Contributed to internal automation initiatives</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Previous Position 2 -->
+                        <div class="timeline-item">
+                            <div class="bg-white p-6 rounded-lg shadow-md">
+                                <div class="flex flex-col md:flex-row md:justify-between md:items-center mb-4">
+                                    <div>
+                                        <h3 class="text-xl font-bold text-blue-600">ICT Support Specialist</h3>
+                                        <p class="text-gray-700 font-medium">FedEx Logistics</p>
+                                    </div>
+                                    <div class="mt-2 md:mt-0">
+                                        <span class="bg-blue-100 text-blue-800 text-sm px-3 py-1 rounded-full">Full-time</span>
+                                        <span class="bg-gray-100 text-gray-800 text-sm px-3 py-1 rounded-full ml-2">On-site</span>
+                                    </div>
+                                </div>
+                                <div class="text-gray-500 mb-4">
+                                    <time datetime="2024-01">Jan 2024</time> - <time datetime="2025-06">Jun 2025</time>
+                                    <span class="mx-2">•</span>
+                                    <span>1 yr 6 mos</span>
+                                </div>
+                                <div class="text-gray-700 mb-4">
+                                    <p>Provided first-line IT support to employees, maintaining and monitoring warehouse IT systems.</p>
+                                </div>
+                                <div class="bg-blue-50 p-4 rounded-lg">
+                                    <h4 class="font-semibold text-blue-800 mb-2">Key Responsibilities:</h4>
+                                    <ul class="list-disc pl-5 space-y-1 text-gray-700">
+                                        <li>Maintained key systems including sorting algorithms and conveyor belts</li>
+                                        <li>Delivered customer service and technical support</li>
+                                        <li>Assisted with Microsoft 365-related challenges</li>
+                                        <li>Managed incidents and service requests</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Previous Position 3 -->
+                        <div class="timeline-item">
+                            <div class="bg-white p-6 rounded-lg shadow-md">
+                                <div class="flex flex-col md:flex-row md:justify-between md:items-center mb-4">
+                                    <div>
+                                        <h3 class="text-xl font-bold text-blue-600">Assistant Teacher</h3>
+                                        <p class="text-gray-700 font-medium">ROC van Amsterdam</p>
+                                    </div>
+                                    <div class="mt-2 md:mt-0">
+                                        <span class="bg-blue-100 text-blue-800 text-sm px-3 py-1 rounded-full">Full-time</span>
+                                        <span class="bg-gray-100 text-gray-800 text-sm px-3 py-1 rounded-full ml-2">On-site</span>
+                                    </div>
+                                </div>
+                                <div class="text-gray-500 mb-4">
+                                    <time datetime="2023-07">Jul 2023</time> - <time datetime="2023-11">Nov 2023</time>
+                                    <span class="mx-2">•</span>
+                                    <span>5 mos</span>
+                                </div>
+                                <div class="text-gray-700 mb-4">
+                                    <p>Delivered instruction to MBO Level 4 ICT students.</p>
+                                </div>
+                                <div class="bg-blue-50 p-4 rounded-lg">
+                                    <h4 class="font-semibold text-blue-800 mb-2">Teaching Subjects:</h4>
+                                    <ul class="list-disc pl-5 space-y-1 text-gray-700">
+                                        <li>Computer Networks and the OSI Model</li>
+                                        <li>Operating Systems and Server Administration</li>
+                                        <li>Virtualization and Cybersecurity fundamentals</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Skills Section -->
+        <section id="skills" class="py-16 bg-white">
+            <div class="max-w-6xl mx-auto px-4">
+                <h2 class="text-3xl font-bold mb-8 text-center">Skills & Expertise</h2>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <!-- Technical Skills -->
+                    <div class="bg-gray-50 p-6 rounded-lg shadow-sm border border-gray-100">
+                        <div class="flex items-center mb-4">
+                            <div class="bg-blue-100 p-3 rounded-full mr-4">
+                                <i class="fas fa-code text-blue-600" aria-hidden="true"></i>
+                            </div>
+                            <h3 class="text-xl font-bold text-gray-800">Technical Skills</h3>
+                        </div>
+                        <div class="flex flex-wrap gap-2">
+                            <span class="skill-pill bg-blue-100 text-blue-800 text-sm">Technical Support</span>
+                            <span class="skill-pill bg-blue-100 text-blue-800 text-sm">SIEM</span>
+                            <span class="skill-pill bg-blue-100 text-blue-800 text-sm">Network Configuration</span>
+                            <span class="skill-pill bg-blue-100 text-blue-800 text-sm">MikroTik</span>
+                            <span class="skill-pill bg-blue-100 text-blue-800 text-sm">PuTTY</span>
+                            <span class="skill-pill bg-blue-100 text-blue-800 text-sm">IoT Maintenance</span>
+                            <span class="skill-pill bg-blue-100 text-blue-800 text-sm">Google Workspace</span>
+                            <span class="skill-pill bg-blue-100 text-blue-800 text-sm">Microsoft 365</span>
+                            <span class="skill-pill bg-blue-100 text-blue-800 text-sm">Windows Server</span>
+                            <span class="skill-pill bg-blue-100 text-blue-800 text-sm">Hyper-V</span>
+                        </div>
+                    </div>
+                    
+                    <!-- Support Skills -->
+                    <div class="bg-gray-50 p-6 rounded-lg shadow-sm border border-gray-100">
+                        <div class="flex items-center mb-4">
+                            <div class="bg-green-100 p-3 rounded-full mr-4">
+                                <i class="fas fa-headset text-green-600" aria-hidden="true"></i>
+                            </div>
+                            <h3 class="text-xl font-bold text-gray-800">Support Skills</h3>
+                        </div>
+                        <div class="flex flex-wrap gap-2">
+                            <span class="skill-pill bg-green-100 text-green-800 text-sm">Helpdesk Support</span>
+                            <span class="skill-pill bg-green-100 text-green-800 text-sm">User Training</span>
+                            <span class="skill-pill bg-green-100 text-green-800 text-sm">Incident Management</span>
+                            <span class="skill-pill bg-green-100 text-green-800 text-sm">Service Desk</span>
+                            <span class="skill-pill bg-green-100 text-green-800 text-sm">Onboarding</span>
+                            <span class="skill-pill bg-green-100 text-green-800 text-sm">Technical Documentation</span>
+                            <span class="skill-pill bg-green-100 text-green-800 text-sm">Problem Solving</span>
+                        </div>
+                    </div>
+                    
+                    <!-- Languages & Other -->
+                    <div class="bg-gray-50 p-6 rounded-lg shadow-sm border border-gray-100">
+                        <div class="flex items-center mb-4">
+                            <div class="bg-purple-100 p-3 rounded-full mr-4">
+                                <i class="fas fa-language text-purple-600" aria-hidden="true"></i>
+                            </div>
+                            <h3 class="text-xl font-bold text-gray-800">Languages & Other</h3>
+                        </div>
+                        <div class="flex flex-wrap gap-2">
+                            <span class="skill-pill bg-purple-100 text-purple-800 text-sm">English (Fluent)</span>
+                            <span class="skill-pill bg-purple-100 text-purple-800 text-sm">Dutch (Native)</span>
+                            <span class="skill-pill bg-purple-100 text-purple-800 text-sm">Teaching</span>
+                            <span class="skill-pill bg-purple-100 text-purple-800 text-sm">Mentoring</span>
+                            <span class="skill-pill bg-purple-100 text-purple-800 text-sm">Process Automation</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Contact Section -->
+        <section id="contact" class="py-16 bg-gray-50">
+            <div class="max-w-2xl mx-auto px-4">
+                <h2 class="text-3xl font-bold mb-8 text-center">Get in Touch</h2>
+                
+                <!-- FORMSPREE FORM - Replace 'YOUR_FORMSPREE_ID' with your actual Formspree form ID -->
+                <form id="contact-form" 
+                      action="https://formspree.io/f/YOUR_FORMSPREE_ID" 
+                      method="POST" 
+                      class="bg-white p-8 rounded-lg shadow-md" 
+                      novalidate>
+                    
+                    <div class="mb-6">
+                        <label for="name" class="block text-gray-700 font-semibold mb-2">Full Name</label>
+                        <input type="text" 
+                               id="name" 
+                               name="name" 
+                               class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:border-blue-600 focus:outline-none"
+                               required
+                               aria-required="true"
+                               minlength="2"
+                               maxlength="100">
+                        <span class="error-message text-red-600 text-sm hidden"></span>
+                    </div>
+                    
+                    <div class="mb-6">
+                        <label for="email" class="block text-gray-700 font-semibold mb-2">Email Address</label>
+                        <input type="email" 
+                               id="email" 
+                               name="email" 
+                               class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:border-blue-600 focus:outline-none"
+                               required
+                               aria-required="true">
+                        <span class="error-message text-red-600 text-sm hidden"></span>
+                    </div>
+                    
+                    <div class="mb-6">
+                        <label for="subject" class="block text-gray-700 font-semibold mb-2">Subject</label>
+                        <input type="text" 
+                               id="subject" 
+                               name="_subject" 
+                               class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:border-blue-600 focus:outline-none"
+                               required
+                               aria-required="true"
+                               maxlength="200">
+                        <span class="error-message text-red-600 text-sm hidden"></span>
+                    </div>
+                    
+                    <div class="mb-6">
+                        <label for="message" class="block text-gray-700 font-semibold mb-2">Message</label>
+                        <textarea id="message" 
+                                  name="message" 
+                                  rows="5" 
+                                  class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:border-blue-600 focus:outline-none"
+                                  required
+                                  aria-required="true"
+                                  minlength="10"
+                                  maxlength="5000"></textarea>
+                        <span class="error-message text-red-600 text-sm hidden"></span>
+                    </div>
+
+                    <!-- Honeypot field (security against bots) -->
+                    <input type="hidden" name="_captcha" value="false">
+                    
+                    <button type="submit" 
+                            class="w-full bg-blue-600 text-white font-semibold py-3 rounded-lg hover:bg-blue-700 transition"
+                            id="submit-btn">
+                        Send Message
+                    </button>
+                    
+                    <div id="form-alert" class="hidden mt-4" role="alert" aria-live="assertive"></div>
+                </form>
+
+                <p class="text-center text-gray-600 mt-6 text-sm">
+                    Your message will be sent securely to <span id="email-display">klootwijkc@gmail.com</span>
+                </p>
+            </div>
+        </section>
     </main>
 
     <footer class="bg-gray-800 text-gray-300 py-8 mt-16">
