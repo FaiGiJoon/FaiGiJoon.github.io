@@ -88,7 +88,7 @@ function setupContactForm() {
 // INITIALIZATION
 // ============================================
 function init() {
-    if (window.location.protocol !== 'https:' && window.location.hostname !== 'localhost') {
+    if (globalThis.location.protocol !== 'https:' && globalThis.location.hostname !== 'localhost') {
         console.warn('⚠️ This site should use HTTPS for security');
     } else {
         console.log('✅ HTTPS Enabled');
