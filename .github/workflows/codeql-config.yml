@@ -1,0 +1,50 @@
+#### **A. DOM XSS (`dom-xss.ql`)**
+Detects unsafe DOM manipulation (e.g., `innerHTML`, `document.write`).
+```ql
+import javascript
+import semmle.code.javascript.security.DOMXSS
+
+// Custom rule for unsafe DOM writes in portfolio sites
+predicate isPortfolioDOMXSS(ElementWrite ew) {
+  exists(MethodAccess ma |
+    ma.getMethod().hasName(["innerHTML", "outerHTML", "document.write", "document.writeln"]) and
+    ew.getElement() = ma.getQualifier() and
+    ma.getAnArgument().getValue().isUserControlled()
+  )
+}
+
+from DOMXSS domxss, ElementWrite ew
+where isPortfolioDOMXSS(ew) and domxss.getASink() = ew
+select domxss, "Unsafe DOM write in portfolio site (potential XSS)"
+
+
+(`sensitive-data-exposure.ql`)**
+Detects accidental exposure of emails, API keys, or personal data.
+```ql
+import javascript
+import DataFlow::Configuration
+
+class PortfolioDataExposure extends TaintTracking::Configuration {
+  PortfolioDataExposure() { this = "PortfolioDataExposure" }
+
+  override predicate isSource(DataFlow::Node source) {
+    exists(Literal lit |
+      lit = source.asExpr() and
+      lit.getValue().getStringValue().regexpMatch(
+        "(?i)(email|api[_-]?key|secret|password|token|client[_-]?id).{0,20}[a-z0-9=_-]{10,}"
+      )
+    )
+  }
+
+  override predicate isSink(DataFlow::Node sink) {
+    exists(MethodAccess ma |
+      ma.getMethod().hasName(["console.log", "console.error", "alert", "confirm"]) and
+      sink.asExpr() = ma.getAnArgument()
+    )
+  }
+}
+
+from PortfolioDataExposure config, DataFlow::Node source, DataFlow::Node sink
+where config.hasFlow(source, sink)
+select sink, "Sensitive data (email/API key) exposed in portfolio site"
+```
