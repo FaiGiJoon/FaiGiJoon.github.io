@@ -1,0 +1,15 @@
+title: Casper Klootwijk Portfolio
+description: Personal portfolio and blog of Casper Klootwijk, System Support Engineer.
+baseurl: "" # the subpath of your site, e.g. /blog
+url: "https://faigijoon.github.io" # the base hostname & protocol for your site
+
+markdown: kramdown
+theme: minima
+plugins:
+  - jekyll-feed
+
+exclude:
+  - LICENSE
+  - README.md
+  - SECURITY.md
+  - index-refactored.html
