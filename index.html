@@ -173,6 +173,7 @@
             width: 100%;
         }
     </style>
+    <link rel="stylesheet" href="assets/css/extra.css">
 </head>
 <body class="bg-darker text-gray-100 overflow-x-hidden">
     
@@ -188,6 +189,7 @@
                     <a href="#about" class="nav-link text-sm font-medium hover:text-primary transition-colors">About</a>
                     <a href="#skills" class="nav-link text-sm font-medium hover:text-primary transition-colors">Skills</a>
                     <a href="#experience" class="nav-link text-sm font-medium hover:text-primary transition-colors">Experience</a>
+                    <a href="blog.html" class="nav-link text-sm font-medium hover:text-primary transition-colors">Blog</a>
                     <a href="#contact" class="px-4 py-2 bg-gradient-to-r from-primary to-secondary rounded-lg text-sm font-medium hover:shadow-lg hover:shadow-primary/25 transition-all">Contact</a>
                 </div>
                 
@@ -205,6 +207,7 @@
                 <a href="#about" class="block py-2 text-sm font-medium hover:text-primary transition-colors">About</a>
                 <a href="#skills" class="block py-2 text-sm font-medium hover:text-primary transition-colors">Skills</a>
                 <a href="#experience" class="block py-2 text-sm font-medium hover:text-primary transition-colors">Experience</a>
+                <a href="blog.html" class="block py-2 text-sm font-medium hover:text-primary transition-colors">Blog</a>
                 <a href="#contact" class="block py-2 text-sm font-medium text-primary">Contact</a>
             </div>
         </div>
@@ -586,6 +589,24 @@ On this website, I’ll be posting a mix of things—some educational, some pers
         </div>
     </section>
 
+    <!-- Projects Section -->
+    <section id="projects" class="py-24 bg-dark/50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16 reveal">
+                <p class="font-mono text-primary text-sm mb-2 tracking-wider uppercase">Open Source</p>
+                <h2 class="text-4xl md:text-5xl font-bold">Featured <span class="gradient-text">Projects</span></h2>
+                <p class="text-gray-400 mt-4 max-w-2xl mx-auto">A collection of my latest work from GitHub, updated dynamically.</p>
+            </div>
+
+            <div id="github-repos-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- Repos will be loaded here via JS -->
+                <div class="col-span-full flex justify-center py-12">
+                    <div class="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary"></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
     <!-- Contact Section -->
     <section id="contact" class="py-24">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -695,6 +716,7 @@ On this website, I’ll be posting a mix of things—some educational, some pers
 
     <!-- Lucide Icons -->
     <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="assets/js/github-repos.js"></script>
     <script>
         lucide.createIcons();
         
