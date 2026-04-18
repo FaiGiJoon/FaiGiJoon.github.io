@@ -1,7 +1,7 @@
 document.addEventListener('DOMContentLoaded', () => {
     // Lucide Icons
-    if (typeof lucide !== 'undefined') {
-        lucide.createIcons();
+    if (typeof globalThis.lucide !== 'undefined') {
+        globalThis.lucide.createIcons();
     }
 
     // Mobile Menu Toggle
