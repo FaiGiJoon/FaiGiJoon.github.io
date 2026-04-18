@@ -14,9 +14,9 @@ I've been using Jules to improve a lot more on this site—from refactoring the 
 
 As much fun as I'm having on my current Windows machine, I am counting down the days until I can get my hands on the new **MacBook Neo**. I can't wait to see how Ollama and OpenClaw perform on that beast!
 
-But there's even bigger news: **I'm going to America!** 
+But there's even bigger news: **I'm going to America in July!**
 
-I am so excited for this trip. I can't wait to bring my new MacBook Neo with me across the ocean. Imagine sitting in a cafe in the States, running local AI models with Ollama and OpenClaw on a brand new machine... that's the dream right there.
+I am so excited for this trip and I cannot wait. I can't wait to bring my new MacBook Neo with me across the ocean. Imagine sitting in a cafe in the States, running local AI models with Ollama and OpenClaw on a brand new machine... that's the dream right there.
 
 It's going to be a lot of fun, and I'll be sure to share more updates as the trip gets closer. For now, I'm just enjoying the process of building and learning.
 
