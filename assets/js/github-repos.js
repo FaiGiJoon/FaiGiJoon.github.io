@@ -3,6 +3,24 @@
 const REPOS_TO_SHOW = 4;
 let allRepos = [];
 
+/**
+ * Escapes HTML characters to prevent XSS.
+ * @param {string} str
+ * @returns {string}
+ */
+function escapeHTML(str) {
+    if (!str) return '';
+    return str.replace(/[&<>"']/g, function(m) {
+        return {
+            '&': '&amp;',
+            '<': '&lt;',
+            '>': '&gt;',
+            '"': '&quot;',
+            "'": '&#39;'
+        }[m];
+    });
+}
+
 async function fetchGitHubRepos() {
     const username = 'FaiGiJoon';
     const container = document.getElementById('github-repos-container');
@@ -44,29 +62,36 @@ function renderRepos(repos, container) {
         const card = document.createElement('div');
         card.className = 'glass-card rounded-2xl p-6 reveal border-2 border-primary/20 hover:border-primary/50 transition-all group flex flex-col h-full';
 
+        // Escape name and description
+        const name = escapeHTML(repo.name);
+        const description = escapeHTML(repo.description || 'No description available.');
+        const homepage = repo.homepage ? escapeHTML(repo.homepage) : null;
+        const htmlUrl = escapeHTML(repo.html_url);
+        const language = repo.language ? escapeHTML(repo.language) : null;
+
         card.innerHTML = `
             <div class="flex justify-between items-start mb-4">
                 <div class="w-12 h-12 bg-primary/20 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform">
                     <i data-lucide="folder" class="w-6 h-6 text-primary"></i>
                 </div>
                 <div class="flex gap-3">
-                    <a href="${repo.html_url}" target="_blank" rel="noopener noreferrer" class="text-gray-400 hover:text-primary transition-colors" title="View Source">
+                    <a href="${htmlUrl}" target="_blank" rel="noopener noreferrer" class="text-gray-400 hover:text-primary transition-colors" title="View Source">
                         <i data-lucide="github" class="w-5 h-5"></i>
                     </a>
-                    ${repo.homepage ? `
-                        <a href="${repo.homepage}" target="_blank" rel="noopener noreferrer" class="text-gray-400 hover:text-primary transition-colors" title="Live Demo">
+                    ${homepage ? `
+                        <a href="${homepage}" target="_blank" rel="noopener noreferrer" class="text-gray-400 hover:text-primary transition-colors" title="Live Demo">
                             <i data-lucide="external-link" class="w-5 h-5"></i>
                         </a>
                     ` : ''}
                 </div>
             </div>
-            <h3 class="text-xl font-bold mb-2 group-hover:text-primary transition-colors">${repo.name}</h3>
-            <p class="text-gray-400 text-sm mb-6 flex-grow">${repo.description || 'No description available.'}</p>
+            <h3 class="text-xl font-bold mb-2 group-hover:text-primary transition-colors">${name}</h3>
+            <p class="text-gray-400 text-sm mb-6 flex-grow">${description}</p>
             <div class="flex items-center gap-4 mt-auto">
-                ${repo.language ? `
+                ${language ? `
                     <div class="flex items-center gap-1.5">
                         <span class="w-3 h-3 rounded-full bg-primary"></span>
-                        <span class="text-xs font-medium text-gray-300">${repo.language}</span>
+                        <span class="text-xs font-medium text-gray-300">${language}</span>
                     </div>
                 ` : ''}
                 <div class="flex items-center gap-1.5">
@@ -83,8 +108,8 @@ function renderRepos(repos, container) {
         container.appendChild(card);
     });
 
-    if (window.lucide) {
-        window.lucide.createIcons();
+    if (globalThis.lucide) {
+        globalThis.lucide.createIcons();
     }
 
     const observer = new IntersectionObserver((entries) => {
