@@ -71,6 +71,8 @@ Once the script finishes, access your dashboard at http://your-server-ip or your
 What is Next?
 After putting in so many intensive hours recently into cybersecurity programming and helping clients build and secure their websites, I am beyond ready to step away from the keyboard for a bit.
 
-Tomorrow, I am taking a massive step: I am leaving the Netherlands for a three-week vacation in New York! It is a big trip, and it is going to be a very well-deserved break. My itinerary consists entirely of hunting for Pokémon, finding great food, and hopefully catching some excellent weather for sunbathing. I will be bringing my hardware along to test local AI models in a new environment, but the primary goal is to rest, recharge, and enjoy the city.
+In July, I am taking a massive step: I am leaving the Netherlands for a three-week vacation in New York, and I cannot wait! It is a big trip, and it is going to be a very well-deserved break. My itinerary consists entirely of hunting for Pokémon, finding great food, and hopefully catching some excellent weather for sunbathing.
+
+I can’t wait to be playing so fun games for the Nintendo GameCube using dolphin as a emulator on my Mac and just have a on the go emulating machine that always has great benchmark for local ai projects. I will be bringing my hardware along to test local AI models in a new environment, but the primary goal is to rest, recharge, and enjoy the city.
 
 If you are interested in local AI and security, check out the GitHub repository and let me know how it works for your setup. Now, I have a flight to catch.
