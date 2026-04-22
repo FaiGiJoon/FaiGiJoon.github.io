@@ -24,16 +24,6 @@ async function fetchGitHubRepos() {
     }
 }
 
-function escapeHTML(str) {
-    if (!str) return '';
-    return String(str)
-        .replace(/&/g, '&amp;')
-        .replace(/</g, '&lt;')
-        .replace(/>/g, '&gt;')
-        .replace(/"/g, '&quot;')
-        .replace(/'/g, '&#039;');
-}
-
 function renderRepos(repos, container) {
     container.innerHTML = '';
 
@@ -42,32 +32,27 @@ function renderRepos(repos, container) {
         // Added border-2 border-primary/20 and hover:border-primary/50 for Neo-Brutalist "bold-border" feel
         card.className = 'glass-card rounded-2xl p-6 reveal border-2 border-primary/20 hover:border-primary/50 transition-all group';
 
-        const safeName = escapeHTML(repo.name);
-        const safeDescription = escapeHTML(repo.description || 'No description available.');
-        const safeLanguage = escapeHTML(repo.language);
-        const safeUrl = escapeHTML(repo.html_url);
-
         card.innerHTML = `
             <div class="flex justify-between items-start mb-4">
                 <div class="w-12 h-12 bg-primary/20 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform">
                     <i data-lucide="folder" class="w-6 h-6 text-primary"></i>
                 </div>
                 <div class="flex gap-3">
-                    <a href="${safeUrl}" target="_blank" rel="noopener noreferrer" class="text-gray-400 hover:text-primary transition-colors">
+                    <a href="${repo.html_url}" target="_blank" class="text-gray-400 hover:text-primary transition-colors">
                         <i data-lucide="github" class="w-5 h-5"></i>
                     </a>
-                    <a href="${safeUrl}" target="_blank" rel="noopener noreferrer" class="text-gray-400 hover:text-primary transition-colors">
+                    <a href="${repo.html_url}" target="_blank" class="text-gray-400 hover:text-primary transition-colors">
                         <i data-lucide="external-link" class="w-5 h-5"></i>
                     </a>
                 </div>
             </div>
-            <h3 class="text-xl font-bold mb-2 group-hover:text-primary transition-colors">${safeName}</h3>
-            <p class="text-gray-400 text-sm mb-4 line-clamp-2">${safeDescription}</p>
+            <h3 class="text-xl font-bold mb-2 group-hover:text-primary transition-colors">${repo.name}</h3>
+            <p class="text-gray-400 text-sm mb-4 line-clamp-2">${repo.description || 'No description available.'}</p>
             <div class="flex items-center gap-4 mt-auto">
                 ${repo.language ? `
                     <div class="flex items-center gap-1.5">
                         <span class="w-3 h-3 rounded-full bg-primary"></span>
-                        <span class="text-xs font-medium text-gray-300">${safeLanguage}</span>
+                        <span class="text-xs font-medium text-gray-300">${repo.language}</span>
                     </div>
                 ` : ''}
                 <div class="flex items-center gap-1.5">
