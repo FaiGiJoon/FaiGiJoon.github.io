@@ -1,19 +1,54 @@
-<!DOCTYPE html>
+<!-- Tech Stack -->
+            <div class="mt-16 reveal">
+                <p class="text-center text-gray-400 mb-8">Technologies I work with</p>
+                <div class="flex flex-wrap justify-center gap-4">
+                    <span class="px-6 py-3 glass rounded-xl text-sm font-medium hover:bg-primary/20 transition-colors cursor-default">MikroTik</span>
+                    <span class="px-6 py-3 glass rounded-xl text-sm font-medium hover:bg-primary/20 transition-colors cursor-default">Google Workspace</span>
+                    <span class="px-6 py-3 glass rounded-xl text-sm font-medium hover:bg-primary/20 transition-colors cursor-default">Microsoft 365</span>
+                    <span class="px-6 py-3 glass rounded-xl text-sm font-medium hover:bg-primary/20 transition-colors cursor-default">Active Directory</span>
+                    <span class="px-6 py-3 glass rounded-xl text-sm font-medium hover:bg-primary/20 transition-colors cursor-default">Okta</span>
+                    <span class="px-6 py-3 glass rounded-xl text-sm font-medium hover:bg-primary/20 transition-colors cursor-default">Google AppSheet</span>
+                    <span class="px-6 py-3 glass rounded-xl text-sm font-medium hover:bg-primary/20 transition-colors cursor-default">JavaScript</span>
+                    <span class="px-6 py-3 glass rounded-xl text-sm font-medium hover:bg-primary/20 transition-colors cursor-default">Windows Server</span>
+                    <span class="px-6 py-3 glass rounded-xl text-sm font-medium hover:bg-primary/20 transition-colors cursor-default">Hyper-V</span>
+                    <span class="px-6 py-3 glass rounded-xl text-sm font-medium hover:bg-primary/20 transition-colors cursor-default">Azure</span>
+                    <span class="px-6 py-3 glass rounded-xl text-sm font-medium hover:bg-primary/20 transition-colors cursor-default">PuTTY/SSH</span>
+                    <span class="px-6 py-3 glass rounded-xl text-sm font-medium hover:bg-primary/20 transition-colors cursor-default">IoT Devices</span>
+                </div>
+            </div><!-- Stats -->
+            <div class="mt-20 grid grid-cols-2 md:grid-cols-4 gap-8 reveal">
+                <div class="glass-card rounded-2xl p-6">
+                    <p class="text-3xl md:text-4xl font-bold gradient-text">5+</p>
+                    <p class="text-gray-400 text-sm mt-1">Years Experience</p>
+                </div>
+                <div class="glass-card rounded-2xl p-6">
+                    <p class="text-3xl md:text-4xl font-bold gradient-text">4</p>
+                    <p class="text-gray-400 text-sm mt-1">Companies</p>
+                </div>
+                <div class="glass-card rounded-2xl p-6">
+                    <p class="text-3xl md:text-4xl font-bold gradient-text">MBO 4</p>
+                    <p class="text-gray-400 text-sm mt-1">Teaching Experience</p>
+                </div>
+                <div class="glass-card rounded-2xl p-6">
+                    <p class="text-3xl md:text-4xl font-bold gradient-text">Global</p>
+                    <p class="text-gray-400 text-sm mt-1">Enterprise Support</p>
+                </div>
+            </div><!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    
+
     <!-- Security Headers -->
     <meta http-equiv="Content-Security-Policy" content="
-        default-src 'self'; 
-        script-src 'self' https://cdn.tailwindcss.com https://unpkg.com; 
-        style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; 
-        font-src 'self' https://fonts.gstatic.com; 
+        default-src 'self';
+        script-src 'self' https://cdn.tailwindcss.com https://unpkg.com;
+        style-src 'self' 'unsafe-inline' https://fonts.googleapis.com;
+        font-src 'self' https://fonts.gstatic.com;
         img-src 'self' data: https: https://static.photos;
-        frame-ancestors 'none'; 
-        base-uri 'self'; 
+        frame-ancestors 'none';
+        base-uri 'self';
         connect-src 'self' https://api.github.com;
         upgrade-insecure-requests">
     <meta http-equiv="X-Frame-Options" content="DENY">
@@ -21,10 +56,10 @@
     <meta http-equiv="X-XSS-Protection" content="1; mode=block">
     <meta name="referrer" content="strict-origin-when-cross-origin">
     <meta name="permissions-policy" content="geolocation=(), microphone=(), camera=(), payment=()">
-    
+
     <title>System Support Engineer & IT Professional</title>
     <meta name="description" content="Professional portfolio - System Support Engineer, IT Professional, and Tech Enthusiast">
-    
+
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
@@ -57,12 +92,12 @@
             }
         }
     </script>
-    
+
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
-    
+
     <style>
         * {
             font-family: 'Inter', sans-serif;
@@ -141,13 +176,13 @@
     <link rel="stylesheet" href="assets/css/extra.css">
 </head>
 <body class="bg-darker text-gray-100 overflow-x-hidden">
-    
+
     <!-- Navigation -->
     <nav class="fixed top-0 w-full z-50 glass transition-all duration-300" id="navbar">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex items-center justify-between h-16">
                 <a href="#home" class="text-xl font-bold gradient-text">Portfolio</a>
-                
+
                 <!-- Desktop Menu -->
                 <div class="hidden md:flex items-center space-x-8">
                     <a href="#home" class="nav-link text-sm font-medium hover:text-primary transition-colors">Home</a>
@@ -157,14 +192,14 @@
                     <a href="blog.html" class="nav-link text-sm font-medium hover:text-primary transition-colors">Blog</a>
                     <a href="#contact" class="px-4 py-2 bg-gradient-to-r from-primary to-secondary rounded-lg text-sm font-medium hover:shadow-lg hover:shadow-primary/25 transition-all">Contact</a>
                 </div>
-                
+
                 <!-- Mobile Menu Button -->
                 <button id="mobile-menu-btn" class="md:hidden p-2 rounded-lg hover:bg-white/10 transition-colors">
                     <i data-lucide="menu" class="w-6 h-6"></i>
                 </button>
             </div>
         </div>
-        
+
         <!-- Mobile Menu -->
         <div id="mobile-menu" class="hidden md:hidden glass border-t border-white/10">
             <div class="px-4 py-4 space-y-2">
@@ -182,7 +217,7 @@
     <section id="home" class="relative min-h-screen flex items-center justify-center overflow-hidden">
         <div class="hero-glow top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 animate-pulse-slow"></div>
         <div class="hero-glow top-1/4 right-1/4 w-400 h-400 bg-secondary/20 animate-float"></div>
-        
+
         <div class="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
             <div class="reveal">
                 <p class="font-mono text-primary text-sm mb-4 tracking-wider uppercase">System Support Engineer</p>
@@ -198,11 +233,11 @@
                     </a>
                     <a href="#about" class="px-8 py-4 glass rounded-xl font-semibold hover:bg-white/10 transition-all flex items-center gap-2">
                         <i data-lucide="download" class="w-5 h-5"></i>
-                        My story 
+                        My story
                     </a>
                 </div>
             </div>
-            
+
             <!-- Stats -->
             <div class="mt-20 grid grid-cols-2 md:grid-cols-4 gap-8 reveal">
                 <div class="glass-card rounded-2xl p-6">
@@ -223,7 +258,7 @@
                 </div>
             </div>
         </div>
-        
+
         <!-- Scroll Indicator -->
         <div class="absolute bottom-8 left-1/2 -translate-x-1/2 animate-bounce">
             <i data-lucide="chevron-down" class="w-6 h-6 text-gray-500"></i>
@@ -252,7 +287,7 @@
                         </div>
                     </div>
                 </div>
-                
+
                 <div class="reveal">
                     <p class="font-mono text-primary text-sm mb-2 tracking-wider uppercase">About Me</p>
                     <h2 class="text-4xl md:text-5xl font-bold mb-6">Passionate about <span class="gradient-text">technology</span> & <span class="gradient-text">problem solving</span></h2>
@@ -280,7 +315,7 @@ My big dream is to create automation software and new tech to help hospitals all
 On this website, I’ll be posting a mix of things—some educational, some personal, and some useful tools I’ve built that you can use
                     </p>
                     </p>
-                    
+
                     <div class="flex flex-wrap gap-4">
                         <span class="px-4 py-2 glass rounded-full text-sm">Network Configuration</span>
                         <span class="px-4 py-2 glass rounded-full text-sm">Google Workspace</span>
@@ -301,7 +336,7 @@ On this website, I’ll be posting a mix of things—some educational, some pers
                 <p class="font-mono text-primary text-sm mb-2 tracking-wider uppercase">Expertise</p>
                 <h2 class="text-4xl md:text-5xl font-bold">Skills & <span class="gradient-text">Technologies</span></h2>
             </div>
-            
+
             <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
                 <!-- Technical Skills -->
                 <div class="glass-card rounded-2xl p-6 reveal">
@@ -341,7 +376,7 @@ On this website, I’ll be posting a mix of things—some educational, some pers
                         </div>
                     </div>
                 </div>
-                
+
                 <!-- Cloud & DevOps -->
                 <div class="glass-card rounded-2xl p-6 reveal">
                     <div class="flex items-center gap-3 mb-6">
@@ -380,7 +415,7 @@ On this website, I’ll be posting a mix of things—some educational, some pers
                         </div>
                     </div>
                 </div>
-                
+
                 <!-- Development -->
                 <div class="glass-card rounded-2xl p-6 reveal">
                     <div class="flex items-center gap-3 mb-6">
@@ -420,7 +455,7 @@ On this website, I’ll be posting a mix of things—some educational, some pers
                     </div>
                 </div>
             </div>
-            
+
             <!-- Tech Stack -->
             <div class="mt-16 reveal">
                 <p class="text-center text-gray-400 mb-8">Technologies I work with</p>
@@ -449,7 +484,7 @@ On this website, I’ll be posting a mix of things—some educational, some pers
                 <p class="font-mono text-primary text-sm mb-2 tracking-wider uppercase">Career</p>
                 <h2 class="text-4xl md:text-5xl font-bold">Work <span class="gradient-text">Experience</span></h2>
             </div>
-            
+
             <div class="space-y-8">
                 <!-- Job 1 -->
                 <div class="glass-card rounded-2xl p-8 reveal group hover:border-primary/30 transition-all">
@@ -476,7 +511,7 @@ On this website, I’ll be posting a mix of things—some educational, some pers
                         <span class="px-3 py-1 bg-primary/10 rounded-full text-xs text-primary">Technical Support</span>
                     </div>
                 </div>
-                
+
                 <!-- Job 2 -->
                 <div class="glass-card rounded-2xl p-8 reveal group hover:border-secondary/30 transition-all">
                     <div class="flex flex-col md:flex-row md:items-center justify-between mb-4">
@@ -501,7 +536,7 @@ On this website, I’ll be posting a mix of things—some educational, some pers
                         <span class="px-3 py-1 bg-secondary/10 rounded-full text-xs text-secondary">Network Infrastructure</span>
                     </div>
                 </div>
-                
+
                 <!-- Job 3 -->
                 <div class="glass-card rounded-2xl p-8 reveal group hover:border-accent/30 transition-all">
                     <div class="flex flex-col md:flex-row md:items-center justify-between mb-4">
@@ -525,7 +560,7 @@ On this website, I’ll be posting a mix of things—some educational, some pers
                         <span class="px-3 py-1 bg-accent/10 rounded-full text-xs text-accent">Customer Service</span>
                     </div>
                 </div>
-                
+
                 <!-- Job 4 -->
                 <div class="glass-card rounded-2xl p-8 reveal group hover:border-primary/30 transition-all">
                     <div class="flex flex-col md:flex-row md:items-center justify-between mb-4">
@@ -582,7 +617,7 @@ On this website, I’ll be posting a mix of things—some educational, some pers
                     <p class="text-gray-400 text-lg leading-relaxed mb-8">
                         Have a project in mind or want to discuss opportunities? I'm always open to interesting conversations and collaborations.
                     </p>
-                    
+
                     <div class="space-y-6">
                         <div class="flex items-center gap-4">
                             <div class="w-14 h-14 glass rounded-xl flex items-center justify-center">
@@ -612,7 +647,7 @@ On this website, I’ll be posting a mix of things—some educational, some pers
                             </div>
                         </div>
                     </div>
-                    
+
                     <!-- Social Links -->
                     <div class="mt-10">
                         <p class="text-sm text-gray-400 mb-4">Follow me on</p>
@@ -632,7 +667,7 @@ On this website, I’ll be posting a mix of things—some educational, some pers
                         </div>
                     </div>
                 </div>
-                
+
                 <!-- Contact Form -->
                 <div class="reveal">
                     <form class="glass-card rounded-2xl p-8" id="contact-form">
@@ -684,38 +719,38 @@ On this website, I’ll be posting a mix of things—some educational, some pers
     <script src="assets/js/github-repos.js"></script>
     <script>
         lucide.createIcons();
-        
+
         // Mobile Menu Toggle
         const mobileMenuBtn = document.getElementById('mobile-menu-btn');
         const mobileMenu = document.getElementById('mobile-menu');
-        
+
         mobileMenuBtn.addEventListener('click', () => {
             mobileMenu.classList.toggle('hidden');
         });
-        
+
         // Close mobile menu on link click
         mobileMenu.querySelectorAll('a').forEach(link => {
             link.addEventListener('click', () => {
                 mobileMenu.classList.add('hidden');
             });
         });
-        
+
         // Navbar scroll effect
         const navbar = document.getElementById('navbar');
         let lastScroll = 0;
-        
+
         window.addEventListener('scroll', () => {
             const currentScroll = window.pageYOffset;
-            
+
             if (currentScroll > 100) {
                 navbar.classList.add('shadow-lg', 'shadow-primary/5');
             } else {
                 navbar.classList.remove('shadow-lg', 'shadow-primary/5');
             }
-            
+
             lastScroll = currentScroll;
         });
-        
+
         // Smooth scroll for navigation links
         document.querySelectorAll('a[href^="#"]').forEach(anchor => {
             anchor.addEventListener('click', function (e) {
@@ -729,15 +764,15 @@ On this website, I’ll be posting a mix of things—some educational, some pers
                 }
             });
         });
-        
+
         // Reveal animations on scroll
         const revealElements = document.querySelectorAll('.reveal');
-        
+
         const revealObserver = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
                 if (entry.isIntersecting) {
                     entry.target.classList.add('active');
-                    
+
                     // Animate skill bars if inside this element
                     const skillBars = entry.target.querySelectorAll('.skill-bar');
                     skillBars.forEach(bar => {
@@ -751,20 +786,20 @@ On this website, I’ll be posting a mix of things—some educational, some pers
             threshold: 0.1,
             rootMargin: '0px 0px -50px 0px'
         });
-        
+
         revealElements.forEach(el => revealObserver.observe(el));
-        
+
         // Contact form handling
         document.getElementById('contact-form').addEventListener('submit', (e) => {
             e.preventDefault();
-            
+
             // Show success message
             const btn = e.target.querySelector('button');
             const originalText = btn.innerHTML;
             btn.innerHTML = '<i data-lucide="check" class="w-5 h-5"></i> Message Sent!';
             btn.classList.add('bg-green-500');
             lucide.createIcons();
-            
+
             setTimeout(() => {
                 btn.innerHTML = originalText;
                 btn.classList.remove('bg-green-500');
@@ -772,14 +807,14 @@ On this website, I’ll be posting a mix of things—some educational, some pers
                 e.target.reset();
             }, 3000);
         });
-        
+
         // Typing effect for hero subtitle (optional enhancement)
         const typingText = document.querySelector('.font-mono.text-primary');
         if (typingText) {
             const originalText = typingText.textContent;
             typingText.textContent = '';
             let i = 0;
-            
+
             const typeWriter = () => {
                 if (i < originalText.length) {
                     typingText.textContent += originalText.charAt(i);
@@ -787,7 +822,7 @@ On this website, I’ll be posting a mix of things—some educational, some pers
                     setTimeout(typeWriter, 50);
                 }
             };
-            
+
             setTimeout(typeWriter, 500);
         }
     </script>
