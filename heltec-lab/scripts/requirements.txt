@@ -1,0 +1,4 @@
+pyserial>=3.5
+esptool>=4.6
+cryptography>=41.0.0
+rich>=13.0.0
