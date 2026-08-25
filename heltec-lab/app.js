@@ -209,7 +209,8 @@ function setupMeshSimulator() {
         });
 
         // Draw Packets
-        packets.forEach((p, idx) => {
+        for (let i = packets.length - 1; i >= 0; i--) {
+            const p = packets[i];
             const fromNode = nodes[p.from];
             const toNode = nodes[p.to];
             const scaleX = canvas.width / 600;
@@ -225,10 +226,10 @@ function setupMeshSimulator() {
             p.progress += 0.015;
 
             if (p.progress >= 1) {
-                packets.splice(idx, 1);
+                packets.splice(i, 1);
                 logMeshEvent(`Packet received at ${toNode.id} (RSSI: -87 dBm, SNR: +8.5 dB)`);
             }
-        });
+        }
 
         animationId = requestAnimationFrame(drawMesh);
     }
