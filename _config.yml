@@ -16,3 +16,5 @@ exclude:
   - red-battle/README.md
   - red-battle/tools
   - red-battle/test
+  - docs
+  - .superpowers
