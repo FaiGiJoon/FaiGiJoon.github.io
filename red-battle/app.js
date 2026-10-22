@@ -291,7 +291,7 @@ function lineAnims(k) {
   return out;
 }
 
-// Stand-in for the move's particle sprites (not ported): a projectile or aura in the type colour
+// Fallback when audio.json (the animation scripts) failed to load: a projectile or aura in the type colour
 async function playMoveFx(fx) {
   if (!animOn()) return;
   const field = document.querySelector('.field');
@@ -363,7 +363,7 @@ async function play() {
     if (animData) {
       if (entry.fx) {
         await typeText(entry.text);
-        await Promise.all([playMoveFx(entry.fx), playAnim(String(entry.fx.id), entry.fx.side === 0, dexOf(entry.fx.side, entry))]);
+        await playAnim(String(entry.fx.id), entry.fx.side === 0, dexOf(entry.fx.side, entry));
       }
       playSounds(k);
       if (!entry.fx) await Promise.all([typeText(entry.text), ...lineAnims(k).map((a) => playAnim(a.key, a.attackerIsPlayer))]);

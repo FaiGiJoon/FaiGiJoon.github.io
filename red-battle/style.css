@@ -48,12 +48,12 @@ body {
   background: var(--gradient); -webkit-background-clip: text; background-clip: text;
   -webkit-text-fill-color: transparent; color: transparent;
 }
-.back {
+.back-link {
   font-family: var(--sans); font-size: 13px; font-weight: 500; color: var(--text); text-decoration: none;
   padding: 8px 14px; border-radius: 999px; background: var(--glass); border: 1px solid var(--glass-border);
   -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px); transition: border-color 0.2s, background 0.2s;
 }
-.back:hover, .back:focus-visible { border-color: rgba(99, 102, 241, 0.5); background: rgba(99, 102, 241, 0.15); outline: none; }
+.back-link:hover, .back-link:focus-visible { border-color: rgba(99, 102, 241, 0.5); background: rgba(99, 102, 241, 0.15); outline: none; }
 .sub, .hint, .foot { font-family: var(--sans); color: var(--muted); font-size: 13px; line-height: 1.6; }
 .sub { flex-basis: 100%; margin: 0; }
 .foot { margin-top: 24px; font-size: 12px; }
