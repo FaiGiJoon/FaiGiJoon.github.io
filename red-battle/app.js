@@ -1,5 +1,6 @@
 import { Battle, makeRng, randomTeam, redTeam } from './engine.js';
-import * as sfx from './sfx.js';
+import { createGameAudio } from './gbsound.js';
+import { soundEvents } from './battle-audio.js';
 
 const $ = (id) => document.getElementById(id);
 const STATUS_LABEL = { PAR: 'PAR', SLP: 'SLP', PSN: 'PSN', TOX: 'PSN', BRN: 'BRN', FRZ: 'FRZ' };
@@ -9,6 +10,47 @@ const SPEEDS = [['NORMAL', 22], ['FAST', 8], ['INSTANT', 0]];
 let data; let team; let battle; let shown = 0; let speedIdx = 0; let typing = null; let busy = false;
 const spriteCache = new Map();
 
+// ---------- audio (Crystal's sound engine, see gbsound.js) ----------
+let audio = null;
+let muted = false;
+try { muted = localStorage.getItem('red-battle-muted') === '1'; } catch { /* storage unavailable */ }
+
+// Audio must never break the game: failures are logged and the battle carries on silently.
+function snd(fn) {
+  if (!audio) return;
+  try { fn(audio); } catch (err) { console.warn('audio:', err); }
+}
+
+function startAudio() {
+  try {
+    if (!audio) {
+      audio = createGameAudio();
+      audio.ready.catch((err) => { console.warn('audio unavailable:', err); audio = null; });
+    }
+    audio.setMuted(muted);
+  } catch (err) {
+    console.warn('audio unavailable:', err);
+    audio = null;
+  }
+}
+
+function setMuted(m) {
+  muted = m;
+  try { localStorage.setItem('red-battle-muted', m ? '1' : '0'); } catch { /* ignore */ }
+  snd((a) => a.setMuted(m));
+}
+
+const dexOf = (side, entry) => {
+  const s = entry.snap?.[side];
+  return battle.sides[side].party[s ? s.idx : battle.sides[side].active].dex;
+};
+
+function playSounds(k) {
+  for (const e of soundEvents(battle.log, k, dexOf)) {
+    setTimeout(() => snd((a) => (e.cry ? a.cry(e.cry, e.opts) : a.sfx(e.sfx, e.opts))), e.at * 1000);
+  }
+}
+
 async function main() {
   data = await (await fetch('data.json')).json();
   rerollTeam();
@@ -16,11 +58,11 @@ async function main() {
   $('reroll').onclick = rerollTeam;
   $('event').onchange = rerollTeam;
   $('start').onclick = startBattle;
-  $('newgame').onclick = () => { $('battle').classList.add('hidden'); $('setup').classList.remove('hidden'); rerollTeam(); };
+  $('newgame').onclick = () => { snd((a) => a.stopMusic()); $('battle').classList.add('hidden'); $('setup').classList.remove('hidden'); rerollTeam(); };
   $('speed').onclick = () => { speedIdx = (speedIdx + 1) % SPEEDS.length; $('speed').textContent = `TEXT: ${SPEEDS[speedIdx][0]}`; };
-  const syncMute = () => { $('mute').textContent = `SOUND: ${sfx.isMuted() ? 'OFF' : 'ON'}`; };
+  const syncMute = () => { $('mute').textContent = `SOUND: ${muted ? 'OFF' : 'ON'}`; };
   syncMute();
-  $('mute').onclick = () => { sfx.setMuted(!sfx.isMuted()); syncMute(); sfx.selectCue(); };
+  $('mute').onclick = () => { setMuted(!muted); syncMute(); };
   $('showai').onchange = () => $('ai').classList.toggle('hidden', !$('showai').checked);
   $('textbox').onclick = advance;
   document.addEventListener('keydown', (ev) => {
@@ -79,6 +121,8 @@ function startBattle() {
   const clone = structuredClone(team);
   battle = new Battle(data, clone, { badges: $('badges').checked, seed: (Date.now() ^ (Math.random() * 1e9)) >>> 0 });
   shown = 0;
+  startAudio(); // the BATTLE RED click is the user gesture browsers need
+  snd((a) => a.music('championBattle'));
   $('setup').classList.add('hidden');
   $('battle').classList.remove('hidden');
   hidePanels();
@@ -143,7 +187,6 @@ function typeText(text) {
     typing = { finish: () => { clearInterval(t); el.textContent = text; typing = null; resolve(); } };
     const t = setInterval(() => {
       el.textContent = text.slice(0, ++k);
-      if (k % 3 === 0) sfx.blip();
       if (k >= text.length) typing.finish();
     }, delay);
   });
@@ -176,7 +219,6 @@ function center(el, field) {
 }
 
 async function playMoveFx(fx) {
-  sfx.moveCue(fx.type);
   if (!animOn()) return;
   const field = document.querySelector('.field');
   const from = $(fx.side === 0 ? 'p-sprite' : 'e-sprite');
@@ -219,12 +261,6 @@ function impactKind(idx) {
   return 'normal';
 }
 
-function textCue(text) {
-  if (/missed|avoided/i.test(text)) sfx.missCue();
-  else if (/fainted/i.test(text)) sfx.faintCue();
-  else if (/sent out|^Go!/.test(text)) sfx.sendOutCue();
-}
-
 function screenFlash(kind) {
   const field = document.querySelector('.field');
   field.classList.remove('shake', 'shake-hard'); void field.offsetWidth;
@@ -243,14 +279,13 @@ async function play() {
       for (const i of [0, 1]) {
         if (prev.snap[i].idx === entry.snap[i].idx && entry.snap[i].hp < prev.snap[i].hp) {
           const kind = impactKind(shown - 1);
-          sfx.hitCue(kind);
           if (animOn()) screenFlash(kind);
           const el = $(i === 0 ? 'p-sprite' : 'e-sprite');
           el.classList.remove('hit'); void el.offsetWidth; el.classList.add('hit');
         }
       }
     }
-    textCue(entry.text);
+    playSounds(shown - 1);
     await typeText(entry.text);
     if (SPEEDS[speedIdx][1] === 0 && shown < battle.log.length) continue;
     await waitClick();
@@ -270,7 +305,10 @@ function renderAi() {
 
 function nextPrompt() {
   if (battle.over) {
-    (battle.winner === 0 ? sfx.winCue : sfx.loseCue)();
+    if (!battle.musicDone) {
+      battle.musicDone = true;
+      snd((a) => (battle.winner === 0 ? a.music('gymVictory') : a.stopMusic()));
+    }
     $('text').textContent = battle.winner === 0 ? 'You beat RED! Press NEW TEAM to go again.' : 'You are out of usable POKéMON! Press NEW TEAM to try again.';
     $('more').classList.add('hidden');
     return;
@@ -294,7 +332,7 @@ async function say(text) {
 }
 
 function menu(act) {
-  sfx.selectCue();
+  snd((a) => a.sfx('readText2', { force: true }));
   if (act === 'fight') return showMoves();
   if (act === 'pkmn') return showParty(false);
   if (act === 'pack') return say('There are no items in your PACK!');
@@ -314,6 +352,7 @@ function showMoves() {
   box.classList.remove('hidden');
   box.querySelectorAll('button').forEach((b) => {
     b.onclick = () => {
+      snd((a) => a.sfx('readText2', { force: true }));
       if (b.dataset.slot === 'back') { nextPrompt(); return; }
       hidePanels();
       battle.playTurn({ type: 'move', slot: +b.dataset.slot });
@@ -336,6 +375,7 @@ function showParty(forced) {
   box.classList.remove('hidden');
   box.querySelectorAll('button').forEach((b) => {
     b.onclick = () => {
+      snd((a) => a.sfx('readText2', { force: true }));
       if (b.dataset.k === 'back') { nextPrompt(); return; }
       hidePanels();
       if (forced) battle.playerReplace(+b.dataset.k);

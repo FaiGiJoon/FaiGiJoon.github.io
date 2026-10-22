@@ -351,7 +351,7 @@ export class GBSound {
   // name: a key of audio.json sfx (e.g. 'damage') or an SFX constant (e.g. 'SFX_THUNDERSHOCK').
   // opts.pan ('left' | 'right' | NR51 mask) plays it like anim_sound (PlayStereoSFX, no priority
   // check); without pan it goes through PlaySFX, which drops it while a higher-priority
-  // (lower id) SFX is playing. Returns whether it started.
+  // (lower id) SFX is playing, unless opts.force. Returns whether it started.
   playSfx(name, opts = {}) {
     const sfx = this.data.sfx[name] || this.data.sfxIds[name];
     if (!sfx) throw new Error(`unknown sfx ${name}`);
@@ -361,7 +361,7 @@ export class GBSound {
       else this.playSfxHeader(sfx);
       return true;
     }
-    if (this.isSfxPlaying() && this.curSfx < sfx.id) return false;
+    if (!opts.force && this.isSfxPlaying() && this.curSfx < sfx.id) return false;
     this.curSfx = sfx.id;
     this.playSfxHeader(sfx);
     return true;
@@ -966,18 +966,21 @@ export function createGameAudio({ audioUrl = new URL('./audio.json', import.meta
         numberOfInputs: 0, outputChannelCount: [2], processorOptions: { audioData },
       });
       node.connect(ctx.destination);
+      instance.node = node;
       post = (msg) => node.port.postMessage(msg);
     } else {
       const core = new GBSound(audioData, ctx.sampleRate);
       const node = ctx.createScriptProcessor(2048, 0, 2);
       node.onaudioprocess = (ev) => core.render(ev.outputBuffer.getChannelData(0), ev.outputBuffer.getChannelData(1));
       node.connect(ctx.destination);
+      instance.node = node;
       post = (msg) => { try { core.command(msg); } catch (err) { console.warn(err); } };
     }
     for (const msg of queue.splice(0)) post(msg);
   })();
   instance = {
     ctx,
+    node: null,
     ready,
     music: (name) => send({ type: 'music', name }),
     stopMusic: () => send({ type: 'stopMusic' }),
