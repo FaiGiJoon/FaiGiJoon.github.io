@@ -13,3 +13,6 @@ exclude:
   - README.md
   - SECURITY.md
   - index-refactored.html
+  - red-battle/README.md
+  - red-battle/tools
+  - red-battle/test

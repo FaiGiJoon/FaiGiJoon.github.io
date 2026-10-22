@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Mt. Silver — Battle Red</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <main class="shell">
+    <header class="top">
+      <h1>MT. SILVER</h1>
+      <p class="sub"><a href="../" style="color:inherit">← back to the site</a> · Pokémon Crystal · Trainer RED · data read from the ROM</p>
+    </header>
+
+    <!-- team preview -->
+    <section id="setup" class="screen">
+      <div class="panel">
+        <h2>Your team</h2>
+        <p class="hint">Six random Pokémon from Gold/Silver/Crystal at RED's levels (81 · 73 · 75 · 77 · 77 · 77), each knowing the moves the game itself would give it at that level.</p>
+        <ol id="team" class="team"></ol>
+        <div class="row">
+          <button id="reroll" class="btn">REROLL</button>
+          <label class="check"><input type="checkbox" id="badges" checked> 16 BADGES</label>
+          <label class="check"><input type="checkbox" id="event"> MEW/CELEBI</label>
+        </div>
+        <div class="row">
+          <button id="start" class="btn primary">BATTLE RED ▶</button>
+        </div>
+      </div>
+      <div class="panel red-panel">
+        <div class="red-head"><img src="sprites/red.png" alt="Trainer RED" class="red-pic" onerror="this.remove()"><h2>PKMN TRAINER RED</h2></div>
+        <ol id="redteam" class="team"></ol>
+        <p class="hint" id="redinfo"></p>
+      </div>
+    </section>
+
+    <!-- battle -->
+    <section id="battle" class="screen hidden">
+      <div class="gb">
+        <div class="field">
+          <div class="box enemy">
+            <div class="nm"><span id="e-name"></span><span id="e-status" class="st"></span></div>
+            <div class="lv" id="e-lv"></div>
+            <div class="hpwrap"><span class="hplabel">HP</span><div class="hpbar"><div id="e-hp" class="hpfill"></div></div></div>
+            <div class="balls" id="e-balls"></div>
+          </div>
+          <div class="sprite enemy-sprite" id="e-sprite"></div>
+          <div class="sprite player-sprite" id="p-sprite"></div>
+          <div class="box player">
+            <div class="nm"><span id="p-name"></span><span id="p-status" class="st"></span></div>
+            <div class="lv" id="p-lv"></div>
+            <div class="hpwrap"><span class="hplabel">HP</span><div class="hpbar"><div id="p-hp" class="hpfill"></div></div></div>
+            <div class="hpnum" id="p-hpnum"></div>
+            <div class="balls" id="p-balls"></div>
+          </div>
+          <div class="weather" id="weather"></div>
+        </div>
+        <div class="textbox" id="textbox"><span id="text"></span><span class="more" id="more">▼</span></div>
+        <div class="menu hidden" id="menu">
+          <button data-act="fight">FIGHT</button>
+          <button data-act="pkmn">PKMN</button>
+          <button data-act="pack">PACK</button>
+          <button data-act="run">RUN</button>
+        </div>
+        <div class="moves hidden" id="moves"></div>
+        <div class="party hidden" id="party"></div>
+      </div>
+      <div class="row under">
+        <button id="newgame" class="btn small">NEW TEAM</button>
+        <button id="speed" class="btn small">TEXT: NORMAL</button>
+        <label class="check small"><input type="checkbox" id="showai"> SHOW RED'S AI</label>
+      </div>
+      <pre id="ai" class="ai hidden"></pre>
+    </section>
+
+    <footer class="foot">
+      Battle rules ported from the pret/pokecrystal disassembly · numbers extracted from your own Crystal ROM.
+    </footer>
+  </main>
+  <script type="module" src="app.js"></script>
+</body>
+</html>
