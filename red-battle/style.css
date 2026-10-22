@@ -178,3 +178,29 @@ body {
 .t-FIRE { background: #f08030; } .t-WATER { background: #6890f0; } .t-GRASS { background: #78c850; }
 .t-ELECTRIC { background: #f8d030; color: #222; } .t-PSYCHIC { background: #f85888; } .t-ICE { background: #98d8d8; color: #222; }
 .t-DRAGON { background: #7038f8; } .t-DARK { background: #705848; } .t-CURSE { background: #68a090; }
+
+/* attack visuals */
+.field { position: relative; }
+.field.shake { animation: shake 0.25s steps(4) 1; }
+.field.shake-hard { animation: shake 0.4s steps(8) 1; --amp: 7px; }
+@keyframes shake { 25% { transform: translate(calc(var(--amp, 3px) * -1), 1px); } 50% { transform: translate(var(--amp, 3px), -1px); } 75% { transform: translate(calc(var(--amp, 3px) * -1), 0); } }
+.sprite.lunge-p { animation: lunge-p 0.3s steps(6) 1; }
+.sprite.lunge-e { animation: lunge-e 0.3s steps(6) 1; }
+@keyframes lunge-p { 50% { translate: 14% -10%; } }
+@keyframes lunge-e { 50% { translate: -14% 10%; } }
+.orb {
+  position: absolute; width: 22px; height: 22px; margin: -11px 0 0 -11px; border-radius: 50%; pointer-events: none; z-index: 5;
+  background: radial-gradient(circle, #fff 0 25%, var(--c) 60%, transparent 72%);
+  box-shadow: 0 0 10px var(--c); transition: left 0.38s linear, top 0.38s linear;
+}
+.orb.burst { transition: transform 0.16s, opacity 0.16s; transform: scale(3.2); opacity: 0; }
+.orb-fire { border-radius: 50% 50% 50% 0; }
+.orb-electric { clip-path: polygon(50% 0, 70% 40%, 100% 40%, 60% 70%, 75% 100%, 40% 70%, 0 70%, 40% 40%); border-radius: 0; background: var(--c); }
+.orb-ice, .orb-rock, .orb-steel { border-radius: 3px; transform: rotate(45deg); }
+.orb-psychic, .orb-ghost { box-shadow: 0 0 18px var(--c), 0 0 30px var(--c); }
+.aura {
+  position: absolute; width: 30px; height: 30px; margin: -15px 0 0 -15px; border: 3px solid var(--c); border-radius: 50%;
+  pointer-events: none; z-index: 5; animation: aura 0.5s steps(8) 1 forwards;
+}
+@keyframes aura { to { transform: scale(4); opacity: 0; } }
+@media (prefers-reduced-motion: reduce) { .field.shake, .field.shake-hard, .sprite.lunge-p, .sprite.lunge-e { animation: none; } }
