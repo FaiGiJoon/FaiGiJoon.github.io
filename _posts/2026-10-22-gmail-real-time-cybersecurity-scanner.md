@@ -1,7 +1,7 @@
 ---
 layout: post
 title: "Gmail Real-Time Cybersecurity Scanner: How It Works"
-date: 2026-10-22 14:00:00 +0200
+date: 2026-10-22 13:00:00 +0200
 categories: security gmail
 excerpt: "My open source Gmail phishing scanner: one detection engine, three ways to use it, a plain scoring model that shows its reasons, and a Claude skill on top."
 ---
