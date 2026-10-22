@@ -7,6 +7,11 @@
 - When the battle ends the battle music stops. If the player wins, play the victory jingle the game plays after beating Red: `MUSIC_GYM_VICTORY` (`Music_GymLeaderVictory`). Red counts as a gym leader in `PlayVictoryMusic`/`IsGymLeader`.
 - There is a small mute toggle, so visitors to the user's portfolio are not blasted. Browsers only allow audio after a user gesture; the BATTLE RED click is that gesture. The setup page stays silent.
 - **Battle sound effects** come from the same ROM via the same engine: hit sounds by effectiveness, Pokémon cries, ball poof on send-out, faint, menu/text blips and the Full Restore sound.
+- **Battle animations (added by the user mid-run, 2026-10-22):** "add battle animations from Pokémon Crystal with the sound". Every move plays its real Crystal animation script (`data/moves/animations.asm`, `BattleAnimations`), with the exact sounds and timing the script specifies. Scope agreed with the user:
+  - sounds and timing are exact
+  - visuals run the script's background/screen effects: flashes, shakes, blinks, lunges, fades, hide/show
+  - the per-object particle sprites (flames, bolts…) are a follow-up and are not in this plan
+- The user also authorised pushing the finished work to the open PR branch when everything is done.
 - **Styling.** The "beginning of the battle site" (the setup/team screen and the page around the battle) must look like the user's portfolio, `index.html` in this repo. That means a dark navy `#020617` background, glass panels and the indigo/violet/cyan gradient. The Game Boy battle screen itself (`.gb` and everything inside it) stays exactly as it is.
 
 ## Global constraints
@@ -47,6 +52,8 @@ Files: `red-battle/index.html`, `red-battle/style.css`, `_config.yml`, `.gitigno
   - every drumkit referenced by them (via `Drumkits`)
   - SFX `SFX_READ_TEXT_2`, `SFX_BALL_POOF`, `SFX_FAINT`, `SFX_DAMAGE`, `SFX_SUPER_EFFECTIVE`, `SFX_NOT_VERY_EFFECTIVE`, `SFX_FULL_HEAL`, `SFX_SWITCH_POKEMON`
   - all base cries used by `PokemonCries` (every one of the 251 species' cry headers: base cry id, pitch, length)
+  - every battle animation script reachable from `BattleAnimations`: moves 1–251, plus the special animations after them (`ANIM_*` constants in `constants/battle_anim_constants.asm`, such as ANIM_SEND_OUT_MON, ANIM_ENEMY_DAMAGE, ANIM_PLAYER_DAMAGE, ANIM_MISS, ANIM_CONFUSED, ANIM_SLP, ANIM_PSN, ANIM_BRN, ANIM_FRZ, ANIM_PAR, ANIM_SAP, ANIM_HIT_CONFUSION, ANIM_*_STAT_DOWN), following anim_call/anim_jump/anim_loop and every other branch command; learn each anim command's parameter length from `macros/scripts/battle_anims.asm` and `engine/battle_anims/anim_commands.asm`
+  - every SFX referenced by an `anim_sound` in those scripts, traced like the SFX above
 - Output JSON:
   - `source.sha1`
   - `frequencyTable` (the words in `FrequencyTable`)
@@ -55,13 +62,18 @@ Files: `red-battle/index.html`, `red-battle/style.css`, `_config.yml`, `.gitigno
   - `songs: {championBattle: {bank, addr}, gymVictory: {...}}`
   - `sfx: {readText2: {bank, addr}, ...}`, using the names above in camelCase
   - `cries: {"<dex>": {base, pitch, length}}` and `cryHeaders: {"<base id>": {bank, addr}}`
+  - `anims: {"<move id>": {bank, addr}, "<special name>": {bank, addr}}` (special names in camelCase, e.g. `sendOutMon`, `enemyDamage`)
+  - `animCommands`: map of command byte → `{name, length}`, so the JS player can step through the scripts
+  - `sfxIds`: SFX constant name → `{bank, addr}` for every SFX referenced
+  - `bgEffects`: the list of `BATTLE_BG_EFFECT_*` names in id order
   - `blocks: [{bank, addr, hex}]`: only the byte ranges actually reached by the trace, merged when contiguous. The JS engine reads memory as `(bank, addr)` from these blocks exactly like the real engine reads ROM.
 - Tests (`red-battle/test/audio-data.test.mjs`):
   - audio.json's champion battle header decodes to 3 channels (1, 2, 3)
   - channel 1's first commands decode to `tempo 98`, `volume 7,7`, `duty_cycle 3` (as in `audio/music/championbattle.asm`)
   - every block lies within its bank
   - all 251 species have a cry entry
-  - the total size of `blocks` is under 200 KB
+  - Thunderbolt's animation script decodes to its first commands `anim_2gfx`, `anim_obj`, `anim_wait 16`, `anim_bgeffect FLASH_INVERTED`, `anim_sound 0, 1, SFX_THUNDERSHOCK`
+  - the total size of `blocks` is under 400 KB
 
 ### Task 3: Game Boy sound engine in JS — `red-battle/gbsound.js` (+ `red-battle/gbsound-worklet.js`)
 
@@ -105,3 +117,32 @@ Use `createGameAudio()` from Task 3. Do not change `engine.js` battle logic. Der
 - A mute button in the under-row (`♪ ON` / `♪ OFF`), persisted in `localStorage` inside try/catch. Starting a new team stops the music and returns to the silent setup screen.
 - Audio failures (unsupported browser, a fetch error) never break the game. Log to the console and keep playing silently.
 - Tests: keep the existing tests green. Add a unit test for the pure helper that maps a log entry (and its previous snapshot) to sound events, if you extract one.
+
+### Task 5: Battle animations with sound — `red-battle/anims.js` + `red-battle/app.js` + `red-battle/style.css`
+
+- Write a pure, Node-testable script player `planAnimation(audioData, animKey, { attackerIsPlayer })`. It steps through the script bytes from `audio.json` and returns a timeline: `[{frame, kind: 'sfx'|'cry'|'bg'|'wait'|..., ...}]`.
+  - frames are 59.7275 Hz
+  - `anim_wait n` advances n frames
+  - follow anim_call/ret/jump/loop
+  - treat the conditional commands (`anim_if_*`, `anim_jumpuntil`, `anim_checkpokeball`) conservatively, taking the default/first-iteration path, and document each choice in a comment
+  - ignore the object/gfx/palette commands, but keep them as `{kind:'obj'}` entries for later use
+  - cap the timeline at 6 s
+- `anim_sound duration, tracks, sfx` plays that SFX through `gbsound` (Task 3) at that frame. `anim_cry pitch` plays the attacker's cry.
+- Map bg effects to CSS effects on the `.gb` screen, mirrored by side the way the game mirrors them when the enemy attacks:
+  - FLASH_INVERTED/RAPID_FLASH/CYCLE_BGPALS_INVERTED: invert flash
+  - FLASH_WHITE/WHITE_HUES: white flash
+  - BLACK_HUES/FADE_*_TO_BLACK: darken
+  - SHAKE_SCREEN_X/Y and WOBBLE_SCREEN: screen shake
+  - HIDE_MON/SHOW_MON/REMOVE_MON: hide/show the attacker
+  - TACKLE/BODY_SLAM/VITAL_THROW/ROLLOUT/FLAIL: the attacker lunges toward the target
+  - BLINK/FLASH_MON_REPEATING: target blink
+  - VIBRATE_MON/WOBBLE_MON/WAVE_DEFORM_MON/PSYCHIC: wobble
+  - ENTER_MON/RETURN_MON: slide in/out
+  - anything else: no-op
+  Keep this mapping as one table in `anims.js`.
+- In `app.js`:
+  - when a log line says a Pokémon "used X", play X's animation and wait for it to finish before the next text, unless text speed is INSTANT (then cap at 0.4 s)
+  - play `enemyDamage`/`playerDamage` on hits, and the status animations at the matching log lines
+  - play `sendOutMon` when a Pokémon comes out
+  - Task 4's generic hit/send-out sounds must not double up with sounds the animation already plays
+- Tests: Thunderbolt's timeline contains SFX_THUNDERSHOCK at frame 16 and two FLASH_INVERTED bg effects; every move 1–251 produces a finite timeline without throwing; a move with anim_call/anim_loop resolves to a bounded timeline.
