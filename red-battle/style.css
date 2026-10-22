@@ -207,7 +207,8 @@ body {
 
 /* Crystal battle-animation BG effects (anims.js BG_CSS) */
 .field.fx-invert { filter: invert(1); }
-.field.fx-invert-rapid { animation: fx-invert 0.13s steps(1) infinite; }
+/* at most ~2.5 flashes a second (WCAG 2.3.1 allows 3) */
+.field.fx-invert-rapid { animation: fx-invert 0.4s steps(1) infinite; }
 @keyframes fx-invert { 50% { filter: invert(1); } }
 .field.fx-white { animation: fx-white 0.3s steps(3) 1; }
 @keyframes fx-white { 0%, 66% { filter: brightness(3); } }

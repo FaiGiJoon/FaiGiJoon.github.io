@@ -942,10 +942,11 @@ export class GBSound {
 // ---------- browser wrapper ----------
 let instance = null;
 
-// Creates the AudioContext on first call (call it from a user gesture), loads audio.json and the
-// AudioWorklet (ScriptProcessorNode fallback). Later calls return the same object. Commands sent
-// before `ready` resolves are queued.
-export function createGameAudio({ audioUrl = new URL('./audio.json', import.meta.url) } = {}) {
+// Creates the AudioContext on first call (call it from a user gesture), loads audio.json (unless
+// audioData is passed) and the AudioWorklet (ScriptProcessorNode fallback). Later calls return the
+// same object. Before `ready` only the latest music and mute state are kept; SFX and cries are
+// timed to the screen, so late ones are dropped.
+export function createGameAudio({ audioUrl = new URL('./audio.json', import.meta.url), audioData = null } = {}) {
   if (instance) {
     if (instance.ctx.state === 'suspended') instance.ctx.resume();
     return instance;
@@ -953,40 +954,48 @@ export function createGameAudio({ audioUrl = new URL('./audio.json', import.meta
   const Ctx = globalThis.AudioContext || globalThis.webkitAudioContext;
   const ctx = new Ctx();
   let post = null;
-  const queue = [];
+  const pending = { music: null, mute: null };
   const send = (msg) => {
     if (ctx.state === 'suspended') ctx.resume();
-    if (post) post(msg); else queue.push(msg);
+    if (post) post(msg);
+    else if (msg.type === 'mute') pending.mute = msg;
+    else if (msg.type === 'music' || msg.type === 'stopMusic') pending.music = msg;
   };
-  const ready = (async () => {
-    const audioData = await (await fetch(audioUrl)).json();
-    if (ctx.audioWorklet && globalThis.AudioWorkletNode) {
-      await ctx.audioWorklet.addModule(new URL('./gbsound-worklet.js', import.meta.url));
-      const node = new AudioWorkletNode(ctx, 'gbsound', {
-        numberOfInputs: 0, outputChannelCount: [2], processorOptions: { audioData },
-      });
-      node.connect(ctx.destination);
-      instance.node = node;
-      post = (msg) => node.port.postMessage(msg);
-    } else {
-      const core = new GBSound(audioData, ctx.sampleRate);
-      const node = ctx.createScriptProcessor(2048, 0, 2);
-      node.onaudioprocess = (ev) => core.render(ev.outputBuffer.getChannelData(0), ev.outputBuffer.getChannelData(1));
-      node.connect(ctx.destination);
-      instance.node = node;
-      post = (msg) => { try { core.command(msg); } catch (err) { console.warn(err); } };
-    }
-    for (const msg of queue.splice(0)) post(msg);
-  })();
+  const worklet = async (data) => {
+    await ctx.audioWorklet.addModule(new URL('./gbsound-worklet.js', import.meta.url));
+    const node = new AudioWorkletNode(ctx, 'gbsound', {
+      numberOfInputs: 0, outputChannelCount: [2], processorOptions: { audioData: data },
+    });
+    node.connect(ctx.destination);
+    instance.node = node;
+    post = (msg) => node.port.postMessage(msg);
+  };
+  const scriptProcessor = (data) => {
+    const core = new GBSound(data, ctx.sampleRate);
+    const node = ctx.createScriptProcessor(2048, 0, 2);
+    node.onaudioprocess = (ev) => core.render(ev.outputBuffer.getChannelData(0), ev.outputBuffer.getChannelData(1));
+    node.connect(ctx.destination);
+    instance.node = node;
+    post = (msg) => { try { core.command(msg); } catch (err) { console.warn(err); } };
+  };
   instance = {
     ctx,
     node: null,
-    ready,
+    ready: null,
     music: (name) => send({ type: 'music', name }),
     stopMusic: () => send({ type: 'stopMusic' }),
     sfx: (name, opts) => send({ type: 'sfx', name, opts }),
     cry: (dex, opts) => send({ type: 'cry', dex, opts }),
     setMuted: (value) => send({ type: 'mute', value: !!value }),
   };
+  instance.ready = (async () => {
+    const data = audioData || await (await fetch(audioUrl)).json();
+    let ok = false;
+    if (ctx.audioWorklet && globalThis.AudioWorkletNode) {
+      try { await worklet(data); ok = true; } catch (err) { console.warn('AudioWorklet failed, using ScriptProcessor:', err); }
+    }
+    if (!ok) scriptProcessor(data);
+    for (const msg of [pending.mute, pending.music]) if (msg) post(msg);
+  })();
   return instance;
 }

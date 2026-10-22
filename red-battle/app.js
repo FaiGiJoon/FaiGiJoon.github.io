@@ -1,6 +1,6 @@
 import { Battle, makeRng, randomTeam, redTeam } from './engine.js';
 import { createGameAudio } from './gbsound.js';
-import { soundEvents } from './battle-audio.js';
+import { soundEvents, hurtSides, hitSfx, moveMissed, HIT_LEAD } from './battle-audio.js';
 import { planAnimation, FRAME_HZ } from './anims.js';
 
 const $ = (id) => document.getElementById(id);
@@ -13,6 +13,8 @@ const spriteCache = new Map();
 
 // ---------- audio (Crystal's sound engine, see gbsound.js) ----------
 let audio = null;
+let gen = 0; // battle generation: timers and play loops from an abandoned battle check it and stop
+const timers = new Set();
 let animData = null; // audio.json: animation scripts (loaded on the silent setup screen, played in battle)
 let muted = false;
 try { muted = localStorage.getItem('red-battle-muted') === '1'; } catch { /* storage unavailable */ }
@@ -23,12 +25,20 @@ function snd(fn) {
   try { fn(audio); } catch (err) { console.warn('audio:', err); }
 }
 
+// setTimeout that is dropped when the battle is abandoned
+function later(ms, fn) {
+  const g = gen;
+  const t = setTimeout(() => { timers.delete(t); if (g === gen) fn(); }, ms);
+  timers.add(t);
+  return t;
+}
+
 function startAudio() {
   try {
     if (!audio) {
-      audio = createGameAudio();
+      audio = createGameAudio(animData ? { audioData: animData } : undefined);
       audio.ready.catch((err) => { console.warn('audio unavailable:', err); audio = null; });
-    }
+    } else if (audio.ctx.state === 'suspended') audio.ctx.resume();
     audio.setMuted(muted);
   } catch (err) {
     console.warn('audio unavailable:', err);
@@ -49,7 +59,7 @@ const dexOf = (side, entry) => {
 
 function playSounds(k) {
   for (const e of soundEvents(battle.log, k, dexOf, { animated: !!animData })) {
-    setTimeout(() => snd((a) => (e.cry ? a.cry(e.cry, e.opts) : a.sfx(e.sfx, e.opts))), e.at * 1000);
+    later(e.at * 1000, () => snd((a) => (e.cry ? a.cry(e.cry, e.opts) : a.sfx(e.sfx, e.opts))));
   }
 }
 
@@ -62,7 +72,7 @@ async function main() {
   $('reroll').onclick = rerollTeam;
   $('event').onchange = rerollTeam;
   $('start').onclick = startBattle;
-  $('newgame').onclick = () => { snd((a) => a.stopMusic()); $('battle').classList.add('hidden'); $('setup').classList.remove('hidden'); rerollTeam(); };
+  $('newgame').onclick = newTeam;
   $('speed').onclick = () => { speedIdx = (speedIdx + 1) % SPEEDS.length; $('speed').textContent = `TEXT: ${SPEEDS[speedIdx][0]}`; };
   const syncMute = () => { $('mute').textContent = `SOUND: ${muted ? 'OFF' : 'ON'}`; };
   syncMute();
@@ -75,6 +85,17 @@ async function main() {
     }
   });
   document.querySelectorAll('#menu button').forEach((b) => { b.onclick = () => menu(b.dataset.act); });
+}
+
+function newTeam() {
+  gen++;
+  timers.forEach(clearTimeout); timers.clear();
+  fxTimers.forEach(clearTimeout); fxTimers.clear();
+  waiter = null; typing?.finish();
+  clearEffects(true);
+  snd((a) => { a.stopMusic(); a.ctx.suspend().catch(() => {}); });
+  $('battle').classList.add('hidden'); $('setup').classList.remove('hidden');
+  rerollTeam();
 }
 
 // ---------- setup ----------
@@ -122,6 +143,7 @@ function hydrateMinis(root) {
 
 // ---------- battle ----------
 function startBattle() {
+  gen++;
   const clone = structuredClone(team);
   battle = new Battle(data, clone, { badges: $('badges').checked, seed: (Date.now() ^ (Math.random() * 1e9)) >>> 0 });
   shown = 0;
@@ -145,10 +167,11 @@ async function renderSprite(el, mon, back) {
     // front pics are 5x5-7x7 tiles drawn bottom-centred in a 7x7 box; back pics are 6x6 stretched to fill
     const w = await new Promise((r) => { const im = new Image(); im.onload = () => r(im.naturalWidth); im.src = src; });
     el.style.backgroundSize = back ? 'contain' : `${(w / 56) * 100}%`;
-    el.style.backgroundImage = `url(${src})`; el.innerHTML = ''; el.classList.remove('placeholder');
+    el.style.backgroundImage = `url(${src})`; el.innerHTML = ''; el.classList.remove('placeholder', ...KEEP_FX);
     el.classList.toggle('back', back);
   } else {
     el.style.backgroundImage = ''; el.innerHTML = `<span>${mon.name}</span>`; el.classList.add('placeholder');
+    el.classList.remove(...KEEP_FX);
     el.classList.remove('back');
   }
 }
@@ -159,8 +182,9 @@ function setHp(el, hp, max) {
   el.style.backgroundColor = r > 0.5 ? 'var(--hp-hi)' : r > 0.2 ? 'var(--hp-mid)' : 'var(--hp-lo)';
 }
 
-// snap: [{idx,hp,maxHp,status}, ...] from the log line, or the live state when null
-function renderMons(entry) {
+// snap: [{idx,hp,maxHp,status}, ...] from the log line, or the live state when null.
+// keepAlive: leave the fainted mon on screen (its damage animation is still to play).
+function renderMons(entry, keepAlive = false) {
   for (const i of [0, 1]) {
     const side = battle.sides[i];
     const s = entry?.snap?.[i];
@@ -169,13 +193,14 @@ function renderMons(entry) {
     const hp = s ? s.hp : mon.hp; const max = s ? s.maxHp : mon.maxHp; const status = s ? s.status : mon.status;
     const spriteEl = $(`${p}-sprite`);
     if (spriteEl.dataset.dex !== String(mon.dex)) renderSprite(spriteEl, mon, i === 0);
+    else spriteEl.classList.remove(...KEEP_FX);
     $(`${p}-name`).textContent = mon.name;
     $(`${p}-lv`).textContent = `:L${mon.level}`;
     $(`${p}-status`).textContent = status ? STATUS_LABEL[status] : '';
     setHp($(`${p}-hp`), hp, max);
     if (i === 0) $('p-hpnum').textContent = `${hp}/ ${max}`;
     $(`${p}-balls`).innerHTML = side.party.map((m) => `<span class="ball ${m.hp > 0 ? '' : 'out'}"></span>`).join('');
-    if (hp <= 0) spriteEl.classList.add('faint');
+    if (hp <= 0 && !keepAlive) spriteEl.classList.add('faint');
   }
   const w = entry ? entry.weather : battle.weather;
   $('weather').textContent = w ? WEATHER_LABEL[w] : '';
@@ -229,21 +254,25 @@ async function playAnim(key, attackerIsPlayer, dex) {
   const plan = planAnimation(animData, key, { attackerIsPlayer });
   const fast = !animOn();
   const endMs = Math.min(plan[plan.length - 1].frame / FRAME_HZ * 1000, fast ? 400 : Infinity);
-  const timers = [];
+  const mine = [];
   for (const e of plan) {
     const ms = e.frame / FRAME_HZ * 1000;
     if (ms > endMs) break;
-    if (e.kind === 'sfx') timers.push(setTimeout(() => snd((a) => a.sfx(e.name, { pan: e.pan })), ms));
-    else if (e.kind === 'cry') timers.push(setTimeout(() => snd((a) => a.cry(dex, { pitch: e.pitch, length: e.length, tracks: e.tracks })), ms));
-    else if (e.kind === 'bg' && e.css && !fast) timers.push(setTimeout(() => bgEffect(e), ms));
+    if (e.kind === 'sfx') mine.push(later(ms, () => snd((a) => a.sfx(e.name, { pan: e.pan }))));
+    else if (e.kind === 'cry') mine.push(later(ms, () => snd((a) => a.cry(dex, { pitch: e.pitch, length: e.length, tracks: e.tracks }))));
+    else if (e.kind === 'bg' && e.css && !fast) mine.push(later(ms, () => bgEffect(e)));
   }
+  const g = gen;
   await wait(endMs);
-  timers.forEach(clearTimeout);
+  if (g !== gen) return;
+  mine.forEach((t) => { clearTimeout(t); timers.delete(t); });
   clearEffects();
 }
 
-const FX_CLASSES = ['fx-invert', 'fx-invert-rapid', 'fx-white', 'fx-dark', 'fx-shake-x', 'fx-shake-y', 'fx-hide',
-  'fx-lunge', 'fx-blink', 'fx-wobble', 'fx-enter', 'fx-return'];
+const FX_CLASSES = ['fx-invert', 'fx-invert-rapid', 'fx-white', 'fx-dark', 'fx-shake-x', 'fx-shake-y',
+  'fx-lunge', 'fx-blink', 'fx-wobble', 'fx-enter'];
+// A withdrawn (RETURN_MON) or hidden (HIDE_MON) mon stays off screen until SHOW_MON or the next renderMons
+const KEEP_FX = ['fx-hide', 'fx-return'];
 const fxTimers = new Map();
 
 function bgEffect(e) {
@@ -256,8 +285,10 @@ function bgEffect(e) {
   fxTimers.set(key, setTimeout(() => el.classList.remove(e.css), e.ms));
 }
 
-function clearEffects() {
-  for (const el of [document.querySelector('.field'), $('p-sprite'), $('e-sprite')]) el.classList.remove(...FX_CLASSES);
+function clearEffects(all = false) {
+  for (const el of [document.querySelector('.field'), $('p-sprite'), $('e-sprite')]) {
+    el.classList.remove(...FX_CLASSES, ...(all ? KEEP_FX : []));
+  }
 }
 
 // Log lines that run one of Crystal's special animations: [pattern, anim key]
@@ -268,9 +299,9 @@ const STATUS_ANIMS = [
   [/ is hurt by WHIRLPOOL!$/, 'inWhirlpool'], [/ hurt itself in its confusion!$/, 'hitConfusion'],
 ];
 
-// The animations a log line plays, before its sounds: [{key, attackerIsPlayer, dex}]
-function lineAnims(k) {
-  const entry = battle.log[k]; const prev = battle.log[k - 1]; const t = entry.text;
+// The animations a non-move log line plays alongside its text: [{key, attackerIsPlayer}]
+function lineAnims(k, hurt) {
+  const t = battle.log[k].text;
   const out = [];
   if (/^Go! |^RED sent out /.test(t)) {
     const side = t.startsWith('Go!') ? 0 : 1;
@@ -278,18 +309,16 @@ function lineAnims(k) {
   } else if (/, come back!$|^RED withdrew /.test(t)) {
     out.push({ key: 'returnMon', attackerIsPlayer: !t.startsWith('RED') });
   }
-  const hurt = [0, 1].filter((i) => prev?.snap && entry.snap && prev.snap[i].idx === entry.snap[i].idx
-    && entry.snap[i].hp < prev.snap[i].hp);
-  const status = STATUS_ANIMS.find(([re]) => re.test(t));
+  const status = statusAnim(t);
   if (status) {
     // the afflicted mon is the anim's user; the confusion self-hit line has no name tag
-    const side = status[1] === 'hitConfusion' ? (hurt[0] ?? 0) : t.startsWith('Enemy ') ? 1 : 0;
-    out.push({ key: status[1], attackerIsPlayer: side === 0 });
-  } else {
-    for (const i of hurt) out.push({ key: i === 1 ? 'enemyDamage' : 'playerDamage', attackerIsPlayer: i === 1 });
+    const side = status === 'hitConfusion' ? (hurt[0] ?? 0) : t.startsWith('Enemy ') ? 1 : 0;
+    out.push({ key: status, attackerIsPlayer: side === 0 });
   }
   return out;
 }
+
+const statusAnim = (t) => STATUS_ANIMS.find(([re]) => re.test(t))?.[1];
 
 // Fallback when audio.json (the animation scripts) failed to load: a projectile or aura in the type colour
 async function playMoveFx(fx) {
@@ -324,15 +353,10 @@ async function playMoveFx(fx) {
   }
 }
 
-// Decide the impact sound for a damage entry by peeking at the messages right after it.
+// How hard the screen shakes for the hit whose HP drop is on log[idx] (see hitSfx)
 function impactKind(idx) {
-  for (let k = idx; k < Math.min(battle.log.length, idx + 3); k++) {
-    const t = battle.log[k].text;
-    if (/critical hit/i.test(t)) return 'crit';
-    if (/super-effective/i.test(t)) return 'super';
-    if (/not very effective/i.test(t)) return 'weak';
-  }
-  return 'normal';
+  if (/^A critical hit!$/.test(battle.log[idx].text)) return 'crit';
+  return { superEffective: 'super', notVeryEffective: 'weak' }[hitSfx(battle.log, idx)] || 'normal';
 }
 
 function screenFlash(kind) {
@@ -342,37 +366,50 @@ function screenFlash(kind) {
 }
 
 async function play() {
+  const g = gen;
   busy = true;
   hidePanels();
   while (shown < battle.log.length) {
-    const entry = battle.log[shown++];
-    const prev = battle.log[shown - 2];
-    const k = shown - 1;
-    if (entry.fx && !animData) await playMoveFx(entry.fx);
-    renderMons(entry);
-    if (prev?.snap && entry.snap && !animData) {
-      for (const i of [0, 1]) {
-        if (prev.snap[i].idx === entry.snap[i].idx && entry.snap[i].hp < prev.snap[i].hp) {
-          const kind = impactKind(shown - 1);
-          if (animOn()) screenFlash(kind);
+    const k = shown++;
+    const entry = battle.log[k];
+    const hurt = hurtSides(battle.log, k);
+    // a hit with no text of its own lands on this line: show it (damage anim + hit sound) before the line
+    const hitFirst = hurt.length > 0 && !statusAnim(entry.text);
+    renderMons(entry, hitFirst);
+    playSounds(k);
+    if (hitFirst) {
+      if (animData) {
+        await Promise.all([wait(HIT_LEAD * 1000),
+          ...hurt.map((i) => playAnim(i === 1 ? 'enemyDamage' : 'playerDamage', i === 1))]);
+      } else {
+        if (animOn()) screenFlash(impactKind(k));
+        for (const i of hurt) {
           const el = $(i === 0 ? 'p-sprite' : 'e-sprite');
           el.classList.remove('hit'); void el.offsetWidth; el.classList.add('hit');
         }
+        await wait(HIT_LEAD * 1000);
       }
+      if (g !== gen) return;
+      renderMons(entry);
     }
-    if (animData) {
-      if (entry.fx) {
-        await typeText(entry.text);
-        await playAnim(String(entry.fx.id), entry.fx.side === 0, dexOf(entry.fx.side, entry));
-      }
-      playSounds(k);
-      if (!entry.fx) await Promise.all([typeText(entry.text), ...lineAnims(k).map((a) => playAnim(a.key, a.attackerIsPlayer))]);
+    const missed = moveMissed(battle.log, k);
+    if (entry.fx && animData) {
+      await typeText(entry.text);
+      if (g !== gen) return;
+      if (!missed) await playAnim(String(entry.fx.id), entry.fx.side === 0, dexOf(entry.fx.side, entry));
+    } else if (entry.fx) {
+      if (!missed) await playMoveFx(entry.fx);
+      if (g !== gen) return;
+      await typeText(entry.text);
+    } else if (animData) {
+      await Promise.all([typeText(entry.text), ...lineAnims(k, hurt).map((a) => playAnim(a.key, a.attackerIsPlayer))]);
     } else {
-      playSounds(k);
       await typeText(entry.text);
     }
+    if (g !== gen) return;
     if (SPEEDS[speedIdx][1] === 0 && shown < battle.log.length) continue;
     await waitClick();
+    if (g !== gen) return;
   }
   renderMons(null);
   renderAi();
