@@ -165,13 +165,13 @@ export class Battle {
     this.emit(`Go! ${this.mon(0).name}!`);
   }
 
-  emit(text, kind = 'text') {
+  emit(text, kind = 'text', fx = null) {
     // snapshot of both active mons so the UI can animate HP alongside each message
     const snap = this.sides?.[1]?.vol ? [0, 1].map((i) => {
       const m = this.mon(i);
       return { idx: this.sides[i].active, hp: m.hp, maxHp: m.maxHp, status: m.status };
     }) : null;
-    this.log.push({ turn: this.turn, kind, text, snap, weather: this.weather });
+    this.log.push({ turn: this.turn, kind, text, snap, weather: this.weather, ...(fx ? { fx } : {}) });
   }
   mon(i) { return this.sides[i].party[this.sides[i].active]; }
   foe(i) { return 1 - i; }
@@ -904,7 +904,7 @@ export class Battle {
     if (!isLockedContinuation) this.deductPP(i, slot, id);
 
     if (id === 165) this.emit(`${tag}${att.name} has no moves left!`);
-    this.emit(`${tag}${att.name} used ${move.name}!`, i === 0 ? 'player-move' : 'red-move');
+    this.emit(`${tag}${att.name} used ${move.name}!`, i === 0 ? 'player-move' : 'red-move', { side: i, type: move.type, power: move.power || 0 });
     v.lastMove = id;
     if (i === 0 && !v.usedMoves.includes(id)) v.usedMoves.push(id);
     if (move.power) v.lastCounterMove = id;

@@ -1,4 +1,5 @@
 import { Battle, makeRng, randomTeam, redTeam } from './engine.js';
+import * as sfx from './sfx.js';
 
 const $ = (id) => document.getElementById(id);
 const STATUS_LABEL = { PAR: 'PAR', SLP: 'SLP', PSN: 'PSN', TOX: 'PSN', BRN: 'BRN', FRZ: 'FRZ' };
@@ -17,6 +18,9 @@ async function main() {
   $('start').onclick = startBattle;
   $('newgame').onclick = () => { $('battle').classList.add('hidden'); $('setup').classList.remove('hidden'); rerollTeam(); };
   $('speed').onclick = () => { speedIdx = (speedIdx + 1) % SPEEDS.length; $('speed').textContent = `TEXT: ${SPEEDS[speedIdx][0]}`; };
+  const syncMute = () => { $('mute').textContent = `SOUND: ${sfx.isMuted() ? 'OFF' : 'ON'}`; };
+  syncMute();
+  $('mute').onclick = () => { sfx.setMuted(!sfx.isMuted()); syncMute(); sfx.selectCue(); };
   $('showai').onchange = () => $('ai').classList.toggle('hidden', !$('showai').checked);
   $('textbox').onclick = advance;
   document.addEventListener('keydown', (ev) => {
@@ -139,6 +143,7 @@ function typeText(text) {
     typing = { finish: () => { clearInterval(t); el.textContent = text; typing = null; resolve(); } };
     const t = setInterval(() => {
       el.textContent = text.slice(0, ++k);
+      if (k % 3 === 0) sfx.blip();
       if (k >= text.length) typing.finish();
     }, delay);
   });
@@ -155,21 +160,97 @@ function advance() {
   if (waiter) { const w = waiter; waiter = null; $('more').classList.add('hidden'); w(); }
 }
 
+
+// ---------- attack visuals + sound ----------
+const TYPE_COLOR = {
+  NORMAL: '#e8e4d0', FIRE: '#ff7a1a', WATER: '#3a8cff', ELECTRIC: '#ffe629', GRASS: '#4fcf4a', ICE: '#9be8ff',
+  FIGHTING: '#d6452f', POISON: '#b050d8', GROUND: '#d8b25a', FLYING: '#a8b8ff', PSYCHIC: '#ff5fa8', BUG: '#a8c820',
+  ROCK: '#b8a050', GHOST: '#7a58b8', DRAGON: '#6a40ff', DARK: '#4a3a3a', STEEL: '#c0c8d8', CURSE: '#7a58b8',
+};
+const wait = (ms) => new Promise((r) => setTimeout(r, ms));
+const animOn = () => SPEEDS[speedIdx][1] !== 0;
+
+function center(el, field) {
+  const a = el.getBoundingClientRect(); const f = field.getBoundingClientRect();
+  return { x: a.left - f.left + a.width / 2, y: a.top - f.top + a.height / 2 };
+}
+
+async function playMoveFx(fx) {
+  sfx.moveCue(fx.type);
+  if (!animOn()) return;
+  const field = document.querySelector('.field');
+  const from = $(fx.side === 0 ? 'p-sprite' : 'e-sprite');
+  const to = $(fx.side === 0 ? 'e-sprite' : 'p-sprite');
+  const color = TYPE_COLOR[fx.type] || TYPE_COLOR.NORMAL;
+  const dir = fx.side === 0 ? 'lunge-p' : 'lunge-e';
+  if (fx.power > 0) {
+    from.classList.remove('lunge-p', 'lunge-e'); void from.offsetWidth; from.classList.add(dir);
+    const a = center(from, field); const b = center(to, field);
+    const orb = document.createElement('div');
+    orb.className = `orb orb-${fx.type.toLowerCase()}`;
+    orb.style.cssText = `--c:${color};left:${a.x}px;top:${a.y}px;`;
+    field.appendChild(orb);
+    void orb.offsetWidth;
+    orb.style.left = `${b.x}px`; orb.style.top = `${b.y}px`;
+    await wait(380);
+    orb.classList.add('burst');
+    await wait(160);
+    orb.remove();
+    from.classList.remove(dir);
+  } else {
+    const a = center(from, field);
+    const ring = document.createElement('div');
+    ring.className = 'aura';
+    ring.style.cssText = `--c:${color};left:${a.x}px;top:${a.y}px;`;
+    field.appendChild(ring);
+    await wait(500);
+    ring.remove();
+  }
+}
+
+// Decide the impact sound for a damage entry by peeking at the messages right after it.
+function impactKind(idx) {
+  for (let k = idx; k < Math.min(battle.log.length, idx + 3); k++) {
+    const t = battle.log[k].text;
+    if (/critical hit/i.test(t)) return 'crit';
+    if (/super-effective/i.test(t)) return 'super';
+    if (/not very effective/i.test(t)) return 'weak';
+  }
+  return 'normal';
+}
+
+function textCue(text) {
+  if (/missed|avoided/i.test(text)) sfx.missCue();
+  else if (/fainted/i.test(text)) sfx.faintCue();
+  else if (/sent out|^Go!/.test(text)) sfx.sendOutCue();
+}
+
+function screenFlash(kind) {
+  const field = document.querySelector('.field');
+  field.classList.remove('shake', 'shake-hard'); void field.offsetWidth;
+  field.classList.add(kind === 'super' || kind === 'crit' ? 'shake-hard' : 'shake');
+}
+
 async function play() {
   busy = true;
   hidePanels();
   while (shown < battle.log.length) {
     const entry = battle.log[shown++];
     const prev = battle.log[shown - 2];
+    if (entry.fx) await playMoveFx(entry.fx);
     renderMons(entry);
     if (prev?.snap && entry.snap) {
       for (const i of [0, 1]) {
         if (prev.snap[i].idx === entry.snap[i].idx && entry.snap[i].hp < prev.snap[i].hp) {
+          const kind = impactKind(shown - 1);
+          sfx.hitCue(kind);
+          if (animOn()) screenFlash(kind);
           const el = $(i === 0 ? 'p-sprite' : 'e-sprite');
           el.classList.remove('hit'); void el.offsetWidth; el.classList.add('hit');
         }
       }
     }
+    textCue(entry.text);
     await typeText(entry.text);
     if (SPEEDS[speedIdx][1] === 0 && shown < battle.log.length) continue;
     await waitClick();
@@ -189,6 +270,7 @@ function renderAi() {
 
 function nextPrompt() {
   if (battle.over) {
+    (battle.winner === 0 ? sfx.winCue : sfx.loseCue)();
     $('text').textContent = battle.winner === 0 ? 'You beat RED! Press NEW TEAM to go again.' : 'You are out of usable POKéMON! Press NEW TEAM to try again.';
     $('more').classList.add('hidden');
     return;
@@ -212,6 +294,7 @@ async function say(text) {
 }
 
 function menu(act) {
+  sfx.selectCue();
   if (act === 'fight') return showMoves();
   if (act === 'pkmn') return showParty(false);
   if (act === 'pack') return say('There are no items in your PACK!');
