@@ -24,6 +24,21 @@ async function fetchGitHubRepos() {
     }
 }
 
+function escapeHtml(value) {
+    return String(value ?? '').replace(/[&<>"']/g, ch => ({
+        '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+    }[ch]));
+}
+
+function safeUrl(url) {
+    try {
+        const u = new URL(url);
+        return u.protocol === 'https:' ? u.href : '#';
+    } catch (e) {
+        return '#';
+    }
+}
+
 function renderRepos(repos, container) {
     container.innerHTML = '';
 
@@ -38,26 +53,26 @@ function renderRepos(repos, container) {
                     <i data-lucide="folder" class="w-6 h-6 text-primary"></i>
                 </div>
                 <div class="flex gap-3">
-                    <a href="${repo.html_url}" target="_blank" class="text-gray-400 hover:text-primary transition-colors">
+                    <a href="${escapeHtml(safeUrl(repo.html_url))}" target="_blank" rel="noopener noreferrer" class="text-gray-400 hover:text-primary transition-colors">
                         <i data-lucide="github" class="w-5 h-5"></i>
                     </a>
-                    <a href="${repo.html_url}" target="_blank" class="text-gray-400 hover:text-primary transition-colors">
+                    <a href="${escapeHtml(safeUrl(repo.html_url))}" target="_blank" rel="noopener noreferrer" class="text-gray-400 hover:text-primary transition-colors">
                         <i data-lucide="external-link" class="w-5 h-5"></i>
                     </a>
                 </div>
             </div>
-            <h3 class="text-xl font-bold mb-2 group-hover:text-primary transition-colors">${repo.name}</h3>
-            <p class="text-gray-400 text-sm mb-4 line-clamp-2">${repo.description || 'No description available.'}</p>
+            <h3 class="text-xl font-bold mb-2 group-hover:text-primary transition-colors">${escapeHtml(repo.name)}</h3>
+            <p class="text-gray-400 text-sm mb-4 line-clamp-2">${escapeHtml(repo.description || 'No description available.')}</p>
             <div class="flex items-center gap-4 mt-auto">
                 ${repo.language ? `
                     <div class="flex items-center gap-1.5">
                         <span class="w-3 h-3 rounded-full bg-primary"></span>
-                        <span class="text-xs font-medium text-gray-300">${repo.language}</span>
+                        <span class="text-xs font-medium text-gray-300">${escapeHtml(repo.language)}</span>
                     </div>
                 ` : ''}
                 <div class="flex items-center gap-1.5">
                     <i data-lucide="star" class="w-4 h-4 text-yellow-500"></i>
-                    <span class="text-xs font-medium text-gray-300">${repo.stargazers_count}</span>
+                    <span class="text-xs font-medium text-gray-300">${escapeHtml(repo.stargazers_count)}</span>
                 </div>
             </div>
         `;
