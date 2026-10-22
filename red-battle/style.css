@@ -204,3 +204,30 @@ body {
 }
 @keyframes aura { to { transform: scale(4); opacity: 0; } }
 @media (prefers-reduced-motion: reduce) { .field.shake, .field.shake-hard, .sprite.lunge-p, .sprite.lunge-e { animation: none; } }
+
+/* Crystal battle-animation BG effects (anims.js BG_CSS) */
+.field.fx-invert { filter: invert(1); }
+.field.fx-invert-rapid { animation: fx-invert 0.13s steps(1) infinite; }
+@keyframes fx-invert { 50% { filter: invert(1); } }
+.field.fx-white { animation: fx-white 0.3s steps(3) 1; }
+@keyframes fx-white { 0%, 66% { filter: brightness(3); } }
+.fx-dark { filter: brightness(0.35); transition: filter 0.3s steps(3); }
+.field.fx-shake-x { animation: fx-shake-x 0.1s steps(2) infinite; }
+.field.fx-shake-y { animation: fx-shake-y 0.1s steps(2) infinite; }
+@keyframes fx-shake-x { 50% { transform: translateX(4px); } }
+@keyframes fx-shake-y { 50% { transform: translateY(4px); } }
+.sprite.fx-hide { visibility: hidden; }
+#p-sprite.fx-lunge { animation: lunge-p 0.4s steps(6) 1; }
+#e-sprite.fx-lunge { animation: lunge-e 0.4s steps(6) 1; }
+.sprite.fx-blink { animation: blink 0.12s steps(1) infinite; }
+.sprite.fx-wobble { animation: fx-wobble 0.15s steps(2) infinite; }
+@keyframes fx-wobble { 50% { translate: 4px 0; } }
+#p-sprite.fx-enter { animation: fx-enter-p 0.4s steps(6) 1; }
+#e-sprite.fx-enter { animation: fx-enter-e 0.4s steps(6) 1; }
+@keyframes fx-enter-p { from { translate: -40% 0; opacity: 0; } }
+@keyframes fx-enter-e { from { translate: 40% 0; opacity: 0; } }
+.sprite.fx-return { animation: fx-return 0.4s steps(6) 1 forwards; }
+@keyframes fx-return { to { scale: 0.1; opacity: 0; } }
+@media (prefers-reduced-motion: reduce) {
+  .field.fx-invert-rapid, .field.fx-shake-x, .field.fx-shake-y, .sprite.fx-blink, .sprite.fx-wobble { animation: none; }
+}

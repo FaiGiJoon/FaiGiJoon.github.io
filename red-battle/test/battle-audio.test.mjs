@@ -16,6 +16,8 @@ test('send-out plays the ball poof, then the cry on that side', () => {
   assert.deepEqual(names(ev), ['ballPoof', 'cry27']);
   assert.equal(ev[1].opts.tracks, 'left');
   assert.ok(ev[1].at > ev[0].at);
+  // the sendOutMon animation plays the poof itself
+  assert.deepEqual(names(soundEvents(log, 1, dexOf, { animated: true })), ['cry27']);
 });
 
 test('hits play the effectiveness sound from the following text', () => {

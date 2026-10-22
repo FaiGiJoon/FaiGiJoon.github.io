@@ -904,7 +904,7 @@ export class Battle {
     if (!isLockedContinuation) this.deductPP(i, slot, id);
 
     if (id === 165) this.emit(`${tag}${att.name} has no moves left!`);
-    this.emit(`${tag}${att.name} used ${move.name}!`, i === 0 ? 'player-move' : 'red-move', { side: i, type: move.type, power: move.power || 0 });
+    this.emit(`${tag}${att.name} used ${move.name}!`, i === 0 ? 'player-move' : 'red-move', { side: i, id, type: move.type, power: move.power || 0 });
     v.lastMove = id;
     if (i === 0 && !v.usedMoves.includes(id)) v.usedMoves.push(id);
     if (move.power) v.lastCounterMove = id;

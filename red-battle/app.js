@@ -1,6 +1,7 @@
 import { Battle, makeRng, randomTeam, redTeam } from './engine.js';
 import { createGameAudio } from './gbsound.js';
 import { soundEvents } from './battle-audio.js';
+import { planAnimation, FRAME_HZ } from './anims.js';
 
 const $ = (id) => document.getElementById(id);
 const STATUS_LABEL = { PAR: 'PAR', SLP: 'SLP', PSN: 'PSN', TOX: 'PSN', BRN: 'BRN', FRZ: 'FRZ' };
@@ -12,6 +13,7 @@ const spriteCache = new Map();
 
 // ---------- audio (Crystal's sound engine, see gbsound.js) ----------
 let audio = null;
+let animData = null; // audio.json: animation scripts (loaded on the silent setup screen, played in battle)
 let muted = false;
 try { muted = localStorage.getItem('red-battle-muted') === '1'; } catch { /* storage unavailable */ }
 
@@ -46,13 +48,15 @@ const dexOf = (side, entry) => {
 };
 
 function playSounds(k) {
-  for (const e of soundEvents(battle.log, k, dexOf)) {
+  for (const e of soundEvents(battle.log, k, dexOf, { animated: !!animData })) {
     setTimeout(() => snd((a) => (e.cry ? a.cry(e.cry, e.opts) : a.sfx(e.sfx, e.opts))), e.at * 1000);
   }
 }
 
 async function main() {
   data = await (await fetch('data.json')).json();
+  fetch('audio.json').then((r) => r.json()).then((d) => { animData = d; })
+    .catch((err) => console.warn('battle animations unavailable:', err));
   rerollTeam();
   renderRed();
   $('reroll').onclick = rerollTeam;
@@ -218,6 +222,76 @@ function center(el, field) {
   return { x: a.left - f.left + a.width / 2, y: a.top - f.top + a.height / 2 };
 }
 
+// Crystal's animation script for a move/special: its sounds at their frames plus the BG
+// effects as CSS (anims.js). INSTANT text speed caps it at 0.4 s, sounds only.
+async function playAnim(key, attackerIsPlayer, dex) {
+  if (!animData) return;
+  const plan = planAnimation(animData, key, { attackerIsPlayer });
+  const fast = !animOn();
+  const endMs = Math.min(plan[plan.length - 1].frame / FRAME_HZ * 1000, fast ? 400 : Infinity);
+  const timers = [];
+  for (const e of plan) {
+    const ms = e.frame / FRAME_HZ * 1000;
+    if (ms > endMs) break;
+    if (e.kind === 'sfx') timers.push(setTimeout(() => snd((a) => a.sfx(e.name, { pan: e.pan })), ms));
+    else if (e.kind === 'cry') timers.push(setTimeout(() => snd((a) => a.cry(dex, { pitch: e.pitch, length: e.length, tracks: e.tracks })), ms));
+    else if (e.kind === 'bg' && e.css && !fast) timers.push(setTimeout(() => bgEffect(e), ms));
+  }
+  await wait(endMs);
+  timers.forEach(clearTimeout);
+  clearEffects();
+}
+
+const FX_CLASSES = ['fx-invert', 'fx-invert-rapid', 'fx-white', 'fx-dark', 'fx-shake-x', 'fx-shake-y', 'fx-hide',
+  'fx-lunge', 'fx-blink', 'fx-wobble', 'fx-enter', 'fx-return'];
+const fxTimers = new Map();
+
+function bgEffect(e) {
+  const el = e.screen ? document.querySelector('.field') : $(e.mon === 'player' ? 'p-sprite' : 'e-sprite');
+  if (e.css === 'fx-show') { el.classList.remove('fx-hide'); return; }
+  el.classList.remove(e.css); void el.offsetWidth; el.classList.add(e.css);
+  if (!e.ms) return;
+  const key = el.id + e.css;
+  clearTimeout(fxTimers.get(key));
+  fxTimers.set(key, setTimeout(() => el.classList.remove(e.css), e.ms));
+}
+
+function clearEffects() {
+  for (const el of [document.querySelector('.field'), $('p-sprite'), $('e-sprite')]) el.classList.remove(...FX_CLASSES);
+}
+
+// Log lines that run one of Crystal's special animations: [pattern, anim key]
+const STATUS_ANIMS = [
+  [/ is fast asleep!$/, 'slp'], [/ is frozen solid!$/, 'frz'], [/ is confused!$/, 'confused'],
+  [/ is in love with the foe!$/, 'inLove'], [/ is fully paralyzed!$/, 'par'], [/ is hurt by poison!$/, 'psn'],
+  [/ is hurt by its burn!$/, 'brn'], [/ is buffeted by the sandstorm!$/, 'inSandstorm'],
+  [/ is hurt by WHIRLPOOL!$/, 'inWhirlpool'], [/ hurt itself in its confusion!$/, 'hitConfusion'],
+];
+
+// The animations a log line plays, before its sounds: [{key, attackerIsPlayer, dex}]
+function lineAnims(k) {
+  const entry = battle.log[k]; const prev = battle.log[k - 1]; const t = entry.text;
+  const out = [];
+  if (/^Go! |^RED sent out /.test(t)) {
+    const side = t.startsWith('Go!') ? 0 : 1;
+    out.push({ key: 'sendOutMon', attackerIsPlayer: side === 0 });
+  } else if (/, come back!$|^RED withdrew /.test(t)) {
+    out.push({ key: 'returnMon', attackerIsPlayer: !t.startsWith('RED') });
+  }
+  const hurt = [0, 1].filter((i) => prev?.snap && entry.snap && prev.snap[i].idx === entry.snap[i].idx
+    && entry.snap[i].hp < prev.snap[i].hp);
+  const status = STATUS_ANIMS.find(([re]) => re.test(t));
+  if (status) {
+    // the afflicted mon is the anim's user; the confusion self-hit line has no name tag
+    const side = status[1] === 'hitConfusion' ? (hurt[0] ?? 0) : t.startsWith('Enemy ') ? 1 : 0;
+    out.push({ key: status[1], attackerIsPlayer: side === 0 });
+  } else {
+    for (const i of hurt) out.push({ key: i === 1 ? 'enemyDamage' : 'playerDamage', attackerIsPlayer: i === 1 });
+  }
+  return out;
+}
+
+// Stand-in for the move's particle sprites (not ported): a projectile or aura in the type colour
 async function playMoveFx(fx) {
   if (!animOn()) return;
   const field = document.querySelector('.field');
@@ -273,9 +347,10 @@ async function play() {
   while (shown < battle.log.length) {
     const entry = battle.log[shown++];
     const prev = battle.log[shown - 2];
-    if (entry.fx) await playMoveFx(entry.fx);
+    const k = shown - 1;
+    if (entry.fx && !animData) await playMoveFx(entry.fx);
     renderMons(entry);
-    if (prev?.snap && entry.snap) {
+    if (prev?.snap && entry.snap && !animData) {
       for (const i of [0, 1]) {
         if (prev.snap[i].idx === entry.snap[i].idx && entry.snap[i].hp < prev.snap[i].hp) {
           const kind = impactKind(shown - 1);
@@ -285,8 +360,17 @@ async function play() {
         }
       }
     }
-    playSounds(shown - 1);
-    await typeText(entry.text);
+    if (animData) {
+      if (entry.fx) {
+        await typeText(entry.text);
+        await Promise.all([playMoveFx(entry.fx), playAnim(String(entry.fx.id), entry.fx.side === 0, dexOf(entry.fx.side, entry))]);
+      }
+      playSounds(k);
+      if (!entry.fx) await Promise.all([typeText(entry.text), ...lineAnims(k).map((a) => playAnim(a.key, a.attackerIsPlayer))]);
+    } else {
+      playSounds(k);
+      await typeText(entry.text);
+    }
     if (SPEEDS[speedIdx][1] === 0 && shown < battle.log.length) continue;
     await waitClick();
   }
