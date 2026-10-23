@@ -961,8 +961,10 @@ export function createGameAudio({ audioUrl = new URL('./audio.json', import.meta
     else if (msg.type === 'mute') pending.mute = msg;
     else if (msg.type === 'music' || msg.type === 'stopMusic') pending.music = msg;
   };
+  let gaveUp = false;
   const worklet = async (data) => {
     await ctx.audioWorklet.addModule(new URL('./gbsound-worklet.js', import.meta.url));
+    if (gaveUp) return; // too late: the ScriptProcessor fallback already owns the output
     const node = new AudioWorkletNode(ctx, 'gbsound', {
       numberOfInputs: 0, outputChannelCount: [2], processorOptions: { audioData: data },
     });
@@ -992,7 +994,12 @@ export function createGameAudio({ audioUrl = new URL('./audio.json', import.meta
     const data = audioData || await (await fetch(audioUrl)).json();
     let ok = false;
     if (ctx.audioWorklet && globalThis.AudioWorkletNode) {
-      try { await worklet(data); ok = true; } catch (err) { console.warn('AudioWorklet failed, using ScriptProcessor:', err); }
+      // A worklet that never finishes loading would leave the game silent forever; give it 3 s.
+      const stall = new Promise((_, reject) => setTimeout(() => reject(new Error('addModule timed out')), 3000));
+      try { await Promise.race([worklet(data), stall]); ok = true; } catch (err) {
+        gaveUp = true;
+        console.warn('AudioWorklet failed, using ScriptProcessor:', err);
+      }
     }
     if (!ok) scriptProcessor(data);
     for (const msg of [pending.mute, pending.music]) if (msg) post(msg);

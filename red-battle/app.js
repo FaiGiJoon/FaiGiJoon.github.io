@@ -33,7 +33,31 @@ function later(ms, fn) {
   return t;
 }
 
+// iOS routes Web Audio through the ringer channel, so the silent switch mutes the whole game.
+// Declaring media playback (iOS 17+) or playing a looping silent <audio> track (older iOS)
+// moves it to the media channel, like a video. Call from the user gesture.
+let mediaKeepAlive = null;
+function claimMediaPlayback() {
+  try { if (navigator.audioSession) navigator.audioSession.type = 'playback'; } catch { /* unsupported */ }
+  if (!mediaKeepAlive) {
+    const n = 800; // 0.1 s of 8 kHz 8-bit mono silence
+    const wav = new DataView(new ArrayBuffer(44 + n));
+    [...'RIFF'].forEach((c, i) => wav.setUint8(i, c.charCodeAt(0)));
+    wav.setUint32(4, 36 + n, true);
+    [...'WAVEfmt '].forEach((c, i) => wav.setUint8(8 + i, c.charCodeAt(0)));
+    [16, 0x10001, 8000, 8000, 0x80001].forEach((v, i) => wav.setUint32(16 + i * 4, v, true));
+    [...'data'].forEach((c, i) => wav.setUint8(36 + i, c.charCodeAt(0)));
+    wav.setUint32(40, n, true);
+    for (let i = 0; i < n; i++) wav.setUint8(44 + i, 128);
+    mediaKeepAlive = new Audio(URL.createObjectURL(new Blob([wav], { type: 'audio/wav' })));
+    mediaKeepAlive.loop = true;
+    mediaKeepAlive.setAttribute('playsinline', '');
+  }
+  mediaKeepAlive.play()?.catch(() => {});
+}
+
 function startAudio() {
+  claimMediaPlayback();
   try {
     if (!audio) {
       audio = createGameAudio(animData ? { audioData: animData } : undefined);
@@ -94,6 +118,7 @@ function newTeam() {
   waiter = null; typing?.finish();
   clearEffects(true);
   snd((a) => { a.stopMusic(); a.ctx.suspend().catch(() => {}); });
+  mediaKeepAlive?.pause();
   $('battle').classList.add('hidden'); $('setup').classList.remove('hidden');
   rerollTeam();
 }
