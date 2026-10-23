@@ -2,7 +2,7 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync, existsSync } from 'node:fs';
 import {
-  Battle, makeRng, calcStats, defaultMoves, hiddenPower, makeMon, randomTeam, redTeam, typeEffect, RED_LEVELS, pct,
+  Battle, makeRng, calcStats, defaultMoves, hiddenPower, makeMon, randomTeam, redTeam, typeEffect, RED_LEVELS, PLAYER_LEVEL, pct,
 } from '../engine.js';
 
 const data = JSON.parse(readFileSync(new URL('../data.json', import.meta.url)));
@@ -101,10 +101,10 @@ test('hidden power from DVs (all 15 -> Dark 70)', () => {
   assert.deepEqual(hiddenPower({ atk: 15, def: 15, spe: 15, spc: 15 }), { type: 'DARK', power: 70 });
 });
 
-test('random team: levels mirror Red, no Mew/Celebi, all moves legal level-up moves', () => {
+test('random team: all level 60, no Mew/Celebi, all moves legal level-up moves', () => {
   for (let seed = 1; seed < 200; seed++) {
     const team = randomTeam(data, makeRng(seed));
-    assert.deepEqual(team.map((m) => m.level), RED_LEVELS);
+    assert.deepEqual(team.map((m) => m.level), Array(6).fill(PLAYER_LEVEL));
     for (const m of team) {
       assert.ok(m.dex !== 151 && m.dex !== 251);
       const legal = new Set(data.species[m.dex].learnset.filter(([lv]) => lv <= m.level).map(([, id]) => id));

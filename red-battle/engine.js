@@ -19,6 +19,7 @@ const CRIT_MOVES = new Set(['KARATE CHOP', 'RAZOR WIND', 'RAZOR LEAF', 'CRABHAMM
 const BADGE_TYPES = new Set(['FLYING', 'BUG', 'NORMAL', 'GHOST', 'STEEL', 'FIGHTING', 'ICE', 'DRAGON',
   'ROCK', 'WATER', 'ELECTRIC', 'GRASS', 'POISON', 'PSYCHIC', 'FIRE', 'GROUND']);
 export const RED_LEVELS = [81, 73, 75, 77, 77, 77];
+export const PLAYER_LEVEL = 60; // every Pokémon on the random team
 export const pct = (x) => Math.floor(x * 255 / 100);
 
 // AI flag bits (constants/ai_constants.asm)
@@ -113,7 +114,8 @@ export function randomTeam(data, rng, opts = {}) {
   const pool = speciesPool(data, opts);
   const team = [];
   const used = new Set();
-  for (const level of RED_LEVELS) {
+  const level = opts.level ?? PLAYER_LEVEL;
+  for (let k = 0; k < 6; k++) {
     let dex;
     do { dex = pool[rng.int(pool.length)]; } while (used.has(dex) && used.size < pool.length);
     used.add(dex);
