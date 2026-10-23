@@ -2,7 +2,7 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync, existsSync } from 'node:fs';
 import {
-  Battle, makeRng, calcStats, defaultMoves, hiddenPower, makeMon, randomTeam, redTeam, typeEffect, RED_LEVELS, pct,
+  Battle, makeRng, calcStats, defaultMoves, hiddenPower, makeMon, randomTeam, redTeam, typeEffect, RED_LEVELS, BATTLE_LEVEL, pct,
 } from '../engine.js';
 
 const data = JSON.parse(readFileSync(new URL('../data.json', import.meta.url)));
@@ -24,7 +24,8 @@ test('Red party, DVs and AI flags match data/trainers/*.asm', { skip: !existsSyn
   const team = redTeam(data);
   assert.equal(team.length, 6);
   rows.forEach((r, k) => {
-    assert.equal(team[k].level, r.level);
+    assert.equal(data.red.party[k].level, r.level); // extracted from the ROM unchanged
+    assert.equal(team[k].level, BATTLE_LEVEL); // but battles are fought at level 60
     assert.equal(team[k].name, r.species);
     const names = team[k].moves.map((mv) => data.moves[mv.id].name.replace(/[ -]/g, '_'));
     assert.deepEqual(names, r.moves.map((x) => x.replace('PSYCHIC_M', 'PSYCHIC')));
@@ -32,7 +33,7 @@ test('Red party, DVs and AI flags match data/trainers/*.asm', { skip: !existsSyn
   assert.deepEqual(data.red.dvs, { atk: 15, def: 13, spe: 13, spc: 14 });
   assert.equal(data.red.aiFlags, 0b1111010011); // BASIC|SETUP|SMART|AGGRESSIVE|CAUTIOUS|STATUS|RISKY
   assert.deepEqual(data.red.items, [14, 14]); // FULL_RESTORE x2
-  assert.deepEqual(RED_LEVELS, team.map((m) => m.level));
+  assert.deepEqual(RED_LEVELS, data.red.party.map((p) => p.level));
 });
 
 test('all 251 moves match data/moves/moves.asm', { skip: !existsSync(DISASM) }, () => {
@@ -84,7 +85,8 @@ test('damage formula matches a hand calculation (no crit, no spread)', () => {
   const b = new Battle(data, [gyarados], { seed: 1, badges: false });
   const tb = byName('THUNDERBOLT');
   const A = b.stat(1, 'spa'); const D = b.stat(0, 'spd');
-  const base = Math.floor(Math.floor((Math.floor(81 * 2 / 5) + 2) * 95 * A / D) / 50) + 2;
+  const L = b.mon(1).level;
+  const base = Math.floor(Math.floor((Math.floor(L * 2 / 5) + 2) * 95 * A / D) / 50) + 2;
   assert.equal(b.baseDamage(1, tb), base);
   const stab = base + (base >> 1);
   assert.equal(b.modify(1, tb, base).damage, Math.floor(stab * 40 / 10)); // 4x: Water/Flying
@@ -101,10 +103,10 @@ test('hidden power from DVs (all 15 -> Dark 70)', () => {
   assert.deepEqual(hiddenPower({ atk: 15, def: 15, spe: 15, spc: 15 }), { type: 'DARK', power: 70 });
 });
 
-test('random team: levels mirror Red, no Mew/Celebi, all moves legal level-up moves', () => {
+test('random team: all level 60, no Mew/Celebi, all moves legal level-up moves', () => {
   for (let seed = 1; seed < 200; seed++) {
     const team = randomTeam(data, makeRng(seed));
-    assert.deepEqual(team.map((m) => m.level), RED_LEVELS);
+    assert.deepEqual(team.map((m) => m.level), Array(6).fill(BATTLE_LEVEL));
     for (const m of team) {
       assert.ok(m.dex !== 151 && m.dex !== 251);
       const legal = new Set(data.species[m.dex].learnset.filter(([lv]) => lv <= m.level).map(([, id]) => id));
@@ -137,11 +139,13 @@ test('AI: Snorlax never Snores while awake', () => {
   }
 });
 
-test('AI: Full Restore only with the highest-level mon (Pikachu) and low HP', () => {
+test('AI: Full Restore only with the highest-level mon and low HP', () => {
   const b = battleVs('MACHAMP', ['SPLASH']);
   b.mon(1).hp = 10; // Pikachu below 1/4
   assert.deepEqual(b.aiTryItem(), { type: 'item', item: 14 });
-  b.sides[1].active = 1; b.mon(1).hp = 1; // Espeon
+  b.sides[1].active = 1; b.mon(1).hp = 1; // Espeon: tied for highest level at 60, so it may heal too
+  assert.deepEqual(b.aiTryItem(), { type: 'item', item: 14 });
+  b.sides[1].party[0].level = 81; // with Pikachu above the rest (as in Crystal) Espeon may not
   assert.equal(b.aiTryItem(), null);
   b.sides[1].active = 0; b.mon(1).hp = b.mon(1).maxHp;
   assert.equal(b.aiTryItem(), null);

@@ -130,7 +130,7 @@ function typeBadges(types) {
 
 function teamRow(m) {
   const moves = m.moves.map((mv) => data.moves[mv.id].name).join(' · ');
-  return `<li><span class="mini" data-dex="${m.dex}"></span><div><div class="t-name">${m.name} <small>L${m.level}</small>${typeBadges(m.types)}</div><div class="t-moves">${moves}</div></div></li>`;
+  return `<li><span class="mini" data-dex="${m.dex}"></span><div><div class="t-name">${m.name} <small>Lv${m.level}</small>${typeBadges(m.types)}</div><div class="t-moves">${moves}</div></div></li>`;
 }
 
 function rerollTeam() {
@@ -220,7 +220,7 @@ function renderMons(entry, keepAlive = false) {
     if (spriteEl.dataset.dex !== String(mon.dex)) renderSprite(spriteEl, mon, i === 0);
     else spriteEl.classList.remove(...KEEP_FX);
     $(`${p}-name`).textContent = mon.name;
-    $(`${p}-lv`).textContent = `:L${mon.level}`;
+    $(`${p}-lv`).textContent = `Lv${mon.level}`;
     $(`${p}-status`).textContent = status ? STATUS_LABEL[status] : '';
     setHp($(`${p}-hp`), hp, max);
     if (i === 0) $('p-hpnum').textContent = `${hp}/ ${max}`;
@@ -516,7 +516,7 @@ function showParty(forced) {
   const box = $('party');
   box.innerHTML = side.party.map((m, k) => {
     const can = m.hp > 0 && k !== side.active && !trapped;
-    return `<button data-k="${k}" ${can ? '' : 'disabled'}><span class="pline"><span>${m.name} :L${m.level}${m.status ? ` ${STATUS_LABEL[m.status]}` : ''}</span><span>${m.hp}/${m.maxHp}</span></span></button>`;
+    return `<button data-k="${k}" ${can ? '' : 'disabled'}><span class="pline"><span>${m.name} Lv${m.level}${m.status ? ` ${STATUS_LABEL[m.status]}` : ''}</span><span>${m.hp}/${m.maxHp}</span></span></button>`;
   }).join('') + (forced ? '' : '<button class="back-btn" data-k="back">CANCEL</button>');
   box.classList.remove('hidden');
   box.querySelectorAll('button').forEach((b) => {

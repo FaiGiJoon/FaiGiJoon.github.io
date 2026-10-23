@@ -116,7 +116,8 @@ body {
 .box.enemy { top: 4%; left: 3%; }
 .box.player { bottom: 4%; right: 3%; }
 .box .nm { display: flex; gap: 6px; align-items: center; }
-.box .lv { margin-left: 30%; }
+.box .nm { flex-wrap: wrap; margin-bottom: 3px; }
+.box .lv { font-size: 0.85em; padding: 1px 4px; border-radius: 3px; background: var(--ink); color: var(--paper); }
 .st { font-size: 0.8em; padding: 1px 3px; border-radius: 2px; color: #fff; background: var(--gb-3); }
 .st:empty { display: none; }
 .hpwrap { display: flex; align-items: center; gap: 4px; border-bottom: 3px solid var(--ink); border-left: 3px solid var(--ink); padding: 2px 4px 4px; }

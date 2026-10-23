@@ -1,6 +1,6 @@
 # Battle Red (Mt. Silver)
 
-A browser rematch against PKMN Trainer RED from Pokémon Crystal. RED uses his real Crystal team, DVs, two Full Restores and AI. You get six random Pokémon obtainable in Gold/Silver/Crystal (no Mew/Celebi by default) at RED's levels (81, 73, 75, 77, 77, 77). Each knows the four level-up moves the game itself would give it.
+A browser rematch against PKMN Trainer RED from Pokémon Crystal. RED uses his real Crystal team, DVs, two Full Restores and AI. You get six random Pokémon obtainable in Gold/Silver/Crystal (no Mew/Celebi by default) Every Pokémon in the battle, on both sides, is level 60 (in Crystal RED's team is 73–81). Each knows the four level-up moves the game itself would give it.
 
 ## Where the data comes from
 

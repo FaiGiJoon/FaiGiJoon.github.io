@@ -21,7 +21,7 @@
     <section id="setup" class="screen">
       <div class="panel">
         <h2>Your team</h2>
-        <p class="hint">Six random Pokémon from Gold/Silver/Crystal at RED's levels (81 · 73 · 75 · 77 · 77 · 77), each knowing the moves the game itself would give it at that level.</p>
+        <p class="hint">Six random Pokémon from Gold/Silver/Crystal. Every Pokémon in the battle, yours and RED's, is level 60, each knowing the moves the game itself would give it at that level.</p>
         <ol id="team" class="team"></ol>
         <div class="row">
           <button id="reroll" class="btn">REROLL</button>
@@ -44,16 +44,14 @@
       <div class="gb">
         <div class="field">
           <div class="box enemy">
-            <div class="nm"><span id="e-name"></span><span id="e-status" class="st"></span></div>
-            <div class="lv" id="e-lv"></div>
+            <div class="nm"><span id="e-name"></span><span class="lv" id="e-lv"></span><span id="e-status" class="st"></span></div>
             <div class="hpwrap"><span class="hplabel">HP</span><div class="hpbar"><div id="e-hp" class="hpfill"></div></div></div>
             <div class="balls" id="e-balls"></div>
           </div>
           <div class="sprite enemy-sprite" id="e-sprite"></div>
           <div class="sprite player-sprite" id="p-sprite"></div>
           <div class="box player">
-            <div class="nm"><span id="p-name"></span><span id="p-status" class="st"></span></div>
-            <div class="lv" id="p-lv"></div>
+            <div class="nm"><span id="p-name"></span><span class="lv" id="p-lv"></span><span id="p-status" class="st"></span></div>
             <div class="hpwrap"><span class="hplabel">HP</span><div class="hpbar"><div id="p-hp" class="hpfill"></div></div></div>
             <div class="hpnum" id="p-hpnum"></div>
             <div class="balls" id="p-balls"></div>
