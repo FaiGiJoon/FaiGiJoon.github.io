@@ -18,8 +18,8 @@ const CRIT_MOVES = new Set(['KARATE CHOP', 'RAZOR WIND', 'RAZOR LEAF', 'CRABHAMM
 // Johto + Kanto badge type boosts (player only, x1.125)
 const BADGE_TYPES = new Set(['FLYING', 'BUG', 'NORMAL', 'GHOST', 'STEEL', 'FIGHTING', 'ICE', 'DRAGON',
   'ROCK', 'WATER', 'ELECTRIC', 'GRASS', 'POISON', 'PSYCHIC', 'FIRE', 'GROUND']);
-export const RED_LEVELS = [81, 73, 75, 77, 77, 77];
-export const PLAYER_LEVEL = 60; // every Pokémon on the random team
+export const RED_LEVELS = [81, 73, 75, 77, 77, 77]; // his levels in Crystal (data.red.party)
+export const BATTLE_LEVEL = 60; // every Pokémon in the battle, on both sides
 export const pct = (x) => Math.floor(x * 255 / 100);
 
 // AI flag bits (constants/ai_constants.asm)
@@ -114,7 +114,7 @@ export function randomTeam(data, rng, opts = {}) {
   const pool = speciesPool(data, opts);
   const team = [];
   const used = new Set();
-  const level = opts.level ?? PLAYER_LEVEL;
+  const level = opts.level ?? BATTLE_LEVEL;
   for (let k = 0; k < 6; k++) {
     let dex;
     do { dex = pool[rng.int(pool.length)]; } while (used.has(dex) && used.size < pool.length);
@@ -125,9 +125,10 @@ export function randomTeam(data, rng, opts = {}) {
   return team;
 }
 
-export function redTeam(data) {
+// RED's real species, DVs and moves, at BATTLE_LEVEL instead of his Crystal levels
+export function redTeam(data, level = BATTLE_LEVEL) {
   const r = data.red;
-  return r.party.map((p) => makeMon(data, p.species, p.level, r.dvs, p.moves, { happiness: 70 }));
+  return r.party.map((p) => makeMon(data, p.species, level, r.dvs, p.moves, { happiness: 70 }));
 }
 
 // ---------- battle state ----------
