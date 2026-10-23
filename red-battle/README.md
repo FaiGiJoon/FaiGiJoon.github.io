@@ -12,12 +12,14 @@ git -C ~/src/pokecrystal fetch --depth 1 origin symbols
 git -C ~/src/pokecrystal show FETCH_HEAD:pokecrystal.sym > ~/src/pokecrystal/pokecrystal.sym
 python3 red-battle/tools/extract.py crystal.gbc ~/src/pokecrystal red-battle/data.json
 python3 red-battle/tools/sprites.py crystal.gbc ~/src/pokecrystal red-battle/sprites
+python3 -I red-battle/tools/audio.py crystal.gbc ~/src/pokecrystal red-battle/audio.json
 node --test red-battle/test/
 ```
 
 | File | What it holds |
 | --- | --- |
 | `data.json` | 251 base stats and learnsets, 251 moves, the type chart, RED's party, DVs, items and AI flags |
+| `audio.json` | Crystal's music, SFX, cries and battle-animation scripts: only the ROM bytes the sound and animation engines reach |
 | `sprites/` | Front, back and trainer pics decompressed from the ROM (Gen II LZ, 2bpp, column-major tiles) |
 | `engine.js` | Gen II battle rules and RED's AI, ported from `engine/battle/*.asm` |
 | `app.js` | The battle screen |
