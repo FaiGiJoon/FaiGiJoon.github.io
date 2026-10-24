@@ -233,3 +233,9 @@ body {
 @media (prefers-reduced-motion: reduce) {
   .field.fx-invert-rapid, .field.fx-shake-x, .field.fx-shake-y, .sprite.fx-blink, .sprite.fx-wobble { animation: none; }
 }
+
+/* animation objects (animobj.js), drawn by animdraw.js */
+.anim-canvas {
+  position: absolute; inset: 0; width: 100%; height: 100%; z-index: 4;
+  image-rendering: pixelated; pointer-events: none;
+}

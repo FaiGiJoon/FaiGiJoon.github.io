@@ -1,7 +1,8 @@
 import { Battle, makeRng, randomTeam, redTeam } from './engine.js';
 import { createGameAudio } from './gbsound.js';
 import { soundEvents, hurtSides, hitSfx, moveMissed, HIT_LEAD } from './battle-audio.js';
-import { planAnimation, FRAME_HZ } from './anims.js';
+import { BattleAnimPlayer, FRAME_HZ } from './anims.js';
+import { createAnimCanvas, objPalettes, drawObjects, clearCanvas, picTiles } from './animdraw.js';
 
 const $ = (id) => document.getElementById(id);
 const STATUS_LABEL = { PAR: 'PAR', SLP: 'SLP', PSN: 'PSN', TOX: 'PSN', BRN: 'BRN', FRZ: 'FRZ' };
@@ -16,6 +17,10 @@ let audio = null;
 let gen = 0; // battle generation: timers and play loops from an abandoned battle check it and stop
 const timers = new Set();
 let animData = null; // audio.json: animation scripts (loaded on the silent setup screen, played in battle)
+let objData = null; // animobj.json: animation object graphics, framesets and palettes
+let animCanvas = null;
+const liveAnims = new Set(); // {objects, pals} of the animations running now
+const picCache = new Map();
 let muted = false;
 try { muted = localStorage.getItem('red-battle-muted') === '1'; } catch { /* storage unavailable */ }
 
@@ -91,6 +96,9 @@ async function main() {
   data = await (await fetch('data.json')).json();
   fetch('audio.json').then((r) => r.json()).then((d) => { animData = d; })
     .catch((err) => console.warn('battle animations unavailable:', err));
+  fetch('animobj.json').then((r) => r.json()).then((d) => { objData = d; })
+    .catch((err) => console.warn('battle animation sprites unavailable:', err));
+  animCanvas = createAnimCanvas(document.querySelector('.field'));
   rerollTeam();
   renderRed();
   $('reroll').onclick = rerollTeam;
@@ -117,6 +125,8 @@ function newTeam() {
   fxTimers.forEach(clearTimeout); fxTimers.clear();
   waiter = null; typing?.finish();
   clearEffects(true);
+  liveAnims.clear();
+  if (animCanvas) clearCanvas(animCanvas);
   snd((a) => { a.stopMusic(); a.ctx.suspend().catch(() => {}); });
   mediaKeepAlive?.pause();
   $('battle').classList.add('hidden'); $('setup').classList.remove('hidden');
@@ -274,24 +284,63 @@ function center(el, field) {
 
 // Crystal's animation script for a move/special: its sounds at their frames plus the BG
 // effects as CSS (anims.js). INSTANT text speed caps it at 0.4 s, sounds only.
+// Runs a Crystal animation script in real time (59.7275 frames/s): its sounds, its BG effects as
+// CSS and its objects (animobj.js) drawn on the canvas over the field. INSTANT text speed caps it
+// at 0.4 s, sounds only.
 async function playAnim(key, attackerIsPlayer, dex) {
   if (!animData) return;
-  const plan = planAnimation(animData, key, { attackerIsPlayer });
   const fast = !animOn();
-  const endMs = Math.min(plan[plan.length - 1].frame / FRAME_HZ * 1000, fast ? 400 : Infinity);
-  const mine = [];
-  for (const e of plan) {
-    const ms = e.frame / FRAME_HZ * 1000;
-    if (ms > endMs) break;
-    if (e.kind === 'sfx') mine.push(later(ms, () => snd((a) => a.sfx(e.name, { pan: e.pan }))));
-    else if (e.kind === 'cry') mine.push(later(ms, () => snd((a) => a.cry(dex, { pitch: e.pitch, length: e.length, tracks: e.tracks }))));
-    else if (e.kind === 'bg' && e.css && !fast) mine.push(later(ms, () => bgEffect(e)));
-  }
+  const moveId = /^\d+$/.test(key) ? +key : 0;
+  const p = new BattleAnimPlayer(animData, key, { attackerIsPlayer, objData: fast ? null : objData, moveId });
   const g = gen;
-  await wait(endMs);
+  let layer = null;
+  if (p.objects) {
+    const enemy = $('e-sprite').dataset.dex; const player = $('p-sprite').dataset.dex;
+    p.objects.pics = { enemy: await pic(enemy, false), player: await pic(player, true) };
+    layer = { objects: p.objects, pals: objPalettes(objData, enemy, player) };
+    liveAnims.add(layer);
+  }
+  const maxFrames = fast ? Math.round(0.4 * FRAME_HZ) : Infinity;
+  await new Promise((resolve) => {
+    const t0 = performance.now();
+    const tick = () => {
+      if (g !== gen) { resolve(); return; }
+      const due = Math.min(maxFrames, Math.floor((performance.now() - t0) * FRAME_HZ / 1000) + 1);
+      while (p.frame < due && !p.done) for (const e of p.step()) animEvent(e, dex, fast);
+      if (layer) drawObjects(animCanvas, [...liveAnims]);
+      if (p.done || p.frame >= maxFrames) { resolve(); return; }
+      if (document.hidden) setTimeout(tick, 50); else requestAnimationFrame(tick);
+    };
+    tick();
+  });
+  if (layer) {
+    liveAnims.delete(layer);
+    if (liveAnims.size) drawObjects(animCanvas, [...liveAnims]); else clearCanvas(animCanvas);
+  }
   if (g !== gen) return;
-  mine.forEach((t) => { clearTimeout(t); timers.delete(t); });
   clearEffects();
+}
+
+function animEvent(e, dex, fast) {
+  if (e.kind === 'sfx') snd((a) => a.sfx(e.name, { pan: e.pan }));
+  else if (e.kind === 'cry') snd((a) => a.cry(dex, { pitch: e.pitch, length: e.length, tracks: e.tracks }));
+  else if (e.kind === 'bg' && e.css && !fast) bgEffect(e);
+}
+
+// A mon pic as 2bpp tiles, for the animations that copy part of a mon (anim_battlergfx_*)
+async function pic(dex, back) {
+  const key = `${back ? 'b' : 'f'}${dex}`;
+  if (!picCache.has(key)) {
+    picCache.set(key, (async () => {
+      const src = await sprite(+dex, back);
+      if (!src) return null;
+      const im = new Image();
+      im.src = src;
+      await im.decode();
+      return picTiles(im, !back);
+    })().catch(() => null));
+  }
+  return picCache.get(key);
 }
 
 const FX_CLASSES = ['fx-invert', 'fx-invert-rapid', 'fx-white', 'fx-dark', 'fx-shake-x', 'fx-shake-y',
