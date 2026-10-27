@@ -1,94 +1,87 @@
+'use strict';
+
+// Shared behaviour for every page: icons, mobile menu, navbar, scroll reveal.
+// Kept in an external file so it runs under the page's Content-Security-Policy.
+
 document.addEventListener('DOMContentLoaded', () => {
-    // Lucide Icons
-    if (typeof globalThis.lucide !== 'undefined') {
+    if (globalThis.lucide) {
         globalThis.lucide.createIcons();
     }
-    
-    // Mobile Menu Toggle
-    const mobileMenuBtn = document.getElementById('mobile-menu-btn');
-    const mobileMenu = document.getElementById('mobile-menu');
-    
-    if (mobileMenuBtn && mobileMenu) {
-        mobileMenuBtn.addEventListener('click', () => {
-            mobileMenu.classList.toggle('hidden');
-        });
 
-        // Close mobile menu on link click
-        mobileMenu.querySelectorAll('a').forEach(link => {
-            link.addEventListener('click', () => {
-                mobileMenu.classList.add('hidden');
-            });
+    // Mobile menu
+    const menuBtn = document.getElementById('mobile-menu-btn');
+    const menu = document.getElementById('mobile-menu');
+
+    if (menuBtn && menu) {
+        const setOpen = (open) => {
+            menu.classList.toggle('hidden', !open);
+            menuBtn.setAttribute('aria-expanded', String(open));
+        };
+
+        menuBtn.addEventListener('click', () => {
+            setOpen(menuBtn.getAttribute('aria-expanded') !== 'true');
+        });
+        menu.querySelectorAll('a').forEach(link => {
+            link.addEventListener('click', () => setOpen(false));
+        });
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && menuBtn.getAttribute('aria-expanded') === 'true') {
+                setOpen(false);
+                menuBtn.focus();
+            }
         });
     }
-    
-    // Navbar scroll effect
+
+    // Navbar shadow once the page scrolls
     const navbar = document.getElementById('navbar');
-    let lastScroll = 0;
-    
     if (navbar) {
-        window.addEventListener('scroll', () => {
-            const currentScroll = window.pageYOffset;
-            
-            if (currentScroll <= 0) {
-                navbar.classList.remove('-translate-y-full', 'shadow-lg');
-                return;
-            }
-            
-            if (currentScroll > lastScroll && currentScroll > 80) {
-                navbar.classList.add('-translate-y-full');
-            } else {
-                navbar.classList.remove('-translate-y-full');
-                navbar.classList.add('shadow-lg', 'shadow-primary/5');
-            }
-            
-            if (currentScroll < 20) {
-                navbar.classList.remove('shadow-lg', 'shadow-primary/5');
-            }
-            
-            lastScroll = currentScroll;
-        });
+        const onScroll = () => {
+            navbar.classList.toggle('shadow-lg', window.scrollY > 24);
+            navbar.classList.toggle('shadow-black/30', window.scrollY > 24);
+        };
+        window.addEventListener('scroll', onScroll, { passive: true });
+        onScroll();
     }
-    
-    // Smooth scroll for navigation links
-    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-        anchor.addEventListener('click', function (e) {
-            const href = this.getAttribute('href');
-            if (href.startsWith('#')) {
-                const targetId = href;
-                const target = document.querySelector(targetId);
-                if (target) {
-                    e.preventDefault();
-                    target.scrollIntoView({
-                        behavior: 'smooth',
-                        block: 'start'
-                    });
-                }
-            }
-        });
-    });
-    
-    // Reveal animations on scroll
-    const revealElements = document.querySelectorAll('.reveal');
-    if (revealElements.length > 0) {
-        const revealObserver = new IntersectionObserver((entries) => {
+
+    // Highlight the nav link of the section in view (one-page index only)
+    const sectionLinks = document.querySelectorAll('[data-nav-section]');
+    if (sectionLinks.length) {
+        const sectionObserver = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    entry.target.classList.add('active');
-                    
-                    // Animate skill bars if inside this element
-                    const skillBars = entry.target.querySelectorAll('.skill-bar');
-                    skillBars.forEach(bar => {
-                        setTimeout(() => {
-                            bar.style.width = bar.dataset.width;
-                        }, 200);
-                    });
-                }
+                if (!entry.isIntersecting) return;
+                sectionLinks.forEach(link => {
+                    if (link.dataset.navSection === entry.target.id) {
+                        link.setAttribute('aria-current', 'true');
+                    } else {
+                        link.removeAttribute('aria-current');
+                    }
+                });
             });
-        }, {
-            threshold: 0.1,
-            rootMargin: '0px 0px -50px 0px'
-        });
-        
-        revealElements.forEach(el => revealObserver.observe(el));
+        }, { rootMargin: '-45% 0px -50% 0px' });
+
+        // Observe every section (including the hero) so the highlight clears at the top
+        document.querySelectorAll('main section[id]').forEach(section => sectionObserver.observe(section));
     }
+
+    observeReveals(document);
 });
+
+// Exposed so dynamically rendered content (GitHub repos) can opt in too.
+function observeReveals(root) {
+    const elements = root.querySelectorAll('.reveal:not(.active)');
+    if (!('IntersectionObserver' in window)) {
+        elements.forEach(el => el.classList.add('active'));
+        return;
+    }
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('active');
+                observer.unobserve(entry.target);
+            }
+        });
+    }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+
+    elements.forEach(el => observer.observe(el));
+}
+globalThis.observeReveals = observeReveals;
