@@ -254,9 +254,28 @@ button:focus-visible {
     pointer-events: none;
 }
 
+/* 3D stadium: darken behind the text column so copy stays readable on bright skies */
+.stadium-shade {
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+    background:
+        linear-gradient(90deg, rgba(2, 6, 23, 0.8) 0%, rgba(2, 6, 23, 0.55) 42%, rgba(2, 6, 23, 0.1) 78%),
+        linear-gradient(180deg, rgba(2, 6, 23, 0.45) 0%, rgba(2, 6, 23, 0) 25%, rgba(2, 6, 23, 0) 70%, rgba(2, 6, 23, 0.5) 100%);
+}
+@media (max-width: 1023px) {
+    .stadium-shade {
+        background: linear-gradient(180deg, rgba(2, 6, 23, 0.7), rgba(2, 6, 23, 0.5));
+    }
+}
+
 /* Long-form pages (blog posts) keep the stadium quiet behind the text */
 .stadium-calm .stadium-canvas {
     opacity: 0.3;
+}
+.stadium-calm .stadium-shade {
+    background: rgba(2, 6, 23, 0.6);
 }
 
 /* Floating stadium picker */

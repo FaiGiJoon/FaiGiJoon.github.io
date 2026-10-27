@@ -8,6 +8,8 @@
  * - Themes are picked from the floating "Stadium" control and saved in localStorage.
  * - Effects can be switched off; prefers-reduced-motion gets a single still frame.
  * - Rendering pauses while the tab is hidden.
+ * - A richer renderer (assets/js/stadium3d.js) can take over via
+ *   window.Stadium.register(); this 2D scene then stays as the fallback.
  */
 
 (function () {
@@ -74,6 +76,7 @@
     let w = 0, h = 0, dpr = 1;
     let particles = [], shards = [], stars = [], flashes = [], burst = null;
     let rafId = null, lastTime = 0, time = 0;
+    let external = null; // 3D renderer, once registered
 
     const rand = (min, max) => min + Math.random() * (max - min);
 
@@ -133,7 +136,7 @@
         canvas.style.height = `${h}px`;
         ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
         resetEntities();
-        if (!isAnimating()) drawFrame(0);
+        if (!external && !isAnimating()) drawFrame(0);
     }
 
     // --- Drawing ----------------------------------------------------------------
@@ -493,6 +496,11 @@
     function start() {
         stop();
         document.documentElement.dataset.stadiumFx = effectsOn ? 'on' : 'off';
+        if (external) {
+            external.setVisible(effectsOn);
+            if (effectsOn) external.start({ still: reduceMotion.matches });
+            return;
+        }
         canvas.hidden = !effectsOn;
         if (!effectsOn) return;
         if (reduceMotion.matches) {
@@ -505,12 +513,14 @@
     }
 
     function stop() {
+        if (external) external.stop();
         if (rafId) cancelAnimationFrame(rafId);
         rafId = null;
     }
 
     function triggerBurst() {
         if (!isAnimating()) return;
+        if (external) { external.burst(); return; }
         const hero = document.getElementById('home');
         const rect = hero ? hero.getBoundingClientRect() : null;
         burst = {
@@ -529,7 +539,8 @@
         document.documentElement.dataset.stadium = key;
         document.documentElement.style.setProperty('--stadium-accent', THEMES[key].accent);
         document.documentElement.style.setProperty('--stadium-glow', THEMES[key].glow);
-        if (!isAnimating() && effectsOn) drawFrame(0);
+        if (external) external.setTheme(key, THEMES[key]);
+        else if (!isAnimating() && effectsOn) drawFrame(0);
         updateControls();
     }
 
@@ -603,7 +614,7 @@
     // --- Boot ---------------------------------------------------------------------
 
     function init() {
-        document.body.prepend(canvas);
+        if (!external) document.body.prepend(canvas);
         applyTheme(themeKey);
         resize();
         buildControls();
@@ -615,12 +626,27 @@
         if (!seen) triggerBurst();
 
         window.addEventListener('resize', resize);
-        window.addEventListener('scroll', () => { if (!isAnimating() && effectsOn) drawFrame(0); }, { passive: true });
+        window.addEventListener('scroll', () => { if (!external && !isAnimating() && effectsOn) drawFrame(0); }, { passive: true });
         document.addEventListener('visibilitychange', () => {
             if (document.hidden) stop(); else start();
         });
         reduceMotion.addEventListener?.('change', start);
     }
+
+    /*
+     * Hand rendering over to another renderer. `api` must provide
+     * start({ still }), stop(), setVisible(bool), setTheme(key, theme) and burst().
+     */
+    function register(api) {
+        stop();
+        external = api;
+        canvas.remove();
+        window.removeEventListener('resize', resize);
+        external.setTheme(themeKey, THEMES[themeKey]);
+        start();
+    }
+
+    window.Stadium = { register, themes: THEMES };
 
     if (document.readyState === 'loading') {
         document.addEventListener('DOMContentLoaded', init);
