@@ -14,19 +14,26 @@
 
 (function () {
     const THEMES = {
-        arena: {
-            label: 'Arena',
-            skyTop: '#020617', skyBottom: '#0b2266', stands: '#030a24',
-            floorInner: '#1d4ed8', floorOuter: '#06112e',
-            ring: '#7cc4ff', glow: '#3b82f6', beam: '#a9dcff', particle: '#d6efff',
-            accent: '#60a5fa'
+        gateway: {
+            label: 'Gateway',
+            skyTop: '#02030d', skyBottom: '#1b1640', stands: '#060818',
+            floorInner: '#1f6f8a', floorOuter: '#06112e',
+            ring: '#8dff5a', glow: '#ff4fd8', beam: '#fff3b0', particle: '#d6efff',
+            accent: '#7dff6a', cityLights: true
         },
-        neon: {
-            label: 'Neon',
-            skyTop: '#05010f', skyBottom: '#33105c', stands: '#0a0320',
-            floorInner: '#7e22ce', floorOuter: '#12052a',
-            ring: '#ff5fdc', glow: '#c026d3', beam: '#22d3ee', particle: '#f5c2ff',
-            accent: '#e879f9', cityLights: true
+        mainstreet: {
+            label: 'Main Street',
+            skyTop: '#5f8fb3', skyBottom: '#d9e8f2', stands: '#7d93a6',
+            floorInner: '#d8774d', floorOuter: '#3b4a5a',
+            ring: '#ffd36b', glow: '#e7b53c', beam: '#fff8e8', particle: '#ffe0f0',
+            accent: '#fbbf24'
+        },
+        waterfall: {
+            label: 'Waterfall',
+            skyTop: '#0b3a5c', skyBottom: '#1fb5c9', stands: '#16352a',
+            floorInner: '#3f9e6a', floorOuter: '#08303a',
+            ring: '#b8fff0', glow: '#2fb38a', beam: '#e9fff9', particle: '#ffffff',
+            accent: '#5eead4'
         },
         crystal: {
             label: 'Crystal',
@@ -41,6 +48,13 @@
             floorInner: '#ea580c', floorOuter: '#2a0a17',
             ring: '#ffc58a', glow: '#f97316', beam: '#ffe5a3', particle: '#ffe0bf',
             accent: '#fb923c'
+        },
+        neon: {
+            label: 'Neon',
+            skyTop: '#05010f', skyBottom: '#33105c', stands: '#0a0320',
+            floorInner: '#7e22ce', floorOuter: '#12052a',
+            ring: '#ff5fdc', glow: '#c026d3', beam: '#22d3ee', particle: '#f5c2ff',
+            accent: '#e879f9', cityLights: true
         },
         starlight: {
             label: 'Starlight',
@@ -64,8 +78,8 @@
         }
     };
 
-    let themeKey = store.get(STORAGE_THEME, 'arena');
-    if (!THEMES[themeKey]) themeKey = 'arena';
+    let themeKey = store.get(STORAGE_THEME, 'gateway');
+    if (!THEMES[themeKey]) themeKey = 'gateway';
     let effectsOn = store.get(STORAGE_FX, 'on') !== 'off';
 
     const canvas = document.createElement('canvas');
