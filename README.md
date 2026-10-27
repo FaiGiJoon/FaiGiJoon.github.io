@@ -14,6 +14,7 @@ Shared assets used by every page (index, blog, post layout):
 - `assets/js/tailwind-config.js` — Tailwind theme (colors, fonts)
 - `assets/css/extra.css` — shared components (buttons, cards, tags, nav, timeline) and reduced-motion support
 - `assets/js/main.js` — icons, accessible mobile menu, active nav link, scroll reveal
+- `assets/js/stadium.js` — animated battle-stadium background drawn on a canvas (original art, no game assets), with a floating **Stadium** picker (Arena, Neon, Crystal, Sunset, Starlight) and an effects on/off switch. Respects `prefers-reduced-motion` and pauses in background tabs.
 - `_includes/nav.html` / `_includes/footer.html` — navigation and footer for Jekyll pages
 
 ### Technologies

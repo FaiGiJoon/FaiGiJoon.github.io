@@ -29,7 +29,7 @@
     <meta property="og:title" content="Casper Klootwijk — System Support Engineer">
     <meta property="og:description" content="Network configuration, identity &amp; access management and workplace IT, based in Utrecht, Netherlands.">
     <meta property="og:url" content="https://faigijoon.github.io/">
-    <meta property="og:image" content="https://faigijoon.github.io/assets/img/screenshots/home.png">
+    <meta property="og:image" content="https://faigijoon.github.io/assets/img/screenshots/stadium-arena.png">
 
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -89,8 +89,6 @@
     <main id="main">
         <!-- Hero -->
         <section id="home" class="relative min-h-[92vh] flex items-center overflow-hidden pt-16">
-            <div class="absolute inset-0 hero-grid" aria-hidden="true"></div>
-            <div class="hero-glow -top-40 left-1/2 -translate-x-1/2" aria-hidden="true"></div>
 
             <div class="relative z-10 max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-20 w-full">
                 <div class="max-w-3xl">
@@ -120,24 +118,36 @@
                 </div>
 
                 <!-- Stats -->
-                <dl class="mt-16 grid grid-cols-2 lg:grid-cols-4 gap-4 max-w-4xl">
-                    <div class="glass-card p-5 flex flex-col-reverse">
-                        <dt class="text-sm text-gray-400">Years in IT</dt>
-                        <dd class="text-3xl font-bold text-gray-100 mb-1">5+</dd>
+                <div class="mt-16 grid grid-cols-2 lg:grid-cols-4 gap-4 max-w-4xl">
+                    <div class="glass-card p-5">
+                        <dl class="flex flex-col-reverse">
+                            <dt class="text-sm text-gray-400">Years in IT</dt>
+                            <dd class="text-3xl font-bold text-gray-100 mb-1">5+</dd>
+                        </dl>
+                        <span class="hp-bar" aria-hidden="true">HP<span class="hp-bar-track"><span class="hp-bar-fill"></span></span></span>
                     </div>
-                    <div class="glass-card p-5 flex flex-col-reverse">
-                        <dt class="text-sm text-gray-400">Organizations</dt>
-                        <dd class="text-3xl font-bold text-gray-100 mb-1">4</dd>
+                    <div class="glass-card p-5">
+                        <dl class="flex flex-col-reverse">
+                            <dt class="text-sm text-gray-400">Organizations</dt>
+                            <dd class="text-3xl font-bold text-gray-100 mb-1">4</dd>
+                        </dl>
+                        <span class="hp-bar" aria-hidden="true">HP<span class="hp-bar-track"><span class="hp-bar-fill"></span></span></span>
                     </div>
-                    <div class="glass-card p-5 flex flex-col-reverse">
-                        <dt class="text-sm text-gray-400">ICT teaching</dt>
-                        <dd class="text-3xl font-bold text-gray-100 mb-1">MBO 4</dd>
+                    <div class="glass-card p-5">
+                        <dl class="flex flex-col-reverse">
+                            <dt class="text-sm text-gray-400">ICT teaching</dt>
+                            <dd class="text-3xl font-bold text-gray-100 mb-1">MBO 4</dd>
+                        </dl>
+                        <span class="hp-bar" aria-hidden="true">HP<span class="hp-bar-track"><span class="hp-bar-fill"></span></span></span>
                     </div>
-                    <div class="glass-card p-5 flex flex-col-reverse">
-                        <dt class="text-sm text-gray-400">Enterprise support</dt>
-                        <dd class="text-3xl font-bold text-gray-100 mb-1">Global</dd>
+                    <div class="glass-card p-5">
+                        <dl class="flex flex-col-reverse">
+                            <dt class="text-sm text-gray-400">Enterprise support</dt>
+                            <dd class="text-3xl font-bold text-gray-100 mb-1">Global</dd>
+                        </dl>
+                        <span class="hp-bar" aria-hidden="true">HP<span class="hp-bar-track"><span class="hp-bar-fill"></span></span></span>
                     </div>
-                </dl>
+                </div>
             </div>
         </section>
 
@@ -197,7 +207,7 @@
         </section>
 
         <!-- Experience -->
-        <section id="experience" class="py-24 bg-dark/40 border-t border-white/5" aria-labelledby="experience-title">
+        <section id="experience" class="py-24 border-t border-white/5" aria-labelledby="experience-title">
             <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div class="mb-12 reveal">
                     <p class="eyebrow mb-3">Career</p>
@@ -314,29 +324,33 @@
                 </div>
 
                 <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                    <div class="glass-card p-6 reveal">
+                    <div class="glass-card move-plate type-electric p-6 reveal">
                         <span class="w-10 h-10 rounded-lg bg-primary/15 flex items-center justify-center mb-4" aria-hidden="true"><i data-lucide="network" class="w-5 h-5 text-primary-light"></i></span>
+                        <span class="move-type mb-3">Electric</span>
                         <h3 class="font-semibold text-gray-100 mb-3">Networking &amp; infrastructure</h3>
                         <ul class="space-y-2 text-sm text-gray-400">
                             <li>MikroTik</li><li>Network configuration</li><li>Wireless access points</li><li>SSH / PuTTY</li><li>IoT devices</li>
                         </ul>
                     </div>
-                    <div class="glass-card p-6 reveal">
+                    <div class="glass-card move-plate type-psychic p-6 reveal">
                         <span class="w-10 h-10 rounded-lg bg-primary/15 flex items-center justify-center mb-4" aria-hidden="true"><i data-lucide="key-round" class="w-5 h-5 text-primary-light"></i></span>
+                        <span class="move-type mb-3">Psychic</span>
                         <h3 class="font-semibold text-gray-100 mb-3">Identity &amp; workplace</h3>
                         <ul class="space-y-2 text-sm text-gray-400">
                             <li>Google Workspace</li><li>Microsoft 365</li><li>Okta</li><li>Active Directory</li><li>Onboarding &amp; migrations</li>
                         </ul>
                     </div>
-                    <div class="glass-card p-6 reveal">
+                    <div class="glass-card move-plate type-steel p-6 reveal">
                         <span class="w-10 h-10 rounded-lg bg-primary/15 flex items-center justify-center mb-4" aria-hidden="true"><i data-lucide="server" class="w-5 h-5 text-primary-light"></i></span>
+                        <span class="move-type mb-3">Steel</span>
                         <h3 class="font-semibold text-gray-100 mb-3">Systems &amp; virtualization</h3>
                         <ul class="space-y-2 text-sm text-gray-400">
                             <li>Windows Server</li><li>Hyper-V</li><li>Microsoft Azure</li><li>Hardware troubleshooting</li><li>OS installation</li>
                         </ul>
                     </div>
-                    <div class="glass-card p-6 reveal">
+                    <div class="glass-card move-plate type-grass p-6 reveal">
                         <span class="w-10 h-10 rounded-lg bg-primary/15 flex items-center justify-center mb-4" aria-hidden="true"><i data-lucide="workflow" class="w-5 h-5 text-primary-light"></i></span>
+                        <span class="move-type mb-3">Grass</span>
                         <h3 class="font-semibold text-gray-100 mb-3">Automation &amp; support</h3>
                         <ul class="space-y-2 text-sm text-gray-400">
                             <li>Google AppSheet</li><li>JavaScript</li><li>Service desk &amp; incidents</li><li>Teaching &amp; documentation</li><li>SIEM</li>
@@ -347,7 +361,7 @@
         </section>
 
         <!-- Projects -->
-        <section id="projects" class="py-24 bg-dark/40 border-t border-white/5" aria-labelledby="projects-title">
+        <section id="projects" class="py-24 border-t border-white/5" aria-labelledby="projects-title">
             <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div class="flex flex-col md:flex-row md:items-end md:justify-between gap-4 mb-12 reveal">
                     <div>
@@ -419,6 +433,7 @@
     <!-- Lucide Icons (pinned so icons can't change or disappear underneath us) -->
     <script src="https://unpkg.com/lucide@0.469.0/dist/umd/lucide.min.js"></script>
     <script src="assets/js/main.js"></script>
+    <script src="assets/js/stadium.js"></script>
     <script src="assets/js/github-repos.js"></script>
 </body>
 </html>
