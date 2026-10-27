@@ -2,6 +2,8 @@
 // planAnimation() steps a script from audio.json frame by frame and returns a timeline;
 // app.js turns it into sounds (gbsound) and CSS effects. Object/particle sprites are not drawn.
 
+import { AnimObjects } from './animobj.js';
+
 export const FRAME_HZ = 59.7275;
 const MAX_FRAMES = Math.round(6 * FRAME_HZ);
 const PAN = [0xf0, 0x0f, 0xf0, 0x0f]; // BattleAnimCmd_Sound.GetPanning
@@ -52,20 +54,58 @@ function reader(audioData) {
   return readers.get(audioData);
 }
 
-// animKey: a move id ('85') or a special ('enemyDamage', 'sendOutMon', ...).
-// param is wBattleAnimParam (0 unless the move sets it, e.g. multi-hit counts).
-// Frames are counted from the script's first command; the last entry is {kind: 'end'}.
-export function planAnimation(audioData, animKey, { attackerIsPlayer = true, param = 0 } = {}) {
-  const entry = audioData.anims[animKey];
-  if (!entry) return [{ frame: 0, kind: 'end' }];
-  const { rd, sfxById } = reader(audioData);
-  const turn = attackerIsPlayer ? 0 : 1;
-  const out = [];
-  const s = { pc: entry.addr, parent: 0, inSub: false, inLoop: false, loops: 0, delay: 0, v: 0, param, stop: false };
-  const byte = () => rd(s.pc++);
-  const word = () => { const lo = byte(); return lo | (byte() << 8); };
-  let frame = 0;
-  const runScript = () => {
+// Steps one animation script frame by frame like RunBattleAnimScript: each frame runs the
+// script command(s) (RunBattleAnimCommand), then every animation object (BattleAnim_UpdateOAM_All).
+// objData (animobj.json) is optional; without it the object commands are only reported.
+export class BattleAnimPlayer {
+  constructor(audioData, animKey, { attackerIsPlayer = true, param = 0, objData = null, moveId = 0 } = {}) {
+    const entry = audioData.anims[animKey];
+    this.audio = audioData;
+    this.r = reader(audioData);
+    this.turn = attackerIsPlayer ? 0 : 1;
+    this.s = { pc: entry ? entry.addr : 0, parent: 0, inSub: false, inLoop: false, loops: 0, delay: 0, v: 0, param, stop: !entry };
+    this.frame = 0;
+    this.objects = objData ? new AnimObjects(objData) : null;
+    if (this.objects) {
+      this.objects.turn = this.turn;
+      this.objects.fxAnimId = moveId;
+    }
+  }
+
+  get done() { return this.s.stop || this.frame >= MAX_FRAMES; }
+
+  // Runs one frame; returns that frame's events (sfx/cry/bg/obj)
+  step() {
+    const out = [];
+    if (this.done) return out;
+    const s = this.s;
+    if (s.delay) s.delay--; // RunBattleAnimCommand.CheckTimer
+    else this.runScript(out);
+    this.bgEffects(out);
+    if (this.objects) this.objects.updateAll();
+    this.frame++;
+    return out;
+  }
+
+  // _ExecuteBGEffects, for the part that touches objects: on their first frame the
+  // BATTLEROBJ_1ROW/2ROW effects add an object showing part of the mon (BattleBGEffect_BattlerObj_*)
+  bgEffects(out) {
+    const objs = this.objects;
+    if (!objs) return;
+    for (const e of out) {
+      if (e.kind !== 'bg' || !/^BATTLEROBJ_(1|2)ROW$/.test(e.effect)) continue;
+      const rows = e.effect[11];
+      const name = e.mon === 'player' ? `PLAYERHEAD_${rows}ROW` : `ENEMYFEET_${rows}ROW`;
+      objs.queue(objs.objIds[name], e.mon === 'player' ? 6 * 8 : 16 * 8 + 4, 8 * 8, 0);
+    }
+  }
+
+  runScript(out) {
+    const { rd, sfxById } = this.r;
+    const s = this.s; const frame = this.frame; const turn = this.turn; const objs = this.objects;
+    const audioData = this.audio;
+    const byte = () => rd(s.pc++);
+    const word = () => { const lo = byte(); return lo | (byte() << 8); };
     for (let n = 0; n < 512; n++) {
       const op = byte();
       if (op === 0xff) { // anim_ret
@@ -78,6 +118,24 @@ export function planAnimation(audioData, animKey, { attackerIsPlayer = true, par
       const cmd = audioData.animCommands[op];
       const start = s.pc;
       switch (op) {
+        case 0xd0: { // anim_obj id, x, y, param
+          const id = byte(); const x = byte(); const y = byte(); const p = byte();
+          if (objs) objs.queue(id, x, y, p);
+          out.push({ frame, kind: 'obj', op: 'anim_obj', id });
+          break;
+        }
+        case 0xd1: case 0xd2: case 0xd3: case 0xd4: case 0xd5: { // anim_Ngfx
+          const ids = [];
+          for (let k = 0; k < (op & 0xf); k++) ids.push(byte());
+          if (objs) objs.loadGfx(ids);
+          break;
+        }
+        case 0xd6: { const id = byte(); if (objs) objs.incObj(id); break; } // anim_incobj
+        case 0xd7: { const id = byte(); const v = byte(); if (objs) objs.setObj(id, v); break; } // anim_setobj
+        case 0xd9: case 0xda: if (objs) objs.battlerGfx(op === 0xd9); break; // anim_battlergfx_2row/1row
+        case 0xdf: if (objs) objs.obp0 = 0xe0; break; // anim_resetobp0
+        case 0xe5: if (objs) objs.clearObjs(); break; // anim_clearobjs
+        case 0xf2: { const v = byte(); if (objs) objs.obp0 = v; break; } // anim_obp0
         case 0xe0: { // anim_sound duration, tracks, id
           const t = byte() & 3;
           const name = sfxById.get(byte());
@@ -122,18 +180,23 @@ export function planAnimation(audioData, animKey, { attackerIsPlayer = true, par
         case 0xfa: s.v = (s.v + 1) & 0xff; break; // anim_incvar
         case 0xfb: { const v = byte(); if (s.v === v) s.pc = word(); else s.pc += 2; break; } // anim_if_var_equal
         default:
-          // gfx/object/palette commands: skipped, kept for a later sprite port. anim_checkpokeball
-          // would set the param from the ball result; it is left unchanged (no catching here).
+          // palettes, pic/transform and other commands: skipped. anim_checkpokeball would set the
+          // param from the ball result; it is left unchanged (no catching here).
           s.pc = start + (cmd ? cmd.length - 1 : 0);
           out.push({ frame, kind: 'obj', op: cmd ? cmd.name : op });
       }
     }
     s.stop = true; // runaway script
-  };
-  for (; frame < MAX_FRAMES && !s.stop; frame++) {
-    if (s.delay) s.delay--; // RunBattleAnimCommand.CheckTimer
-    else runScript();
   }
-  out.push({ frame, kind: 'end' });
+}
+
+// animKey: a move id ('85') or a special ('enemyDamage', 'sendOutMon', ...).
+// param is wBattleAnimParam (0 unless the move sets it, e.g. multi-hit counts).
+// Frames are counted from the script's first command; the last entry is {kind: 'end'}.
+export function planAnimation(audioData, animKey, opts = {}) {
+  const p = new BattleAnimPlayer(audioData, animKey, opts);
+  const out = [];
+  while (!p.done) out.push(...p.step());
+  out.push({ frame: p.frame, kind: 'end' });
   return out;
 }
