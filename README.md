@@ -1,20 +1,26 @@
 # FaiGiJoon.github.io
 
-Personal portfolio website built with a modern dark/glass design and Tailwind CSS. The current `index.html` contains a full one‑page layout including:
+Personal portfolio website with a dark, minimal design built on Tailwind CSS. `index.html` is a one-page layout:
 
-- **Hero** section with animated gradient text and call‑to‑action buttons
-- **About** overview with availability badge
-- **Skills** grid with animated progress bars (technical, cloud/tools, soft skills)
+- **Hero** with name, role, availability badge, CV download and key stats
+- **About** with an "At a glance" card and personal interests
 - **Experience** timeline of past roles
-- **Blog** previews
-- **Contact** form powered by Formspree
-- **Footer** with social links and custom Lucide icons
+- **Skills & tools** grouped by area
+- **Recent projects** loaded live from the GitHub API
+- **Contact** with email and GitHub links
+
+Shared assets used by every page (index, blog, post layout):
+
+- `assets/js/tailwind-config.js` — Tailwind theme (colors, fonts)
+- `assets/css/extra.css` — shared components (buttons, cards, tags, nav, timeline) and reduced-motion support
+- `assets/js/main.js` — icons, accessible mobile menu, active nav link, scroll reveal
+- `_includes/nav.html` / `_includes/footer.html` — navigation and footer for Jekyll pages
 
 ### Technologies
 
 - Tailwind CSS (via CDN) with a small custom configuration for colors, animations and fonts.
 - Vanilla JavaScript for mobile navigation toggle, scroll‑reveal animations, and skill bar animations.
 - Lucide icon library loaded from unpkg.
-- CSP-friendly structure: minimal inline scripts/styles (all JS lives in the bottom of `index.html`), and assets are served locally.
+- CSP-friendly structure: no inline scripts; all JavaScript lives in `assets/js/`.
 
 
