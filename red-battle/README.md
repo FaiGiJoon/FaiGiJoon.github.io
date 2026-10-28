@@ -1,6 +1,6 @@
-# Battle Red (Mt. Silver)
+# Battle Red (Goldenrod Gym)
 
-A browser rematch against PKMN Trainer RED from Pokémon Crystal. RED uses his real Crystal team, DVs, two Full Restores and AI. You get six random Pokémon obtainable in Gold/Silver/Crystal (no Mew/Celebi by default) Every Pokémon in the battle, on both sides, is level 60 (in Crystal RED's team is 73–81). Each knows the four level-up moves the game itself would give it.
+A browser battle against the strongest trainers in Pokémon Crystal: PKMN Trainer RED, the Elite Four (WILL, KOGA, BRUNO, KAREN) and Champion LANCE. Pick one in the Goldenrod town's Gym, or open `red-battle/?vs=will|koga|bruno|karen|lance|red` (default RED). Each uses their real Crystal team, moves, DVs, items (Full Restore, Max Potion, Full Heal), AI, battle text and battle music. You get six random Pokémon obtainable in Gold/Silver/Crystal (no Mew/Celebi by default) Every Pokémon in the battle, on both sides, is level 60 (in Crystal RED's team is 73–81, the Elite Four's 40–50). Each knows the four level-up moves the game itself would give it.
 
 ## Where the data comes from
 
@@ -18,10 +18,11 @@ node --test red-battle/test/
 
 | File | What it holds |
 | --- | --- |
-| `data.json` | 251 base stats and learnsets, 251 moves, the type chart, RED's party, DVs, items and AI flags |
+| `data.json` | 251 base stats and learnsets, 251 moves, the type chart, and each trainer's party, DVs, items, AI flags and dialogue |
+| `trainers.json` | Each trainer's name, class and dialogue, for the town's Gym NPCs |
 | `audio.json` | Crystal's music, SFX, cries and battle-animation scripts: only the ROM bytes the sound and animation engines reach |
 | `sprites/` | Front, back and trainer pics decompressed from the ROM (Gen II LZ, 2bpp, column-major tiles) |
-| `engine.js` | Gen II battle rules and RED's AI, ported from `engine/battle/*.asm` |
+| `engine.js` | Gen II battle rules and the trainer AI (moves, switching, items), ported from `engine/battle/*.asm` |
 | `app.js` | The battle screen |
 
 ## Faithful to the game

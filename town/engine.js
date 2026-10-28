@@ -2,8 +2,8 @@
 // No DOM here, so Node tests can drive it.
 
 // constants/collision_constants.asm
-export const COLL = { FLOOR: 0x00, WALL: 0x07, WATER: 0x29, DOOR: 0x71 };
-const WALKABLE = new Set([COLL.FLOOR, COLL.DOOR]);
+export const COLL = { FLOOR: 0x00, WALL: 0x07, WATER: 0x29, WARP_DOWN: 0x70, DOOR: 0x71 };
+const WALKABLE = new Set([COLL.FLOOR, COLL.DOOR, COLL.WARP_DOWN]);
 
 export const DIRS = { down: [0, 1], up: [0, -1], left: [-1, 0], right: [1, 0] };
 const DIR_NAMES = Object.keys(DIRS);
@@ -58,6 +58,8 @@ export class World {
 
   // Where a step in `dir` from `pos` would go.
   tryStep(pos, dir) {
+    // Walking down off an exit mat (COLL_WARP_CARPET_DOWN) leaves the building.
+    if (dir === 'down' && this.collisionAt(pos.x, pos.y) === COLL.WARP_DOWN) return { kind: 'exit', x: pos.x, y: pos.y };
     const [dx, dy] = DIRS[dir];
     const x = pos.x + dx;
     const y = pos.y + dy;
@@ -99,6 +101,11 @@ export class World {
     n.x = x; n.y = y;
     n.moved = true;
   }
+}
+
+// A trainer's ROM dialogue (red-battle/trainers.json) made drawable with the overworld font.
+export function speech(paras, player = 'TRAINER') {
+  return paras.map((p) => p.replaceAll('{PLAYER}', player).replaceAll('…', '...'));
 }
 
 // Word-wrap to `cols` characters; explicit "\n" always breaks.

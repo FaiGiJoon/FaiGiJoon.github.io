@@ -7,7 +7,7 @@ import { Font, HAND_GLYPHS } from '../font.js';
 const data = JSON.parse(readFileSync(new URL('../data/goldenrod.json', import.meta.url)));
 const font = new Font(data.font);
 
-const NOT_SHOWN = new Set(['href', 'sprite', 'facing', 'kind']);
+const NOT_SHOWN = new Set(['href', 'sprite', 'facing', 'kind', 'trainer', 'map', 'battleHref']);
 
 function* strings(node, key = '') {
   if (typeof node === 'string') {

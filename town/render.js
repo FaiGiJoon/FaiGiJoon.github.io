@@ -48,6 +48,15 @@ export class Renderer {
     this.w = 160;
   }
 
+  // Switch to another map (the Gym interior): its own tiles, palettes and sprites.
+  setData(data) {
+    this.data = data;
+    this.spriteCache.clear();
+    const time = this.time;
+    this.time = null;
+    if (time) this.setTime(time);
+  }
+
   resize(cols) {
     this.w = cols * 8;
     this.canvas.width = this.w;
