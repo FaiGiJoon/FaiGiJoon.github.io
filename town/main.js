@@ -1,5 +1,5 @@
 // Goldenrod City: the portfolio as a walkable town.
-import { World, DIRS, wrapText, paginate } from './engine.js';
+import { World, DIRS, COLL, wrapText, paginate, speech } from './engine.js';
 import { Renderer, Page, SCREEN_H, timeOfDay } from './render.js';
 import content from './content.js';
 
@@ -68,7 +68,7 @@ async function startAudio() {
     const { createGameAudio } = await import('../red-battle/gbsound.js');
     audio = createGameAudio({ audioUrl: new URL('../red-battle/audio.json', import.meta.url) });
     audio.setMuted(muted);
-    audio.music('goldenrodCity');
+    audio.music(mapMusic());
   } catch (err) {
     console.warn('No sound:', err);
   }
@@ -86,6 +86,10 @@ muteBtn.addEventListener('click', (e) => { e.currentTarget.blur(); startAudio();
 let data;
 let world;
 let view;
+let trainers = {}; // red-battle/trainers.json: the Gym trainers' names and ROM dialogue
+const maps = {}; // city / gym: { data, content, world }
+let mapName = 'city';
+const mapMusic = () => (mapName === 'gym' ? 'gym' : 'goldenrodCity');
 const player = { x: 0, y: 0, facing: 'down', sprite: 'CHRIS', palette: 0, step: 0, from: null, phase: 0, parity: 0, turn: 0 };
 let ui = { mode: 'walk' };
 let bumpCooldown = 0;
@@ -140,13 +144,21 @@ function openHref(href) {
   else location.href = href;
 }
 
+// Move to another map (city <-> gym), keeping each map's NPCs where they were.
+function enterMap(name, pos) {
+  mapName = name;
+  ({ data, world } = maps[name]);
+  view.setData(data);
+  Object.assign(player, { x: pos.x, y: pos.y, facing: pos.facing, from: null, step: 0 });
+  nameSign = name === 'gym' ? 120 : 0;
+  audio?.music(mapMusic());
+}
+
 function openBuilding(b, door) {
   if (!b) { closeUi(); return; }
-  if (b.kind === 'battle') {
-    ask([`${b.name}`, ...b.text], ['YES', 'NO'], (i) => {
-      if (i === 0) location.href = b.href;
-      else exitBuilding(door);
-    });
+  if (b.kind === 'map') {
+    enterMap(b.map, content[b.map].start);
+    ui = { mode: 'fade', t: 1, dir: -1, then: closeUi };
     return;
   }
   ui = { mode: 'page', raw: b.body, scroll: 0, links: b.links || [], cursor: 0, door, building: b };
@@ -206,7 +218,7 @@ function updateWalk() {
     if (player.step === 0) {
       player.from = null;
       const b = world.buildingAt(player.x, player.y);
-      if (world.collisionAt(player.x, player.y) === 0x71) {
+      if (world.collisionAt(player.x, player.y) === COLL.DOOR) {
         sfx('enterDoor');
         const door = { x: player.x, y: player.y };
         ui = { mode: 'fade', t: 0, dir: 1, then: () => openBuilding(b, door) };
@@ -221,7 +233,8 @@ function updateWalk() {
     if (t?.type === 'npc') {
       t.npc.facing = OPPOSITE[player.facing];
       t.npc.busy = true;
-      say(t.npc.text);
+      if (t.npc.trainer) challenge(t.npc.trainer);
+      else say(t.npc.text);
       return;
     }
     if (t?.type === 'sign') { say(t.sign.text); return; }
@@ -236,6 +249,14 @@ function updateWalk() {
   }
   if (player.turn > 0) { player.turn--; return; }
   const r = world.tryStep(player, dir);
+  if (r.kind === 'exit') {
+    sfx('exitBuilding');
+    ui = { mode: 'fade', t: 0, dir: 1, then: () => {
+      enterMap('city', content.gym.exit);
+      ui = { mode: 'fade', t: 1, dir: -1, then: closeUi };
+    } };
+    return;
+  }
   if (r.kind === 'blocked') {
     if (bumpCooldown <= 0) { sfx('bump'); bumpCooldown = STEP_FRAMES * 2; }
     return;
@@ -245,6 +266,16 @@ function updateWalk() {
   player.y = r.y;
   player.step = STEP_FRAMES;
   player.parity ^= 1;
+}
+
+// A Gym trainer: their ROM intro, then YES/NO to battle them in Battle RED.
+function challenge(key) {
+  const t = trainers[key];
+  if (!t) { say('...'); return; }
+  const title = `${t.className} ${t.name}`;
+  say(speech(t.text.before), () => ask([`Battle ${title}?`], ['YES', 'NO'], (i) => {
+    if (i === 0) location.href = `${content.gym.battleHref}${key}`;
+  }));
 }
 
 function rand([lo, hi]) { return lo + Math.floor(Math.random() * (hi - lo)); }
@@ -319,7 +350,7 @@ function draw() {
   ];
   // Camera: the player sits at screen (W/2 - 16, 64) like the GB's 10x9 view.
   view.drawWorld(p.px - (view.w / 2 - 16), p.py - 64, actors);
-  if (nameSign > 0 && ui.mode === 'walk') view.mapName(content.title);
+  if (nameSign > 0 && ui.mode === 'walk') view.mapName(maps[mapName].content.title);
   if (ui.mode === 'dialog') {
     const page = ui.pages[ui.page] || [];
     const total = page.reduce((s, l) => s + l.length, 0);
@@ -363,17 +394,26 @@ function frame(now) {
 }
 
 async function boot() {
-  data = await (await fetch(new URL('./data/goldenrod.json', import.meta.url))).json();
-  world = new World(data, content);
+  const load = async (path) => (await fetch(new URL(path, import.meta.url))).json();
+  const [city, gym] = await Promise.all([load('./data/goldenrod.json'), load('./data/goldenrod-gym.json')]);
+  trainers = await load('../red-battle/trainers.json').catch(() => ({}));
+  maps.city = { data: city, content, world: new World(city, content) };
+  maps.gym = { data: gym, content: content.gym, world: new World(gym, content.gym) };
+  ({ data, world } = maps.city);
   view = new Renderer(canvas, data);
   fit();
   addEventListener('resize', fit);
-  Object.assign(player, { x: content.start.x, y: content.start.y, facing: content.start.facing });
-  say(content.intro);
+  // ?at=gym: back from a battle, the player is standing in the Gym again.
+  if (new URLSearchParams(location.search).get('at') === 'gym') {
+    enterMap('gym', content.gym.start);
+  } else {
+    Object.assign(player, { x: content.start.x, y: content.start.y, facing: content.start.facing });
+    say(content.intro);
+  }
   document.body.classList.add('ready');
   // ?debug exposes the live state for automated checks.
   if (new URLSearchParams(location.search).has('debug')) {
-    window.__town = { player, world, get ui() { return ui; }, get view() { return view; } };
+    window.__town = { player, get world() { return world; }, get ui() { return ui; }, get view() { return view; }, get map() { return mapName; } };
   }
   requestAnimationFrame(frame);
 }

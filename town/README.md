@@ -5,7 +5,7 @@ part of the portfolio, the signs and NPCs talk about Casper, and the Gym leads t
 
 | Door | Opens |
 | --- | --- |
-| Gym | Battle RED (`red-battle/`) |
+| Gym | The real Goldenrod Gym interior: talk to WILL, KOGA, BRUNO, KAREN, LANCE or RED to battle them |
 | Pokémon Center | About |
 | Magnet Train Station | Career / experience |
 | Dept. Store | Skills & tools |
@@ -25,7 +25,8 @@ day (otherwise the visitor's clock picks the palette, like the game).
 
 ## Files
 
-- `data/goldenrod.json`: map, tileset, palettes, NPC sprites and font, read from the ROM.
+- `data/goldenrod.json`, `data/goldenrod-gym.json`: the city and the Gym interior (map, tileset,
+  palettes, NPC sprites, font), read from the ROM.
 - `content.js`: what every door, sign and NPC says. Edit this to change the portfolio text.
 - `engine.js`: collision, doors, NPC wandering, text wrapping (no DOM; tested in Node).
 - `render.js`, `font.js`: canvas drawing at Game Boy resolution with GBC LCD colours.
@@ -37,7 +38,9 @@ The ROM is not in the repo. With a Pokémon Crystal (UE) v1.0 ROM (sha1 `f4cd194
 checkout of [pret/pokecrystal](https://github.com/pret/pokecrystal) (for its symbol map):
 
 ```sh
-python3 -I town/tools/town.py "Pokemon - Crystal Version (USA, Europe).gbc" ../pokecrystal town/data/goldenrod.json
+python3 -I town/tools/town.py "Pokemon - Crystal Version (USA, Europe).gbc" ../pokecrystal town/data
+python3 -I red-battle/tools/extract.py "Pokemon - Crystal Version (USA, Europe).gbc" ../pokecrystal red-battle/data.json  # also writes trainers.json
+python3 -I red-battle/tools/sprites.py "Pokemon - Crystal Version (USA, Europe).gbc" ../pokecrystal red-battle/sprites
 python3 -I red-battle/tools/audio.py "Pokemon - Crystal Version (USA, Europe).gbc" ../pokecrystal red-battle/audio.json
 ```
 

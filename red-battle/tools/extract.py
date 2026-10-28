@@ -4,7 +4,7 @@ Table addresses come from the pret/pokecrystal symbol map for the exact same
 build (sha1 f4cd194bdee0d04ca4eac29e09b8e4e9d818c133); every value is read
 from the ROM bytes, not copied from the disassembly sources.
 """
-import hashlib, json, re, sys
+import hashlib, json, os, re, sys
 
 EXPECTED_SHA1 = "f4cd194bdee0d04ca4eac29e09b8e4e9d818c133"
 CHARS = {0x7F: " ", 0x9A: "(", 0x9B: ")", 0x9C: ":", 0xE0: "'", 0xE1: "PK", 0xE2: "MN",
@@ -91,37 +91,100 @@ def main(rom_path, disasm, out_path):
         matchups.append([TYPE_IDS[rom[off]], TYPE_IDS[rom[off + 1]], rom[off + 2]])
         off += 3
 
-    # Trainer class RED = $3f (1-based); attributes are 7 bytes, DVs 2 bytes per class
-    red_cls = 0x3F
-    attr = rom[syms["TrainerClassAttributes"] + (red_cls - 1) * 7:][:7]
-    dvb = rom[syms["TrainerClassDVs"] + (red_cls - 1) * 2:][:2]
-    name, off = text(syms["RedGroup"])
-    party_type = rom[off]; off += 1
-    assert party_type == 1, "expected TRAINERTYPE_MOVES"
-    party = []
-    while rom[off] != 0xFF:
-        lvl, sp = rom[off], rom[off + 1]
-        party.append({"level": lvl, "species": sp, "moves": [m for m in rom[off + 2:off + 6] if m]})
-        off += 6
-    red = {
-        "name": name, "class": red_cls, "party": party,
-        "items": [attr[0], attr[1]], "baseReward": attr[2],
-        "aiFlags": int.from_bytes(attr[3:5], "little"),
-        "contextFlags": int.from_bytes(attr[5:7], "little"),
-        "dvs": {"atk": dvb[0] >> 4, "def": dvb[0] & 15, "spe": dvb[1] >> 4, "spc": dvb[1] & 15},
-        "romOffsets": {k: hex(syms[k]) for k in
-                       ["RedGroup", "TrainerClassAttributes", "TrainerClassDVs"]},
+    # Dialogue: the text/line/para/cont/done script the map scripts use (macros/scripts/text.asm).
+    SPEECH = {0x4a: "POKéMON", 0x54: "POKé", 0x56: "……", 0x75: "…", 0x7f: " ", 0xe0: "'",
+              0xd0: "'d", 0xd1: "'l", 0xd2: "'m", 0xd3: "'r", 0xd4: "'s", 0xd5: "'t", 0xd6: "'v",
+              0x14: "{PLAYER}", 0x52: "{PLAYER}", 0x5d: "TRAINER", 0xe9: "&", 0xf0: "¥", 0x9d: ";"}
+
+    def dialogue(off):
+        """TX_START text up to done/prompt -> paragraphs (line/cont join with a space)."""
+        assert rom[off] == 0x00, hex(rom[off])  # TX_START
+        off += 1
+        paras, cur = [], ""
+        while rom[off] not in (0x57, 0x58, 0x50):  # done, prompt, @
+            c = rom[off]
+            if c in (0x4f, 0x55):  # line, cont
+                # A word hyphenated across two lines ("intro-" / "duce") joins back up.
+                if re.search(r"[a-z]-$", cur) and not cur.endswith("--"):
+                    cur = cur[:-1]
+                else:
+                    cur += " "
+            elif c == 0x51:  # para
+                paras.append(cur.strip()); cur = ""
+            else:
+                ch = SPEECH.get(c, CHARS.get(c))
+                assert ch is not None, f"byte {c:#x} at {off:#x}"
+                cur += ch
+            off += 1
+        paras.append(cur.strip())
+        return [" ".join(p.split()) for p in paras if p]
+
+    def class_name(cls):
+        off = syms["TrainerClassNames"]
+        for _ in range(cls - 1):
+            while rom[off] != 0x50:
+                off += 1
+            off += 1
+        out = ""
+        while rom[off] != 0x50:
+            out += {0x4a: "PKMN", 0x7f: " "}.get(rom[off]) or CHARS[rom[off]]
+            off += 1
+        return out
+
+    def trainer(cls, group, texts, music):
+        attr = rom[syms["TrainerClassAttributes"] + (cls - 1) * 7:][:7]
+        dvb = rom[syms["TrainerClassDVs"] + (cls - 1) * 2:][:2]
+        name, off = text(syms[group])
+        party_type = rom[off]; off += 1
+        assert party_type == 1, "expected TRAINERTYPE_MOVES"
+        party = []
+        while rom[off] != 0xFF:
+            lvl, sp = rom[off], rom[off + 1]
+            party.append({"level": lvl, "species": sp, "moves": [m for m in rom[off + 2:off + 6] if m]})
+            off += 6
+        return {
+            "name": name, "className": class_name(cls), "class": cls, "party": party,
+            "items": [attr[0], attr[1]], "baseReward": attr[2],
+            "aiFlags": int.from_bytes(attr[3:5], "little"),
+            "contextFlags": int.from_bytes(attr[5:7], "little"),
+            "dvs": {"atk": dvb[0] >> 4, "def": dvb[0] & 15, "spe": dvb[1] >> 4, "spc": dvb[1] & 15},
+            "text": {k: dialogue(syms[label]) for k, label in texts.items()},
+            "music": music,
+            "romOffsets": {k: hex(syms[k]) for k in [group, "TrainerClassAttributes", "TrainerClassDVs"]},
+        }
+
+    # Trainer classes are 1-based (constants/trainer_constants.asm); attributes are 7 bytes and
+    # DVs 2 bytes per class. Music follows PlayBattleMusic: CHAMPION and RED get the champion
+    # theme, the Elite Four (IsGymLeader) the Johto gym leader theme.
+    trainers = {
+        "red": trainer(0x3F, "RedGroup", {"before": "RedSeenText", "win": "RedWinLossText"}, "championBattle"),
+        "will": trainer(0x0B, "WillGroup", {"before": "WillScript_WillBeforeText",
+                        "win": "WillScript_WillBeatenText", "after": "WillScript_WillDefeatText"}, "johtoGymBattle"),
+        "koga": trainer(0x0F, "KogaGroup", {"before": "KogaScript_KogaBeforeText",
+                        "win": "KogaScript_KogaBeatenText", "after": "KogaScript_KogaDefeatText"}, "johtoGymBattle"),
+        "bruno": trainer(0x0D, "BrunoGroup", {"before": "BrunoScript_BrunoBeforeText",
+                         "win": "BrunoScript_BrunoBeatenText", "after": "BrunoScript_BrunoDefeatText"}, "johtoGymBattle"),
+        "karen": trainer(0x0E, "KarenGroup", {"before": "KarenScript_KarenBeforeText",
+                         "win": "KarenScript_KarenBeatenText", "after": "KarenScript_KarenDefeatText"}, "johtoGymBattle"),
+        "lance": trainer(0x10, "ChampionGroup", {"before": "LanceBattleIntroText",
+                         "win": "LanceBattleWinText", "after": "LanceBattleAfterText"}, "championBattle"),
     }
+    red = trainers["red"]
 
     out = {"source": {"rom": "Pokemon - Crystal Version (USA, Europe).gbc", "sha1": sha1,
                       "offsets": {k: hex(syms[k]) for k in
                                   ["BaseData", "Moves", "MoveNames", "PokemonNames",
                                    "EvosAttacksPointers", "TypeMatchups"]}},
            "species": species, "moves": moves,
-           "typeMatchups": matchups, "foresightSplit": foresight_split, "red": red, "effects": effects}
+           "typeMatchups": matchups, "foresightSplit": foresight_split, "red": red,
+           "trainers": trainers, "effects": effects}
     json.dump(out, open(out_path, "w"), indent=1, ensure_ascii=False)
+    # A small copy of who they are and what they say, for the Goldenrod town's Gym NPCs.
+    lite = {k: {"name": t["name"], "className": t["className"], "text": t["text"]} for k, t in trainers.items()}
+    json.dump(lite, open(os.path.join(os.path.dirname(out_path), "trainers.json"), "w"), ensure_ascii=False)
     print(f"species={len(species)} moves={len(moves)} matchups={len(matchups)}")
-    print(json.dumps(red, indent=1))
+    for k, t in trainers.items():
+        print(k, t["className"], t["name"], [p["species"] for p in t["party"]], t["text"].get("before"))
 
 
 if __name__ == "__main__":

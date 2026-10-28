@@ -2,7 +2,7 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync, existsSync } from 'node:fs';
 import {
-  Battle, makeRng, calcStats, defaultMoves, hiddenPower, makeMon, randomTeam, redTeam, typeEffect, RED_LEVELS, BATTLE_LEVEL, pct,
+  Battle, makeRng, calcStats, defaultMoves, hiddenPower, makeMon, randomTeam, redTeam, typeEffect, RED_LEVELS, BATTLE_LEVEL, pct, TRAINER_KEYS,
 } from '../engine.js';
 
 const data = JSON.parse(readFileSync(new URL('../data.json', import.meta.url)));
@@ -159,12 +159,12 @@ test('AI: Red has exactly two Full Restores', () => {
 });
 
 // ---------- 4. engine invariants under fuzzing ----------
-test('fuzz: 3000 random battles finish without errors or broken state', () => {
+test('fuzz: 3000 random battles against every Gym trainer finish without errors or broken state', () => {
   const warnings = new Map();
   let playerWins = 0;
   for (let seed = 1; seed <= 3000; seed++) {
     const rng = makeRng(seed * 7919);
-    const b = new Battle(data, randomTeam(data, rng), { seed });
+    const b = new Battle(data, randomTeam(data, rng), { seed, trainer: TRAINER_KEYS[seed % TRAINER_KEYS.length] });
     let guard = 0;
     while (!b.over && guard++ < 500) {
       if (b.pendingSwitch === 0) {

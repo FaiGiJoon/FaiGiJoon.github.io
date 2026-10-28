@@ -17572,6 +17572,7 @@
  "foresightSplit": 108,
  "red": {
   "name": "RED",
+  "className": "PKMN TRAINER",
   "class": 63,
   "party": [
    {
@@ -17648,10 +17649,619 @@
    "spe": 13,
    "spc": 14
   },
+  "text": {
+   "before": [
+    "…… ……"
+   ],
+   "win": [
+    "…"
+   ]
+  },
+  "music": "championBattle",
   "romOffsets": {
    "RedGroup": "0x3b99c",
    "TrainerClassAttributes": "0x3959c",
    "TrainerClassDVs": "0x270d6"
+  }
+ },
+ "trainers": {
+  "red": {
+   "name": "RED",
+   "className": "PKMN TRAINER",
+   "class": 63,
+   "party": [
+    {
+     "level": 81,
+     "species": 25,
+     "moves": [
+      204,
+      98,
+      85,
+      87
+     ]
+    },
+    {
+     "level": 73,
+     "species": 196,
+     "moves": [
+      189,
+      115,
+      129,
+      94
+     ]
+    },
+    {
+     "level": 75,
+     "species": 143,
+     "moves": [
+      133,
+      173,
+      156,
+      34
+     ]
+    },
+    {
+     "level": 77,
+     "species": 3,
+     "moves": [
+      241,
+      202,
+      235,
+      76
+     ]
+    },
+    {
+     "level": 77,
+     "species": 6,
+     "moves": [
+      53,
+      17,
+      163,
+      83
+     ]
+    },
+    {
+     "level": 77,
+     "species": 9,
+     "moves": [
+      240,
+      57,
+      59,
+      250
+     ]
+    }
+   ],
+   "items": [
+    14,
+    14
+   ],
+   "baseReward": 25,
+   "aiFlags": 979,
+   "contextFlags": 68,
+   "dvs": {
+    "atk": 15,
+    "def": 13,
+    "spe": 13,
+    "spc": 14
+   },
+   "text": {
+    "before": [
+     "…… ……"
+    ],
+    "win": [
+     "…"
+    ]
+   },
+   "music": "championBattle",
+   "romOffsets": {
+    "RedGroup": "0x3b99c",
+    "TrainerClassAttributes": "0x3959c",
+    "TrainerClassDVs": "0x270d6"
+   }
+  },
+  "will": {
+   "name": "WILL",
+   "className": "ELITE FOUR",
+   "class": 11,
+   "party": [
+    {
+     "level": 40,
+     "species": 178,
+     "moves": [
+      98,
+      248,
+      109,
+      94
+     ]
+    },
+    {
+     "level": 41,
+     "species": 124,
+     "moves": [
+      3,
+      142,
+      8,
+      94
+     ]
+    },
+    {
+     "level": 41,
+     "species": 103,
+     "moves": [
+      115,
+      73,
+      121,
+      94
+     ]
+    },
+    {
+     "level": 41,
+     "species": 80,
+     "moves": [
+      174,
+      133,
+      34,
+      94
+     ]
+    },
+    {
+     "level": 42,
+     "species": 178,
+     "moves": [
+      98,
+      248,
+      109,
+      94
+     ]
+    }
+   ],
+   "items": [
+    15,
+    0
+   ],
+   "baseReward": 25,
+   "aiFlags": 979,
+   "contextFlags": 68,
+   "dvs": {
+    "atk": 13,
+    "def": 12,
+    "spe": 13,
+    "spc": 13
+   },
+   "text": {
+    "before": [
+     "Welcome to POKéMON LEAGUE, {PLAYER}.",
+     "Allow me to introduce myself. I am WILL.",
+     "I have trained all around the world,",
+     "making my psychic POKéMON powerful.",
+     "And, at last, I've been accepted into the ELITE FOUR.",
+     "I can only keep getting better!",
+     "Losing is not an option!"
+    ],
+    "win": [
+     "I… I can't… believe it…"
+    ],
+    "after": [
+     "Even though I was defeated, I won't change my course.",
+     "I will continue battling until I",
+     "stand above all trainers!",
+     "Now, {PLAYER}, move on and experience",
+     "the true ferocity of the ELITE FOUR."
+    ]
+   },
+   "music": "johtoGymBattle",
+   "romOffsets": {
+    "WillGroup": "0x39c51",
+    "TrainerClassAttributes": "0x3959c",
+    "TrainerClassDVs": "0x270d6"
+   }
+  },
+  "koga": {
+   "name": "KOGA",
+   "className": "ELITE FOUR",
+   "class": 15,
+   "party": [
+    {
+     "level": 40,
+     "species": 168,
+     "moves": [
+      104,
+      169,
+      226,
+      202
+     ]
+    },
+    {
+     "level": 41,
+     "species": 49,
+     "moves": [
+      48,
+      16,
+      94,
+      92
+     ]
+    },
+    {
+     "level": 43,
+     "species": 205,
+     "moves": [
+      182,
+      129,
+      153,
+      191
+     ]
+    },
+    {
+     "level": 42,
+     "species": 89,
+     "moves": [
+      107,
+      151,
+      188,
+      92
+     ]
+    },
+    {
+     "level": 44,
+     "species": 169,
+     "moves": [
+      104,
+      98,
+      17,
+      92
+     ]
+    }
+   ],
+   "items": [
+    38,
+    14
+   ],
+   "baseReward": 25,
+   "aiFlags": 979,
+   "contextFlags": 68,
+   "dvs": {
+    "atk": 13,
+    "def": 12,
+    "spe": 13,
+    "spc": 13
+   },
+   "text": {
+    "before": [
+     "Fwahahahaha!",
+     "I am KOGA of the ELITE FOUR.",
+     "I live in shadows, a ninja!",
+     "My intricate style will confound and destroy you!",
+     "Confusion, sleep, poison…",
+     "Prepare to be the victim of my sinister technique!",
+     "Fwahahahaha!",
+     "POKéMON is not merely about brute",
+     "force--you shall see soon enough!"
+    ],
+    "win": [
+     "Ah! You have proven your worth!"
+    ],
+    "after": [
+     "I subjected you to everything I could muster.",
+     "But my efforts failed. I must hone my skills.",
+     "Go on to the next room, and put your abilities to test!"
+    ]
+   },
+   "music": "johtoGymBattle",
+   "romOffsets": {
+    "KogaGroup": "0x39ce6",
+    "TrainerClassAttributes": "0x3959c",
+    "TrainerClassDVs": "0x270d6"
+   }
+  },
+  "bruno": {
+   "name": "BRUNO",
+   "className": "ELITE FOUR",
+   "class": 13,
+   "party": [
+    {
+     "level": 42,
+     "species": 237,
+     "moves": [
+      228,
+      98,
+      91,
+      197
+     ]
+    },
+    {
+     "level": 42,
+     "species": 106,
+     "moves": [
+      207,
+      24,
+      136,
+      193
+     ]
+    },
+    {
+     "level": 42,
+     "species": 107,
+     "moves": [
+      9,
+      8,
+      7,
+      183
+     ]
+    },
+    {
+     "level": 43,
+     "species": 95,
+     "moves": [
+      20,
+      89,
+      201,
+      157
+     ]
+    },
+    {
+     "level": 46,
+     "species": 68,
+     "moves": [
+      157,
+      193,
+      233,
+      238
+     ]
+    }
+   ],
+   "items": [
+    15,
+    0
+   ],
+   "baseReward": 25,
+   "aiFlags": 979,
+   "contextFlags": 68,
+   "dvs": {
+    "atk": 13,
+    "def": 12,
+    "spe": 13,
+    "spc": 13
+   },
+   "text": {
+    "before": [
+     "I am BRUNO of the ELITE FOUR.",
+     "I always train to the extreme because I believe in our potential.",
+     "That is how we became strong.",
+     "Can you withstand our power?",
+     "Hm? I see no fear in you. You look",
+     "determined. Perfect for battle!",
+     "Ready, {PLAYER}? You will bow down",
+     "to our overwhelming power!",
+     "Hoo hah!"
+    ],
+    "win": [
+     "Why? How could we lose?"
+    ],
+    "after": [
+     "Having lost, I have no right to say anything…",
+     "Go face your next challenge!"
+    ]
+   },
+   "music": "johtoGymBattle",
+   "romOffsets": {
+    "BrunoGroup": "0x39c9a",
+    "TrainerClassAttributes": "0x3959c",
+    "TrainerClassDVs": "0x270d6"
+   }
+  },
+  "karen": {
+   "name": "KAREN",
+   "className": "ELITE FOUR",
+   "class": 14,
+   "party": [
+    {
+     "level": 42,
+     "species": 197,
+     "moves": [
+      28,
+      109,
+      185,
+      212
+     ]
+    },
+    {
+     "level": 42,
+     "species": 45,
+     "moves": [
+      78,
+      51,
+      236,
+      80
+     ]
+    },
+    {
+     "level": 45,
+     "species": 94,
+     "moves": [
+      122,
+      180,
+      174,
+      194
+     ]
+    },
+    {
+     "level": 44,
+     "species": 198,
+     "moves": [
+      98,
+      18,
+      228,
+      185
+     ]
+    },
+    {
+     "level": 47,
+     "species": 229,
+     "moves": [
+      46,
+      228,
+      53,
+      242
+     ]
+    }
+   ],
+   "items": [
+    38,
+    15
+   ],
+   "baseReward": 25,
+   "aiFlags": 979,
+   "contextFlags": 68,
+   "dvs": {
+    "atk": 7,
+    "def": 15,
+    "spe": 13,
+    "spc": 15
+   },
+   "text": {
+    "before": [
+     "I am KAREN of the ELITE FOUR.",
+     "You're {PLAYER}? How amusing.",
+     "I love dark-type POKéMON.",
+     "I find their wild, tough image to be",
+     "so appealing. And they're so strong.",
+     "Think you can take them? Just try to entertain me.",
+     "Let's go."
+    ],
+    "win": [
+     "Well, aren't you good. I like that in a trainer."
+    ],
+    "after": [
+     "Strong POKéMON.",
+     "Weak POKéMON.",
+     "That is only the selfish perception of people.",
+     "Truly skilled trainers should",
+     "try to win with their favorites.",
+     "I like your style. You understand what's important.",
+     "Go on--the CHAM- PION is waiting."
+    ]
+   },
+   "music": "johtoGymBattle",
+   "romOffsets": {
+    "KarenGroup": "0x39cc0",
+    "TrainerClassAttributes": "0x3959c",
+    "TrainerClassDVs": "0x270d6"
+   }
+  },
+  "lance": {
+   "name": "LANCE",
+   "className": "CHAMPION",
+   "class": 16,
+   "party": [
+    {
+     "level": 44,
+     "species": 130,
+     "moves": [
+      175,
+      240,
+      57,
+      63
+     ]
+    },
+    {
+     "level": 47,
+     "species": 149,
+     "moves": [
+      86,
+      239,
+      87,
+      63
+     ]
+    },
+    {
+     "level": 47,
+     "species": 149,
+     "moves": [
+      86,
+      239,
+      59,
+      63
+     ]
+    },
+    {
+     "level": 46,
+     "species": 142,
+     "moves": [
+      17,
+      246,
+      157,
+      63
+     ]
+    },
+    {
+     "level": 46,
+     "species": 6,
+     "moves": [
+      53,
+      17,
+      163,
+      63
+     ]
+    },
+    {
+     "level": 50,
+     "species": 149,
+     "moves": [
+      126,
+      219,
+      200,
+      63
+     ]
+    }
+   ],
+   "items": [
+    38,
+    14
+   ],
+   "baseReward": 25,
+   "aiFlags": 979,
+   "contextFlags": 68,
+   "dvs": {
+    "atk": 13,
+    "def": 12,
+    "spe": 13,
+    "spc": 13
+   },
+   "text": {
+    "before": [
+     "LANCE: I've been waiting for you.",
+     "{PLAYER}!",
+     "I knew that you, with your skills,",
+     "would eventually reach me here.",
+     "There's no need for words now.",
+     "We will battle to determine who is",
+     "the stronger of the two of us.",
+     "As the most powerful trainer and as",
+     "the POKéMON LEAGUE CHAMPION…",
+     "I, LANCE the dragon master, accept your challenge!"
+    ],
+    "win": [
+     "…It's over.",
+     "But it's an odd feeling.",
+     "I'm not angry that I lost. In fact, I feel happy.",
+     "Happy that I witnessed the rise",
+     "of a great new CHAMPION!"
+    ],
+    "after": [
+     "…Whew.",
+     "You have become truly powerful, {PLAYER}.",
+     "Your POKéMON have responded to your",
+     "strong and upstanding nature.",
+     "As a trainer, you will continue to",
+     "grow strong with your POKéMON."
+    ]
+   },
+   "music": "championBattle",
+   "romOffsets": {
+    "ChampionGroup": "0x39d0b",
+    "TrainerClassAttributes": "0x3959c",
+    "TrainerClassDVs": "0x270d6"
+   }
   }
  },
  "effects": [

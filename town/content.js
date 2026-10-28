@@ -15,10 +15,7 @@ export default {
   ],
 
   buildings: {
-    '24,7': {
-      name: 'GOLDENROD GYM', kind: 'battle', href: 'red-battle/',
-      text: ['GYM LEADER RED is waiting inside.', 'All POKéMON battle at Lv60. Take on the challenge?'],
-    },
+    '24,7': { name: 'GOLDENROD GYM', kind: 'map', map: 'gym' },
     '15,27': {
       name: 'POKéMON CENTER', kind: 'page', title: 'ABOUT CASPER',
       body: [
@@ -171,6 +168,30 @@ export default {
     { x: 12, y: 22, sprite: 'POKEFAN_M', facing: 'down', palette: 0,
       text: 'The GAME CORNER shows the newest projects on GitHub. No coins needed!' },
     { x: 23, y: 8, sprite: 'GYM_GUIDE', facing: 'down',
-      text: 'Yo! Champ in the making! RED is inside. Step through the door if you dare!' },
+      text: 'Yo! Champ in the making! The ELITE FOUR, LANCE and RED are all inside. Pick your opponent!' },
   ],
+
+  // Inside the Gym (GoldenrodGym from the ROM): RED stands where WHITNEY would, LANCE beside
+  // him, and the ELITE FOUR on the gym trainers' spots. Talk to one to battle them.
+  gym: {
+    title: 'GOLDENROD GYM',
+    start: { x: 2, y: 17, facing: 'up' },
+    exit: { x: 24, y: 8, facing: 'down' },
+    battleHref: 'red-battle/?vs=',
+    buildings: {},
+    signs: {
+      '1,15': 'GOLDENROD GYM. Challengers: the ELITE FOUR, CHAMPION LANCE and RED.',
+      '4,15': 'Every POKéMON battles at Lv60. Yours are random, theirs are the real teams!',
+    },
+    npcs: [
+      { x: 8, y: 3, sprite: 'RED', facing: 'down', trainer: 'red' },
+      { x: 11, y: 3, sprite: 'LANCE', facing: 'down', trainer: 'lance' },
+      { x: 9, y: 13, sprite: 'WILL', facing: 'right', trainer: 'will' },
+      { x: 9, y: 6, sprite: 'KOGA', facing: 'left', trainer: 'koga' },
+      { x: 0, y: 2, sprite: 'BRUNO', facing: 'down', trainer: 'bruno' },
+      { x: 19, y: 5, sprite: 'KAREN', facing: 'down', trainer: 'karen' },
+      { x: 5, y: 15, sprite: 'GYM_GUIDE', facing: 'down',
+        text: 'Welcome, challenger! Talk to any trainer here to battle. You get six random POKéMON every time!' },
+    ],
+  },
 };

@@ -19,7 +19,7 @@ export function soundEvents(log, k, dexOf, { animated = false } = {}) {
   const entry = log[k];
   const text = entry.text;
   const ev = [];
-  if (/^Go! /.test(text) || /^RED sent out /.test(text)) {
+  if (/^Go! /.test(text) || / sent out /.test(text)) {
     const side = text.startsWith('Go!') ? 0 : 1;
     if (!animated) ev.push({ at: 0, sfx: 'ballPoof', opts: { force: true } });
     ev.push({ at: animated ? 0.65 : 0.45, cry: dexOf(side, entry), opts: { tracks: side ? 'right' : 'left' } });
@@ -30,9 +30,9 @@ export function soundEvents(log, k, dexOf, { animated = false } = {}) {
   } else if (/ fainted!$/.test(text)) {
     // FaintYourPokemon: the player's mon cries as it faints
     ev.push({ at: 0, cry: dexOf(0, entry), opts: { tracks: 'left' } });
-  } else if (/^RED used FULL RESTORE/.test(text)) {
+  } else if (/ used (FULL RESTORE|MAX POTION|FULL HEAL) on /.test(text)) {
     ev.push({ at: 0, sfx: 'fullHeal', opts: { force: true } });
-  } else if (!animated && (/, come back!$/.test(text) || /^RED withdrew /.test(text))) {
+  } else if (!animated && (/, come back!$/.test(text) || / withdrew /.test(text))) {
     ev.push({ at: 0, sfx: 'switchPokemon', opts: { force: true } });
   }
   if (!hurtSides(log, k).length) return ev;

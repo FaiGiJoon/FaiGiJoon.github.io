@@ -1,6 +1,8 @@
 """Extract Goldenrod City (map, tileset, palettes, NPC sprites, font) from the ROM.
 
-Usage: python3 -I town.py ROM DISASM OUT
+Usage: python3 -I town.py ROM DISASM OUT_DIR
+
+Writes goldenrod.json (the city) and goldenrod-gym.json (the Gym interior).
 
 Every value is read from the Pokemon Crystal (UE) v1.0 ROM bytes (sha1 f4cd194b...). The
 pret/pokecrystal disassembly is only used for its symbol map and constant names, the same
@@ -19,13 +21,15 @@ import hashlib, json, re, sys
 
 EXPECTED_SHA1 = "f4cd194bdee0d04ca4eac29e09b8e4e9d818c133"
 TIMES = ["morn", "day", "nite"]  # MORN_F, DAY_F, NITE_F
-TOWN_ENV = 1  # TOWN in EnvironmentColorsPointers
+TOWN_ENV, INDOOR_ENV = 1, 3  # TOWN / INDOOR in EnvironmentColorsPointers
 GOLDENROD_GROUP = 11
 ROOF_TILE, ROOF_LENGTH = 0x0a, 9
 WALKING_SPRITE = 1
-# Sprites the town needs besides the ones placed in GoldenrodCity_MapEvents.
-EXTRA_SPRITES = ["SPRITE_CHRIS", "SPRITE_RED", "SPRITE_GYM_GUIDE", "SPRITE_NURSE",
-                 "SPRITE_SUPER_NERD", "SPRITE_TEACHER", "SPRITE_BIKER", "SPRITE_SCIENTIST"]
+# Sprites each map needs besides the ones placed in its MapEvents.
+CITY_SPRITES = ["SPRITE_CHRIS", "SPRITE_RED", "SPRITE_GYM_GUIDE"]
+# The Gym holds the Elite Four, Champion LANCE and RED.
+GYM_SPRITES = ["SPRITE_CHRIS", "SPRITE_RED", "SPRITE_WILL", "SPRITE_KOGA", "SPRITE_BRUNO",
+               "SPRITE_KAREN", "SPRITE_LANCE", "SPRITE_GYM_GUIDE"]
 
 
 def lz_decompress(rom, start):
@@ -102,7 +106,7 @@ def consts(path, prefix):
     return names
 
 
-def main(rom_path, disasm, out_path):
+def main(rom_path, disasm, out_dir):
     rom = open(rom_path, "rb").read()
     sha1 = hashlib.sha1(rom).hexdigest()
     if sha1 != EXPECTED_SHA1:
@@ -126,144 +130,152 @@ def main(rom_path, disasm, out_path):
     def word(p):
         return rom[p] | rom[p + 1] << 8
 
-    # ---------- map header ----------
-    p = at("GoldenrodCity_MapAttributes")
-    border, height, width = rom[p], rom[p + 1], rom[p + 2]
-    blocks_bank, blocks_addr = rom[p + 3], word(p + 4)
-    events_bank, events_addr = rom[p + 6], word(p + 9)
-    assert (blocks_bank, blocks_addr) == syms["GoldenrodCity_Blocks"]
-    assert (events_bank, events_addr) == syms["GoldenrodCity_MapEvents"]
-    bp = off(blocks_bank, blocks_addr)
-    blocks = list(rom[bp: bp + width * height])
+    def build(map_name, tileset, env_id, roof_group, extra_sprites):
+        # ---------- map header ----------
+        p = at(f"{map_name}_MapAttributes")
+        border, height, width = rom[p], rom[p + 1], rom[p + 2]
+        blocks_bank, blocks_addr = rom[p + 3], word(p + 4)
+        events_bank, events_addr = rom[p + 6], word(p + 9)
+        assert (blocks_bank, blocks_addr) == syms[f"{map_name}_Blocks"]
+        assert (events_bank, events_addr) == syms[f"{map_name}_MapEvents"]
+        bp = off(blocks_bank, blocks_addr)
+        blocks = list(rom[bp: bp + width * height])
 
-    # ---------- tileset ----------
-    raw = lz_decompress(rom, at("TilesetJohtoModernGFX"))
-    gfx = bytearray(raw[: 0xc0 * 16].ljust(0xc0 * 16, b"\0"))
-    roof_index = rom[at("MapGroupRoofs") + GOLDENROD_GROUP]
-    assert roof_index == 4, roof_index  # ROOF_GOLDENROD
-    rp = at("Roofs") + roof_index * ROOF_LENGTH * 16
-    gfx[ROOF_TILE * 16: (ROOF_TILE + ROOF_LENGTH) * 16] = rom[rp: rp + ROOF_LENGTH * 16]
-    palmap = at("TilesetJohtoModernPalMap")
-    meta = at("TilesetJohtoModernMeta")
-    coll = at("TilesetJohtoModernColl")
+        # ---------- tileset ----------
+        raw = lz_decompress(rom, at(f"Tileset{tileset}GFX"))
+        gfx = bytearray(raw[: 0xc0 * 16].ljust(0xc0 * 16, b"\0"))
+        if roof_group is not None:  # LoadMapGroupRoof: Johto town tilesets only
+            roof_index = rom[at("MapGroupRoofs") + roof_group]
+            assert roof_index == 4, roof_index  # ROOF_GOLDENROD
+            rp = at("Roofs") + roof_index * ROOF_LENGTH * 16
+            gfx[ROOF_TILE * 16: (ROOF_TILE + ROOF_LENGTH) * 16] = rom[rp: rp + ROOF_LENGTH * 16]
+        palmap = at(f"Tileset{tileset}PalMap")
+        meta = at(f"Tileset{tileset}Meta")
+        coll = at(f"Tileset{tileset}Coll")
 
-    def resolve(tile_id):
-        """Tile id as stored in a metatile -> (index into gfx, BG palette)."""
-        nib = rom[palmap + (tile_id >> 1)]
-        nib = nib >> 4 if tile_id & 1 else nib & 15
-        bank1 = bool(nib & 8)
-        t = tile_id & 0x7f
-        assert t < 0x60, hex(tile_id)
-        return (0x60 + t if bank1 else t), nib & 7
+        def resolve(tile_id):
+            """Tile id as stored in a metatile -> (index into gfx, BG palette)."""
+            nib = rom[palmap + (tile_id >> 1)]
+            nib = nib >> 4 if tile_id & 1 else nib & 15
+            bank1 = bool(nib & 8)
+            t = tile_id & 0x7f
+            assert t < 0x60, hex(tile_id)
+            return (0x60 + t if bank1 else t), nib & 7
 
-    used_blocks = sorted(set(blocks) | {border})
-    metatiles, collision, used_tiles = {}, {}, set()
-    for blk in used_blocks:
-        ids = rom[meta + blk * 16: meta + blk * 16 + 16]
-        cells = [resolve(t) for t in ids]
-        used_tiles |= {g for g, _ in cells}
-        metatiles[blk] = cells
-        collision[blk] = list(rom[coll + blk * 4: coll + blk * 4 + 4])
-    tile_list = sorted(used_tiles)
-    tile_index = {g: i for i, g in enumerate(tile_list)}
-    tiles = [tile_2bpp(gfx[g * 16: g * 16 + 16]) for g in tile_list]
+        used_blocks = sorted(set(blocks) | {border})
+        metatiles, collision, used_tiles = {}, {}, set()
+        for blk in used_blocks:
+            ids = rom[meta + blk * 16: meta + blk * 16 + 16]
+            cells = [resolve(t) for t in ids]
+            used_tiles |= {g for g, _ in cells}
+            metatiles[blk] = cells
+            collision[blk] = list(rom[coll + blk * 4: coll + blk * 4 + 4])
+        tile_list = sorted(used_tiles)
+        tile_index = {g: i for i, g in enumerate(tile_list)}
+        tiles = [tile_2bpp(gfx[g * 16: g * 16 + 16]) for g in tile_list]
 
-    # ---------- palettes ----------
-    env = word(at("EnvironmentColorsPointers") + 2 * TOWN_ENV)
-    env_bank = syms["EnvironmentColorsPointers"][0]
-    bgpal = at("TilesetBGPalette")
-    roofs = at("RoofPals") + GOLDENROD_GROUP * 8
-    objpals = at("MapObjectPals")
-    bg, obj = {}, {}
-    for t, name in enumerate(TIMES):
-        row = off(env_bank, env + 8 * t)
-        pals = []
-        for i in range(8):
-            q = bgpal + rom[row + i] * 8
-            pals.append([colour(word(q + 2 * c)) for c in range(4)])
-        r = roofs + (4 if name == "nite" else 0)
-        pals[6][1], pals[6][2] = colour(word(r)), colour(word(r + 2))
-        bg[name] = pals
-        obj[name] = [[colour(word(objpals + t * 64 + i * 8 + 2 * c)) for c in range(4)]
-                     for i in range(8)]
+        # ---------- palettes ----------
+        env = word(at("EnvironmentColorsPointers") + 2 * env_id)
+        env_bank = syms["EnvironmentColorsPointers"][0]
+        bgpal = at("TilesetBGPalette")
+        objpals = at("MapObjectPals")
+        bg, obj = {}, {}
+        for t, name in enumerate(TIMES):
+            row = off(env_bank, env + 8 * t)
+            pals = []
+            for i in range(8):
+                q = bgpal + rom[row + i] * 8
+                pals.append([colour(word(q + 2 * c)) for c in range(4)])
+            if roof_group is not None:  # LoadMapPals: TOWN and ROUTE maps get the roof colours
+                r = at("RoofPals") + roof_group * 8 + (4 if name == "nite" else 0)
+                pals[6][1], pals[6][2] = colour(word(r)), colour(word(r + 2))
+            bg[name] = pals
+            obj[name] = [[colour(word(objpals + t * 64 + i * 8 + 2 * c)) for c in range(4)]
+                         for i in range(8)]
 
-    # ---------- events ----------
-    sprite_ids = consts(f"{disasm}/constants/sprite_constants.asm", "SPRITE_")
-    sprite_names = {v: k for k, v in sprite_ids.items()}
-    e = off(events_bank, events_addr) + 2  # past the two filler bytes
-    warps = []
-    n, e = rom[e], e + 1
-    for _ in range(n):
-        warps.append({"x": rom[e + 1], "y": rom[e], "dest": rom[e + 2],
-                      "group": rom[e + 3], "map": rom[e + 4]})
-        e += 5
-    n, e = rom[e], e + 1
-    e += n * 8  # coord events (none in Goldenrod)
-    signs = []
-    n, e = rom[e], e + 1
-    for _ in range(n):
-        signs.append({"x": rom[e + 1], "y": rom[e], "kind": rom[e + 2]})
-        e += 5
-    objects = []
-    sp = at("OverworldSprites")
-    n, e = rom[e], e + 1
-    for _ in range(n):
-        sprite, y, x, move, radius = rom[e], rom[e + 1] - 4, rom[e + 2] - 4, rom[e + 3], rom[e + 4]
-        pal = rom[e + 7] >> 4
-        objects.append({"x": x, "y": y, "sprite": sprite_names[sprite], "movement": move,
-                        "radiusX": radius & 15, "radiusY": radius >> 4,
-                        "palette": pal - 8 if pal >= 8 else None})
-        e += 13
+        # ---------- events ----------
+        sprite_ids = consts(f"{disasm}/constants/sprite_constants.asm", "SPRITE_")
+        sprite_names = {v: k for k, v in sprite_ids.items()}
+        e = off(events_bank, events_addr) + 2  # past the two filler bytes
+        warps = []
+        n, e = rom[e], e + 1
+        for _ in range(n):
+            warps.append({"x": rom[e + 1], "y": rom[e], "dest": rom[e + 2],
+                          "group": rom[e + 3], "map": rom[e + 4]})
+            e += 5
+        n, e = rom[e], e + 1
+        e += n * 8  # coord events (none in Goldenrod)
+        signs = []
+        n, e = rom[e], e + 1
+        for _ in range(n):
+            signs.append({"x": rom[e + 1], "y": rom[e], "kind": rom[e + 2]})
+            e += 5
+        objects = []
+        sp = at("OverworldSprites")
+        n, e = rom[e], e + 1
+        for _ in range(n):
+            sprite, y, x, move, radius = rom[e], rom[e + 1] - 4, rom[e + 2] - 4, rom[e + 3], rom[e + 4]
+            pal = rom[e + 7] >> 4
+            objects.append({"x": x, "y": y, "sprite": sprite_names[sprite], "movement": move,
+                            "radiusX": radius & 15, "radiusY": radius >> 4,
+                            "palette": pal - 8 if pal >= 8 else None})
+            e += 13
 
-    move_names = consts(f"{disasm}/constants/map_object_constants.asm", "SPRITEMOVEDATA_")
-    move_by_id = {v: k[len("SPRITEMOVEDATA_"):] for k, v in move_names.items()}
-    for o in objects:
-        o["movement"] = move_by_id.get(o["movement"], o["movement"])
+        move_names = consts(f"{disasm}/constants/map_object_constants.asm", "SPRITEMOVEDATA_")
+        move_by_id = {v: k[len("SPRITEMOVEDATA_"):] for k, v in move_names.items()}
+        for o in objects:
+            o["movement"] = move_by_id.get(o["movement"], o["movement"])
 
-    # ---------- sprites ----------
-    wanted = sorted({o["sprite"] for o in objects} | set(EXTRA_SPRITES))
-    sprites = {}
-    for name in wanted:
-        q = sp + (sprite_ids[name] - 1) * 6
-        addr, size, bank, kind, pal = word(q), rom[q + 2], rom[q + 3], rom[q + 4], rom[q + 5]
-        n = size // 16 * (2 if kind == WALKING_SPRITE else 1)
-        g = off(bank, addr)
-        sprites[name[len("SPRITE_"):]] = {
-            "walking": kind == WALKING_SPRITE, "palette": pal,
-            "tiles": [tile_2bpp(rom[g + 16 * i: g + 16 * i + 16]) for i in range(n)]}
-    for o in objects:
-        o["sprite"] = o["sprite"][len("SPRITE_"):]
+        # ---------- sprites ----------
+        wanted = sorted({o["sprite"] for o in objects} | set(extra_sprites))
+        sprites = {}
+        for name in wanted:
+            q = sp + (sprite_ids[name] - 1) * 6
+            addr, size, bank, kind, pal = word(q), rom[q + 2], rom[q + 3], rom[q + 4], rom[q + 5]
+            n = size // 16 * (2 if kind == WALKING_SPRITE else 1)
+            g = off(bank, addr)
+            sprites[name[len("SPRITE_"):]] = {
+                "walking": kind == WALKING_SPRITE, "palette": pal,
+                "tiles": [tile_2bpp(rom[g + 16 * i: g + 16 * i + 16]) for i in range(n)]}
+        for o in objects:
+            o["sprite"] = o["sprite"][len("SPRITE_"):]
 
-    # ---------- font + textbox frame ----------
-    font = at("Font")
-    glyphs = [tile_1bpp(rom[font + 8 * i: font + 8 * i + 8]) for i in range(128)]
-    frame = at("Frames")
-    frame_tiles = [tile_1bpp(rom[frame + 8 * i: frame + 8 * i + 8]) for i in range(6)]
-    # Only the section of charmap.asm that names gfx/font/font.png (the Font glyphs).
-    src = open(f"{disasm}/constants/charmap.asm").read()
-    src = src[src.index("(from gfx/font/font.png)"): src.index("; Japanese control characters")]
-    charmap = {}
-    for m in re.finditer(r'charmap "(.)",\s*\$([0-9a-f]{2})', src):
-        if int(m[2], 16) >= 0x80:
-            charmap[m[1]] = int(m[2], 16) - 0x80
+        # ---------- font + textbox frame ----------
+        font = at("Font")
+        glyphs = [tile_1bpp(rom[font + 8 * i: font + 8 * i + 8]) for i in range(128)]
+        frame = at("Frames")
+        frame_tiles = [tile_1bpp(rom[frame + 8 * i: frame + 8 * i + 8]) for i in range(6)]
+        # Only the section of charmap.asm that names gfx/font/font.png (the Font glyphs).
+        src = open(f"{disasm}/constants/charmap.asm").read()
+        src = src[src.index("(from gfx/font/font.png)"): src.index("; Japanese control characters")]
+        charmap = {}
+        for m in re.finditer(r'charmap "(.)",\s*\$([0-9a-f]{2})', src):
+            if int(m[2], 16) >= 0x80:
+                charmap[m[1]] = int(m[2], 16) - 0x80
 
-    out = {
-        "source": {"sha1": sha1},
-        "map": {"width": width, "height": height, "border": border, "blocks": blocks},
-        "tiles": tiles,
-        "metatiles": {str(b): [[tile_index[g], pal] for g, pal in cells]
-                      for b, cells in metatiles.items()},
-        "collision": {str(b): c for b, c in collision.items()},
-        "palettes": {"bg": bg, "obj": obj},
-        "warps": warps, "signs": signs, "objects": objects,
-        "sprites": sprites,
-        "font": {"glyphs": glyphs, "frame": frame_tiles, "charmap": charmap},
+        out = {
+            "source": {"sha1": sha1},
+            "map": {"width": width, "height": height, "border": border, "blocks": blocks},
+            "tiles": tiles,
+            "metatiles": {str(b): [[tile_index[g], pal] for g, pal in cells]
+                          for b, cells in metatiles.items()},
+            "collision": {str(b): c for b, c in collision.items()},
+            "palettes": {"bg": bg, "obj": obj},
+            "warps": warps, "signs": signs, "objects": objects,
+            "sprites": sprites,
+            "font": {"glyphs": glyphs, "frame": frame_tiles, "charmap": charmap},
+        }
+        print(f"{map_name}: {width}x{height} blocks, {len(tiles)} tiles, {len(metatiles)} metatiles, "
+              f"{len(warps)} warps, {len(signs)} signs, {len(objects)} objects, {len(sprites)} sprites")
+        return out
+
+    maps = {
+        "goldenrod.json": build("GoldenrodCity", "JohtoModern", TOWN_ENV, GOLDENROD_GROUP, CITY_SPRITES),
+        "goldenrod-gym.json": build("GoldenrodGym", "EliteFourRoom", INDOOR_ENV, None, GYM_SPRITES),
     }
-    with open(out_path, "w") as f:
-        json.dump(out, f, separators=(",", ":"))
-    print(f"map {width}x{height} blocks, {len(tiles)} tiles, {len(metatiles)} metatiles, "
-          f"{len(warps)} warps, {len(signs)} signs, {len(objects)} objects, "
-          f"{len(sprites)} sprites")
+    for name, out in maps.items():
+        with open(f"{out_dir}/{name}", "w") as f:
+            json.dump(out, f, separators=(",", ":"))
 
 
 if __name__ == "__main__":

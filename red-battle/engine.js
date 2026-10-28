@@ -125,11 +125,21 @@ export function randomTeam(data, rng, opts = {}) {
   return team;
 }
 
-// RED's real species, DVs and moves, at BATTLE_LEVEL instead of his Crystal levels
-export function redTeam(data, level = BATTLE_LEVEL) {
-  const r = data.red;
-  return r.party.map((p) => makeMon(data, p.species, level, r.dvs, p.moves, { happiness: 70 }));
+// The Gym's trainers (data.trainers), in the order they stand in town.
+export const TRAINER_KEYS = ['will', 'koga', 'bruno', 'karen', 'lance', 'red'];
+
+// A trainer's real species, DVs and moves, at BATTLE_LEVEL instead of their Crystal levels
+export function trainerTeam(data, trainer, level = BATTLE_LEVEL) {
+  return trainer.party.map((p) => makeMon(data, p.species, level, trainer.dvs, p.moves, { happiness: 70 }));
 }
+
+export function redTeam(data, level = BATTLE_LEVEL) {
+  return trainerTeam(data, data.red, level);
+}
+
+// engine/battle/ai/items.asm AI_Items, in the order the AI checks them (only what these trainers hold)
+const FULL_RESTORE = 14; const MAX_POTION = 15; const FULL_HEAL = 38;
+const ITEM_NAMES = { [FULL_RESTORE]: 'FULL RESTORE', [MAX_POTION]: 'MAX POTION', [FULL_HEAL]: 'FULL HEAL' };
 
 // ---------- battle state ----------
 function freshVolatile() {
@@ -155,16 +165,18 @@ export class Battle {
     this.turn = 0;
     this.weather = null; this.weatherTurns = 0;
     this.over = false; this.winner = null;
-    this.red = data.red;
+    this.red = (opts.trainer && data.trainers?.[opts.trainer]) || data.red; // the AI trainer
+    this.foeName = this.red.name;
+    this.foeTitle = this.red.className ? `${this.red.className} ${this.red.name}` : this.red.name;
     this.sides = [
       { name: 'You', party: playerTeam, active: 0, screens: {}, futureSight: null, isAI: false },
-      { name: 'RED', party: redTeam(data), active: 0, screens: {}, futureSight: null, isAI: true,
-        items: [...data.red.items].filter(Boolean).length ? [...data.red.items] : [] },
+      { name: this.foeName, party: trainerTeam(data, this.red), active: 0, screens: {}, futureSight: null, isAI: true,
+        items: this.red.items.filter(Boolean) },
     ];
     this.sides.forEach((s) => { s.vol = freshVolatile(); });
     this.pendingSwitch = null; // side index that must choose a replacement
-    this.emit(`RED wants to battle!`);
-    this.emit(`RED sent out ${this.mon(1).name}!`);
+    this.emit(`${this.foeTitle} wants to battle!`);
+    this.emit(`${this.foeName} sent out ${this.mon(1).name}!`);
     this.emit(`Go! ${this.mon(0).name}!`);
   }
 
@@ -319,7 +331,7 @@ export class Battle {
     for (const i of [0, 1]) {
       const a = actions[i];
       if (a.type === 'switch') this.doSwitch(i, a.to, true);
-      if (a.type === 'item') this.useFullRestore(i);
+      if (a.type === 'item') this.useItem(i, a.item);
     }
     // order the moves
     const movers = [0, 1].filter((i) => actions[i].type === 'move');
@@ -397,7 +409,7 @@ export class Battle {
     const side = this.sides[i];
     const old = this.mon(i);
     const v = side.vol;
-    if (voluntary) this.emit(i === 0 ? `${old.name}, come back!` : `RED withdrew ${old.name}!`);
+    if (voluntary) this.emit(i === 0 ? `${old.name}, come back!` : `${this.foeName} withdrew ${old.name}!`);
     const keep = v.batonPass ? { stages: v.stages, substitute: v.substitute, leechSeed: v.leechSeed,
       confused: v.confused, focusEnergy: v.focusEnergy, curse: v.curse, perish: v.perish, lockOn: v.lockOn,
       meanLook: v.meanLook } : null;
@@ -407,7 +419,7 @@ export class Battle {
     if (keep) Object.assign(side.vol, keep);
     const foeVol = this.sides[this.foe(i)].vol;
     foeVol.meanLook = false; foeVol.wrap = 0; foeVol.attract = false;
-    this.emit(i === 0 ? `Go! ${this.mon(i).name}!` : `RED sent out ${this.mon(i).name}!`);
+    this.emit(i === 0 ? `Go! ${this.mon(i).name}!` : `${this.foeName} sent out ${this.mon(i).name}!`);
     if (side.screens.spikes && !this.mon(i).types.includes('FLYING')) {
       this.damage(i, Math.max(1, this.mon(i).maxHp >> 3), `${this.mon(i).name} is hurt by SPIKES!`);
     }
@@ -427,7 +439,13 @@ export class Battle {
     if (playerOut || redOut) {
       this.over = true;
       this.winner = redOut && !playerOut ? 0 : playerOut && !redOut ? 1 : 1;
-      this.emit(this.winner === 0 ? 'You defeated RED!' : 'RED: …', 'end');
+      if (this.winner === 0) {
+        const lines = this.red.text?.win || [];
+        this.emit(`You defeated ${this.foeTitle}!`, lines.length ? 'text' : 'end');
+        lines.forEach((l, k) => this.emit(`${this.foeName}: ${l}`, k === lines.length - 1 ? 'end' : 'text'));
+      } else {
+        this.emit(`${this.foeName}: …`, 'end');
+      }
       return true;
     }
     let any = false;
@@ -496,38 +514,56 @@ export class Battle {
     return this.aiTryItem();
   }
 
+  // AI_TryItem: only while the highest-level party member is out, trying each held item in
+  // AI_Items order. Every trainer here has CONTEXT_USE.
   aiTryItem() {
     const side = this.sides[1];
-    const items = side.items;
-    if (!items.some((x) => x === 14)) return null; // FULL_RESTORE
-    // only while the highest-level party member is out
+    if (!side.items.some(Boolean)) return null;
     const maxLevel = Math.max(...side.party.map((m) => m.level));
-    const m = this.mon(1);
-    if (m.level < maxLevel) return null;
-    const halfUp = m.hp * 2 > m.maxHp; const quarterUp = m.hp * 4 > m.maxHp;
-    let use = false;
-    if (!halfUp) {
-      if (!quarterUp) use = true;
-      else use = this.rng() < pct(20) - 1;
+    if (this.mon(1).level < maxLevel) return null;
+    for (const item of [FULL_RESTORE, MAX_POTION, FULL_HEAL]) {
+      if (!side.items.includes(item)) continue;
+      let use = false;
+      if (item === FULL_RESTORE) use = this.aiHealCheck() || this.aiStatusCheck();
+      else if (item === MAX_POTION) use = this.aiHealCheck();
+      else use = this.aiStatusCheck();
+      if (use) return { type: 'item', item };
     }
-    if (!use && halfUp && m.status) {
-      // .Status with CONTEXT_USE
-      const v = side.vol;
-      if (m.status === 'TOX' && v.toxicCount >= 4 && this.rng() < pct(50) + 1) use = true;
-      else if (m.status === 'FRZ' || m.status === 'SLP') use = true;
-    } else if (!use && !halfUp) use = false;
-    if (!use) return null;
-    return { type: 'item', item: 14 };
+    return null;
+  }
+
+  // .HealItem with CONTEXT_USE: never above half HP, always at or below a quarter, else 20%.
+  aiHealCheck() {
+    const m = this.mon(1);
+    if (m.hp * 2 > m.maxHp) return false;
+    if (m.hp * 4 <= m.maxHp) return true;
+    return this.rng() < pct(20) - 1;
+  }
+
+  // .Status with CONTEXT_USE: badly poisoned for 4+ turns (50%), or frozen / asleep.
+  aiStatusCheck() {
+    const m = this.mon(1);
+    if (!m.status) return false;
+    if (m.status === 'TOX' && this.sides[1].vol.toxicCount >= 4 && this.rng() < pct(50) + 1) return true;
+    return m.status === 'FRZ' || m.status === 'SLP';
+  }
+
+  // EnemyUsedFullRestore / EnemyUsedMaxPotion / EnemyUsedFullHeal, then AI_TryItem's resets.
+  useItem(i, item = FULL_RESTORE) {
+    const side = this.sides[i];
+    side.items[side.items.indexOf(item)] = 0;
+    const m = this.mon(i);
+    if (item === FULL_RESTORE || item === FULL_HEAL) {
+      m.status = null; m.sleep = 0; side.vol.toxicCount = 0;
+    }
+    if (item === FULL_RESTORE) side.vol.confused = 0; // Full Heal leaves confusion (a Crystal bug)
+    if (item === FULL_RESTORE || item === MAX_POTION) m.hp = m.maxHp;
+    this.emit(`${this.foeName} used ${ITEM_NAMES[item]} on ${m.name}!`);
+    const v = side.vol; v.furyCutter = 0; v.protectCount = 0; v.rage = false; v.bide = null;
   }
 
   useFullRestore(i) {
-    const side = this.sides[i];
-    const k = side.items.indexOf(14);
-    side.items[k] = 0;
-    const m = this.mon(i);
-    m.hp = m.maxHp; m.status = null; m.sleep = 0; side.vol.confused = 0; side.vol.toxicCount = 0;
-    this.emit(`RED used FULL RESTORE on ${m.name}!`);
-    const v = side.vol; v.furyCutter = 0; v.protectCount = 0; v.rage = false; v.bide = null;
+    this.useItem(i, FULL_RESTORE);
   }
 
   playerMoveMatchupScore(enemyMon) {
@@ -1550,7 +1586,7 @@ export class Battle {
     for (const i of order) {
       const sc = this.sides[i].screens;
       for (const [k, name] of [['safeguard', 'SAFEGUARD'], ['lightScreen', 'LIGHT SCREEN'], ['reflect', 'REFLECT']]) {
-        if (sc[k] && --sc[k] === 0) { sc[k] = 0; this.emit(`${i === 0 ? 'Your' : "RED's"} ${name} wore off!`); }
+        if (sc[k] && --sc[k] === 0) { sc[k] = 0; this.emit(`${i === 0 ? 'Your' : `${this.foeName}'s`} ${name} wore off!`); }
       }
     }
     // Encore countdown

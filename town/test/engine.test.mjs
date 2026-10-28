@@ -87,10 +87,10 @@ test('facing a sign or NPC finds it', () => {
   assert.equal(t.npc, n);
 });
 
-test('the gym is the Battle RED building', () => {
+test('the gym door opens the gym map, whose trainers lead to Battle RED', () => {
   const w = world();
-  const gym = w.buildingAt(24, 7);
-  assert.equal(gym.href, 'red-battle/');
+  assert.equal(w.buildingAt(24, 7).map, 'gym');
+  assert.equal(content.gym.battleHref, 'red-battle/?vs=');
 });
 
 test('wrapText wraps on words and keeps explicit line breaks', () => {

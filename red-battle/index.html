@@ -3,7 +3,8 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Mt. Silver — Battle Red</title>
+  <title>Goldenrod Gym — Battle Red</title>
+  <link rel="icon" href="../assets/img/logo.svg" type="image/svg+xml">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Inter:wght@400;500;600;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
@@ -12,16 +13,16 @@
 <body>
   <main class="shell">
     <header class="top">
-      <a class="back-link" href="../">← Back to site</a>
-      <h1>Battle Red</h1>
-      <p class="sub">Mt. Silver · Pokémon Crystal · Trainer RED · data read from the ROM</p>
+      <a class="back-link" href="../?at=gym">← Back to the Gym</a>
+      <h1 id="foeh1">Battle Red</h1>
+      <p class="sub" id="foesub">Goldenrod Gym · Pokémon Crystal · data read from the ROM</p>
     </header>
 
     <!-- team preview -->
     <section id="setup" class="screen">
       <div class="panel">
         <h2>Your team</h2>
-        <p class="hint">Six random Pokémon from Gold/Silver/Crystal. Every Pokémon in the battle, yours and RED's, is level 60, each knowing the moves the game itself would give it at that level.</p>
+        <p class="hint">Six random Pokémon from Gold/Silver/Crystal. Every Pokémon in the battle, yours and <span id="foeinline">RED</span>'s, is level 60, each knowing the moves the game itself would give it at that level.</p>
         <ol id="team" class="team"></ol>
         <div class="row">
           <button id="reroll" class="btn">REROLL</button>
@@ -29,11 +30,11 @@
           <label class="check"><input type="checkbox" id="event"> MEW/CELEBI</label>
         </div>
         <div class="row">
-          <button id="start" class="btn primary">BATTLE RED ▶</button>
+          <button id="start" class="btn primary">BATTLE ▶</button>
         </div>
       </div>
       <div class="panel red-panel">
-        <div class="red-head"><img src="sprites/red.png" alt="Trainer RED" class="red-pic" onerror="this.remove()"><h2>PKMN TRAINER RED</h2></div>
+        <div class="red-head"><img id="foepic" src="sprites/red.png" alt="" class="red-pic"><h2 id="foetitle">PKMN TRAINER RED</h2></div>
         <ol id="redteam" class="team"></ol>
         <p class="hint" id="redinfo"></p>
       </div>
@@ -72,7 +73,7 @@
         <button id="newgame" class="btn small">NEW TEAM</button>
         <button id="speed" class="btn small">TEXT: NORMAL</button>
         <button id="mute" class="btn small">SOUND: ON</button>
-        <label class="check small"><input type="checkbox" id="showai"> SHOW RED'S AI</label>
+        <label class="check small"><input type="checkbox" id="showai"> <span id="foeai">SHOW RED'S AI</span></label>
       </div>
       <pre id="ai" class="ai hidden"></pre>
     </section>

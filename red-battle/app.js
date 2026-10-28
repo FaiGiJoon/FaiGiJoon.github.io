@@ -1,4 +1,4 @@
-import { Battle, makeRng, randomTeam, redTeam } from './engine.js';
+import { Battle, makeRng, randomTeam, trainerTeam, TRAINER_KEYS } from './engine.js';
 import { createGameAudio } from './gbsound.js';
 import { soundEvents, hurtSides, hitSfx, moveMissed, HIT_LEAD } from './battle-audio.js';
 import { BattleAnimPlayer, FRAME_HZ } from './anims.js';
@@ -9,8 +9,11 @@ const STATUS_LABEL = { PAR: 'PAR', SLP: 'SLP', PSN: 'PSN', TOX: 'PSN', BRN: 'BRN
 const WEATHER_LABEL = { RAIN: '☂ RAIN', SUN: '☀ SUN', SANDSTORM: '≋ SANDSTORM' };
 const SPEEDS = [['NORMAL', 22], ['FAST', 8], ['INSTANT', 0]];
 
-let data; let team; let battle; let shown = 0; let speedIdx = 0; let typing = null; let busy = false;
+let data; let foe; let team; let battle; let shown = 0; let speedIdx = 0; let typing = null; let busy = false;
 const spriteCache = new Map();
+// Which Gym trainer to fight: ?vs=will|koga|bruno|karen|lance|red (default RED).
+const VS = TRAINER_KEYS.find((k) => k === new URLSearchParams(location.search).get('vs')) || 'red';
+const ITEM_NAMES = { 14: 'FULL RESTORE', 15: 'MAX POTION', 38: 'FULL HEAL' };
 
 // ---------- audio (Crystal's sound engine, see gbsound.js) ----------
 let audio = null;
@@ -94,13 +97,14 @@ function playSounds(k) {
 
 async function main() {
   data = await (await fetch('data.json')).json();
+  foe = data.trainers?.[VS] || data.red;
   fetch('audio.json').then((r) => r.json()).then((d) => { animData = d; })
     .catch((err) => console.warn('battle animations unavailable:', err));
   fetch('animobj.json').then((r) => r.json()).then((d) => { objData = d; })
     .catch((err) => console.warn('battle animation sprites unavailable:', err));
   animCanvas = createAnimCanvas(document.querySelector('.field'));
   rerollTeam();
-  renderRed();
+  renderFoe();
   $('reroll').onclick = rerollTeam;
   $('event').onchange = rerollTeam;
   $('start').onclick = startBattle;
@@ -149,11 +153,25 @@ function rerollTeam() {
   hydrateMinis($('team'));
 }
 
-function renderRed() {
-  $('redteam').innerHTML = redTeam(data).map(teamRow).join('');
+function renderFoe() {
+  const title = `${foe.className} ${foe.name}`;
+  document.title = `${title} — Goldenrod Gym`;
+  $('foetitle').textContent = title;
+  $('foeh1').textContent = `Battle ${foe.name[0]}${foe.name.slice(1).toLowerCase()}`;
+  $('foepic').src = `sprites/${VS}.png`;
+  $('foepic').alt = title;
+  $('foeinline').textContent = foe.name;
+  $('start').textContent = `BATTLE ${foe.name} ▶`;
+  $('foeai').textContent = `SHOW ${foe.name}'S AI`;
+  $('foesub').textContent = `Goldenrod Gym · Pokémon Crystal · ${title} · data read from the ROM`;
+  $('redteam').innerHTML = trainerTeam(data, foe).map(teamRow).join('');
   hydrateMinis($('redteam'));
-  const d = data.red.dvs;
-  $('redinfo').textContent = `DVs ${d.atk}/${d.def}/${d.spe}/${d.spc} (Atk/Def/Spe/Spc) on every Pokémon · 2× FULL RESTORE · ROM offset ${data.red.romOffsets.RedGroup}`;
+  const d = foe.dvs;
+  const counts = {};
+  for (const it of foe.items.filter(Boolean)) counts[it] = (counts[it] || 0) + 1;
+  const items = Object.entries(counts).map(([it, n]) => `${n}× ${ITEM_NAMES[it] || `item ${it}`}`).join(', ');
+  const group = Object.keys(foe.romOffsets).find((k) => k.endsWith('Group'));
+  $('redinfo').textContent = `DVs ${d.atk}/${d.def}/${d.spe}/${d.spc} (Atk/Def/Spe/Spc) on every Pokémon · ${items || 'no items'} · ROM offset ${foe.romOffsets[group]}`;
 }
 
 async function sprite(dex, back = false) {
@@ -180,10 +198,10 @@ function hydrateMinis(root) {
 function startBattle() {
   gen++;
   const clone = structuredClone(team);
-  battle = new Battle(data, clone, { badges: $('badges').checked, seed: (Date.now() ^ (Math.random() * 1e9)) >>> 0 });
+  battle = new Battle(data, clone, { trainer: VS, badges: $('badges').checked, seed: (Date.now() ^ (Math.random() * 1e9)) >>> 0 });
   shown = 0;
-  startAudio(); // the BATTLE RED click is the user gesture browsers need
-  snd((a) => a.music('championBattle'));
+  startAudio(); // the BATTLE click is the user gesture browsers need
+  snd((a) => a.music(foe.music || 'championBattle'));
   $('setup').classList.add('hidden');
   $('battle').classList.remove('hidden');
   hidePanels();
@@ -377,11 +395,11 @@ const STATUS_ANIMS = [
 function lineAnims(k, hurt) {
   const t = battle.log[k].text;
   const out = [];
-  if (/^Go! |^RED sent out /.test(t)) {
+  if (/^Go! | sent out /.test(t)) {
     const side = t.startsWith('Go!') ? 0 : 1;
     out.push({ key: 'sendOutMon', attackerIsPlayer: side === 0 });
-  } else if (/, come back!$|^RED withdrew /.test(t)) {
-    out.push({ key: 'returnMon', attackerIsPlayer: !t.startsWith('RED') });
+  } else if (/, come back!$| withdrew /.test(t)) {
+    out.push({ key: 'returnMon', attackerIsPlayer: t.endsWith('come back!') });
   }
   const status = statusAnim(t);
   if (status) {
@@ -494,8 +512,8 @@ async function play() {
 function renderAi() {
   const s = battle.lastAiScores;
   $('ai').textContent = s
-    ? `RED's last move scores (lower = preferred, ties picked at random):\n${s.map((x) => `  ${x.move.padEnd(14)} ${x.score}`).join('\n')}`
-    : "RED's AI scores appear after his first move.";
+    ? `${foe.name}'s last move scores (lower = preferred, ties picked at random):\n${s.map((x) => `  ${x.move.padEnd(14)} ${x.score}`).join('\n')}`
+    : `${foe.name}'s AI scores appear after the first move.`;
 }
 
 function nextPrompt() {
@@ -504,7 +522,7 @@ function nextPrompt() {
       battle.musicDone = true;
       snd((a) => (battle.winner === 0 ? a.music('gymVictory') : a.stopMusic()));
     }
-    $('text').textContent = battle.winner === 0 ? 'You beat RED! Press NEW TEAM to go again.' : 'You are out of usable POKéMON! Press NEW TEAM to try again.';
+    $('text').textContent = battle.winner === 0 ? `You beat ${foe.name}! Press NEW TEAM to go again.` : 'You are out of usable POKéMON! Press NEW TEAM to try again.';
     $('more').classList.add('hidden');
     return;
   }
