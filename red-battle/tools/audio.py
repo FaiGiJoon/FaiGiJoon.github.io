@@ -18,8 +18,12 @@ SFX_WANTED = {
     "damage": "SFX_DAMAGE", "superEffective": "SFX_SUPER_EFFECTIVE",
     "notVeryEffective": "SFX_NOT_VERY_EFFECTIVE", "fullHeal": "SFX_FULL_HEAL",
     "switchPokemon": "SFX_SWITCH_POKEMON",
+    # Goldenrod town (town/)
+    "enterDoor": "SFX_ENTER_DOOR", "exitBuilding": "SFX_EXIT_BUILDING", "bump": "SFX_BUMP",
 }
-SONGS = {"championBattle": "Music_ChampionBattle", "gymVictory": "Music_GymLeaderVictory"}
+SONGS = {"championBattle": ("Music_ChampionBattle", "MUSIC_CHAMPION_BATTLE"),
+         "gymVictory": ("Music_GymLeaderVictory", "MUSIC_GYM_VICTORY"),
+         "goldenrodCity": ("Music_GoldenrodCity", "MUSIC_GOLDENROD_CITY")}
 
 # Audio command parameter byte counts ($d0-$ff), see audio/engine.asm MusicCommands.
 # $d8 (note_type) and $e3/$f0 (toggle_noise) depend on channel/state; handled in trace.
@@ -190,17 +194,16 @@ def main(rom_path, disasm, out_path):
     # ---------- songs ----------
     music_names = consts(f"{disasm}/constants/music_constants.asm", "MUSIC_")
     songs = {}
-    for key, label in SONGS.items():
+    for key, (label, _) in SONGS.items():
         bank, addr = syms[label]
         trace_header(bank, addr, False)
         songs[key] = {"bank": bank, "addr": addr}
     # Resolve the Music table entries too, so the engine can look songs up by id.
-    for i, name in enumerate(music_names):
-        if name in ("MUSIC_CHAMPION_BATTLE", "MUSIC_GYM_VICTORY"):
-            b, a = table_entry("Music", i)
-            key = "championBattle" if name == "MUSIC_CHAMPION_BATTLE" else "gymVictory"
-            assert (b, a) == (songs[key]["bank"], songs[key]["addr"]), name
-            songs[key]["id"] = i
+    for key, (_, const) in SONGS.items():
+        i = music_names.index(const)
+        b, a = table_entry("Music", i)
+        assert (b, a) == (songs[key]["bank"], songs[key]["addr"]), const
+        songs[key]["id"] = i
 
     # ---------- SFX ----------
     sfx_names = consts(f"{disasm}/constants/sfx_constants.asm", "SFX_")
