@@ -125,8 +125,11 @@ export function randomTeam(data, rng, opts = {}) {
   return team;
 }
 
-// The Gym's trainers (data.trainers), in the order they stand in town.
-export const TRAINER_KEYS = ['will', 'koga', 'bruno', 'karen', 'lance', 'red'];
+// Who can be battled (data.trainers): the Goldenrod Gym's Elite Four, LANCE and RED, and the
+// eight Johto Gym Leaders in the POKéMON FAN CLUB.
+export const GYM_KEYS = ['will', 'koga', 'bruno', 'karen', 'lance', 'red'];
+export const LEADER_KEYS = ['falkner', 'bugsy', 'whitney', 'morty', 'chuck', 'jasmine', 'pryce', 'clair'];
+export const TRAINER_KEYS = [...LEADER_KEYS, ...GYM_KEYS];
 
 // A trainer's real species, DVs and moves, at BATTLE_LEVEL instead of their Crystal levels
 export function trainerTeam(data, trainer, level = BATTLE_LEVEL) {
@@ -138,8 +141,8 @@ export function redTeam(data, level = BATTLE_LEVEL) {
 }
 
 // engine/battle/ai/items.asm AI_Items, in the order the AI checks them (only what these trainers hold)
-const FULL_RESTORE = 14; const MAX_POTION = 15; const FULL_HEAL = 38;
-const ITEM_NAMES = { [FULL_RESTORE]: 'FULL RESTORE', [MAX_POTION]: 'MAX POTION', [FULL_HEAL]: 'FULL HEAL' };
+const FULL_RESTORE = 14; const MAX_POTION = 15; const HYPER_POTION = 16; const FULL_HEAL = 38;
+const ITEM_NAMES = { [FULL_RESTORE]: 'FULL RESTORE', [MAX_POTION]: 'MAX POTION', [HYPER_POTION]: 'HYPER POTION', [FULL_HEAL]: 'FULL HEAL' };
 
 // ---------- battle state ----------
 function freshVolatile() {
@@ -521,11 +524,11 @@ export class Battle {
     if (!side.items.some(Boolean)) return null;
     const maxLevel = Math.max(...side.party.map((m) => m.level));
     if (this.mon(1).level < maxLevel) return null;
-    for (const item of [FULL_RESTORE, MAX_POTION, FULL_HEAL]) {
+    for (const item of [FULL_RESTORE, MAX_POTION, HYPER_POTION, FULL_HEAL]) {
       if (!side.items.includes(item)) continue;
       let use = false;
       if (item === FULL_RESTORE) use = this.aiHealCheck() || this.aiStatusCheck();
-      else if (item === MAX_POTION) use = this.aiHealCheck();
+      else if (item === MAX_POTION || item === HYPER_POTION) use = this.aiHealCheck();
       else use = this.aiStatusCheck();
       if (use) return { type: 'item', item };
     }
@@ -548,7 +551,7 @@ export class Battle {
     return m.status === 'FRZ' || m.status === 'SLP';
   }
 
-  // EnemyUsedFullRestore / EnemyUsedMaxPotion / EnemyUsedFullHeal, then AI_TryItem's resets.
+  // EnemyUsedFullRestore / MaxPotion / HyperPotion / FullHeal, then AI_TryItem's resets.
   useItem(i, item = FULL_RESTORE) {
     const side = this.sides[i];
     side.items[side.items.indexOf(item)] = 0;
@@ -558,6 +561,7 @@ export class Battle {
     }
     if (item === FULL_RESTORE) side.vol.confused = 0; // Full Heal leaves confusion (a Crystal bug)
     if (item === FULL_RESTORE || item === MAX_POTION) m.hp = m.maxHp;
+    if (item === HYPER_POTION) m.hp = Math.min(m.maxHp, m.hp + 200); // EnemyUsedHyperPotion
     this.emit(`${this.foeName} used ${ITEM_NAMES[item]} on ${m.name}!`);
     const v = side.vol; v.furyCutter = 0; v.protectCount = 0; v.rage = false; v.bide = null;
   }

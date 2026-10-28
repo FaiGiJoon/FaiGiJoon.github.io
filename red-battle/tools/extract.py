@@ -169,6 +169,19 @@ def main(rom_path, disasm, out_path):
         "lance": trainer(0x10, "ChampionGroup", {"before": "LanceBattleIntroText",
                          "win": "LanceBattleWinText", "after": "LanceBattleAfterText"}, "championBattle"),
     }
+    # The eight Johto Gym Leaders (classes 1-8), for the town's POKéMON FAN CLUB.
+    leaders = {
+        "falkner": (0x01, "FalknerGroup", "FalknerIntroText", "FalknerWinLossText"),
+        "bugsy": (0x03, "BugsyGroup", "BugsyText_INeverLose", "BugsyText_ResearchIncomplete"),
+        "whitney": (0x02, "WhitneyGroup", "WhitneyBeforeText", "WhitneyShouldntBeSoSeriousText"),
+        "morty": (0x04, "MortyGroup", "MortyIntroText", "MortyWinLossText"),
+        "chuck": (0x07, "ChuckGroup", "ChuckIntroText1", "ChuckLossText"),
+        "jasmine": (0x06, "JasmineGroup", "Jasmine_SteelTypeIntro", "Jasmine_BetterTrainer"),
+        "pryce": (0x05, "PryceGroup", "PryceText_Intro", "PryceText_Impressed"),
+        "clair": (0x08, "ClairGroup", "ClairIntroText", "ClairWinText"),
+    }
+    for key, (cls, group, before, win) in leaders.items():
+        trainers[key] = trainer(cls, group, {"before": before, "win": win}, "johtoGymBattle")
     red = trainers["red"]
 
     out = {"source": {"rom": "Pokemon - Crystal Version (USA, Europe).gbc", "sha1": sha1,

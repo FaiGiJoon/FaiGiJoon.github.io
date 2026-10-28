@@ -1,6 +1,6 @@
 # Battle Red (Goldenrod Gym)
 
-A browser battle against the strongest trainers in Pokémon Crystal: PKMN Trainer RED, the Elite Four (WILL, KOGA, BRUNO, KAREN) and Champion LANCE. Pick one in the Goldenrod town's Gym, or open `red-battle/?vs=will|koga|bruno|karen|lance|red` (default RED). Each uses their real Crystal team, moves, DVs, items (Full Restore, Max Potion, Full Heal), AI, battle text and battle music. You get six random Pokémon obtainable in Gold/Silver/Crystal (no Mew/Celebi by default) Every Pokémon in the battle, on both sides, is level 60 (in Crystal RED's team is 73–81, the Elite Four's 40–50). Each knows the four level-up moves the game itself would give it.
+A browser battle against the strongest trainers in Pokémon Crystal: PKMN Trainer RED, the Elite Four (WILL, KOGA, BRUNO, KAREN), Champion LANCE and the eight Johto Gym Leaders (FALKNER, BUGSY, WHITNEY, MORTY, CHUCK, JASMINE, PRYCE, CLAIR). Pick one in the Goldenrod town's Gym or Fan Club, or open `red-battle/?vs=<name>` (default `red`). Each uses their real Crystal team, moves, DVs, items (Full Restore, Max Potion, Hyper Potion, Full Heal), AI, battle text and battle music. You get six random Pokémon obtainable in Gold/Silver/Crystal (no Mew/Celebi by default) Every Pokémon in the battle, on both sides, is level 60 (in Crystal RED's team is 73–81, the Elite Four's 40–50). Each knows the four level-up moves the game itself would give it.
 
 ## Where the data comes from
 

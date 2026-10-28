@@ -6,6 +6,7 @@ part of the portfolio, the signs and NPCs talk about Casper, and the Gym leads t
 | Door | Opens |
 | --- | --- |
 | Gym | The real Goldenrod Gym interior: talk to WILL, KOGA, BRUNO, KAREN, LANCE or RED to battle them |
+| PP Speech House | The POKéMON FAN CLUB: all eight Johto Gym Leaders, ready to battle |
 | Pokémon Center | About |
 | Magnet Train Station | Career / experience |
 | Dept. Store | Skills & tools |
@@ -15,7 +16,6 @@ part of the portfolio, the signs and NPCs talk about Casper, and the Gym leads t
 | Bill's family's house | How it started |
 | Happiness Rater | Long-term goal |
 | Bike Shop | Outside of work |
-| PP Speech House | Teaching |
 | Flower Shop | Blog |
 | Route 35 gate, Underground | Classic site / source |
 
@@ -25,8 +25,8 @@ day (otherwise the visitor's clock picks the palette, like the game).
 
 ## Files
 
-- `data/goldenrod.json`, `data/goldenrod-gym.json`: the city and the Gym interior (map, tileset,
-  palettes, NPC sprites, font), read from the ROM.
+- `data/goldenrod.json`, `data/goldenrod-gym.json`, `data/fan-club.json`: the city, the Gym and the
+  Fan Club (map, tileset, palettes, NPC sprites, font), read from the ROM.
 - `content.js`: what every door, sign and NPC says. Edit this to change the portfolio text.
 - `engine.js`: collision, doors, NPC wandering, text wrapping (no DOM; tested in Node).
 - `render.js`, `font.js`: canvas drawing at Game Boy resolution with GBC LCD colours.

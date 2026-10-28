@@ -26,10 +26,15 @@ GOLDENROD_GROUP = 11
 ROOF_TILE, ROOF_LENGTH = 0x0a, 9
 WALKING_SPRITE = 1
 # Sprites each map needs besides the ones placed in its MapEvents.
-CITY_SPRITES = ["SPRITE_CHRIS", "SPRITE_RED", "SPRITE_GYM_GUIDE"]
+# The story's main characters walk around Goldenrod too.
+CITY_SPRITES = ["SPRITE_CHRIS", "SPRITE_RED", "SPRITE_GYM_GUIDE", "SPRITE_ELM", "SPRITE_OAK", "SPRITE_RIVAL",
+                "SPRITE_KRIS", "SPRITE_BILL", "SPRITE_MOM", "SPRITE_KURT"]
 # The Gym holds the Elite Four, Champion LANCE and RED.
 GYM_SPRITES = ["SPRITE_CHRIS", "SPRITE_RED", "SPRITE_WILL", "SPRITE_KOGA", "SPRITE_BRUNO",
                "SPRITE_KAREN", "SPRITE_LANCE", "SPRITE_GYM_GUIDE"]
+# The POKéMON FAN CLUB holds the eight Johto Gym Leaders.
+FAN_CLUB_SPRITES = ["SPRITE_CHRIS", "SPRITE_FALKNER", "SPRITE_BUGSY", "SPRITE_WHITNEY", "SPRITE_MORTY",
+                    "SPRITE_CHUCK", "SPRITE_JASMINE", "SPRITE_PRYCE", "SPRITE_CLAIR"]
 
 
 def lz_decompress(rom, start):
@@ -130,7 +135,7 @@ def main(rom_path, disasm, out_dir):
     def word(p):
         return rom[p] | rom[p + 1] << 8
 
-    def build(map_name, tileset, env_id, roof_group, extra_sprites):
+    def build(map_name, tileset, env_id, roof_group, extra_sprites, special_bg=None):
         # ---------- map header ----------
         p = at(f"{map_name}_MapAttributes")
         border, height, width = rom[p], rom[p + 1], rom[p + 2]
@@ -184,7 +189,8 @@ def main(rom_path, disasm, out_dir):
             row = off(env_bank, env + 8 * t)
             pals = []
             for i in range(8):
-                q = bgpal + rom[row + i] * 8
+                # LoadSpecialMapPalette: some tilesets (e.g. HOUSE) bring their own 8 palettes.
+                q = at(special_bg) + i * 8 if special_bg else bgpal + rom[row + i] * 8
                 pals.append([colour(word(q + 2 * c)) for c in range(4)])
             if roof_group is not None:  # LoadMapPals: TOWN and ROUTE maps get the roof colours
                 r = at("RoofPals") + roof_group * 8 + (4 if name == "nite" else 0)
@@ -227,7 +233,10 @@ def main(rom_path, disasm, out_dir):
             o["movement"] = move_by_id.get(o["movement"], o["movement"])
 
         # ---------- sprites ----------
-        wanted = sorted({o["sprite"] for o in objects} | set(extra_sprites))
+        # Only people from OverworldSprites; Pokémon sprites ($80+, e.g. the Fan Club's ODDISH) use
+        # another table and are not placed in the town.
+        last = max(v for k, v in sprite_ids.items() if k != "SPRITE_NONE" and v < 0x80)
+        wanted = sorted({o["sprite"] for o in objects if sprite_ids[o["sprite"]] <= last} | set(extra_sprites))
         sprites = {}
         for name in wanted:
             q = sp + (sprite_ids[name] - 1) * 6
@@ -272,6 +281,7 @@ def main(rom_path, disasm, out_dir):
     maps = {
         "goldenrod.json": build("GoldenrodCity", "JohtoModern", TOWN_ENV, GOLDENROD_GROUP, CITY_SPRITES),
         "goldenrod-gym.json": build("GoldenrodGym", "EliteFourRoom", INDOOR_ENV, None, GYM_SPRITES),
+        "fan-club.json": build("PokemonFanClub", "House", INDOOR_ENV, None, FAN_CLUB_SPRITES, "HousePalette"),
     }
     for name, out in maps.items():
         with open(f"{out_dir}/{name}", "w") as f:

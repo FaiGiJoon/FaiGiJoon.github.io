@@ -109,13 +109,7 @@ export default {
       body: ['Fresh posts grow here. Have a look at the blog!'],
       links: [{ label: 'READ THE BLOG', href: 'blog.html' }],
     },
-    '33,9': {
-      name: 'PP SPEECH HOUSE', kind: 'page', title: 'TEACHING',
-      body: [
-        'Casper once taught MBO Level 4 ICT students at ROC van Amsterdam during a teacher shortage.',
-        'Lesson plans, hands-on labs and mentoring students through practical projects.',
-      ],
-    },
+    '33,9': { name: 'POKéMON FAN CLUB', kind: 'map', map: 'fanClub' },
     '19,1': {
       name: 'ROUTE 35 GATE', kind: 'page', title: 'LEAVING TOWN?',
       body: ['Prefer a plain web page? The classic portfolio has everything on one page.'],
@@ -167,14 +161,57 @@ export default {
       text: "TEAM ROCKET wants Casper's CV... The NAME RATER has it. Don't tell anyone!" },
     { x: 12, y: 22, sprite: 'POKEFAN_M', facing: 'down', palette: 0,
       text: 'The GAME CORNER shows the newest projects on GitHub. No coins needed!' },
+    // The story's main characters.
+    { x: 18, y: 28, sprite: 'ELM', wander: [1, 0],
+      text: 'PROF. ELM: I study how POKéMON evolve. Casper studies how to make IT just work! The POKéMON CENTER has the details.' },
+    { x: 9, y: 17, sprite: 'OAK', facing: 'down',
+      text: 'PROF. OAK: Ah, Casper! A fine System Support Engineer from Utrecht. Want to get in touch? Try the RADIO TOWER.' },
+    { x: 28, y: 8, sprite: 'RIVAL', facing: 'left',
+      text: "SILVER: ...Hmph. You want to be strong? The GYM has the ELITE FOUR, LANCE and RED. The FAN CLUB has every GYM LEADER." },
+    { x: 30, y: 23, sprite: 'KRIS', wander: [1, 0],
+      text: "KRIS: Hi! Casper's skills are on every floor of the DEPT. STORE. I came for the MikroTik gear!" },
+    { x: 6, y: 27, sprite: 'BILL', facing: 'down',
+      text: "BILL: Hiya! I'm a POKéMANIAC and a PC whiz. Casper got hooked on tech through an emulator. The story's in my family's house!" },
+    { x: 21, y: 33, sprite: 'MOM', facing: 'up',
+      text: "MOM: Casper started fixing PCs back in 2015 and never stopped. Don't forget to say hi at the FAN CLUB!" },
+    { x: 32, y: 7, sprite: 'KURT', facing: 'down',
+      text: 'KURT: I craft POKé BALLS by hand. Casper builds AppSheet apps with JavaScript. Different trade, same care!' },
     { x: 23, y: 8, sprite: 'GYM_GUIDE', facing: 'down',
       text: 'Yo! Champ in the making! The ELITE FOUR, LANCE and RED are all inside. Pick your opponent!' },
   ],
+
+  // The POKéMON FAN CLUB (from Vermilion City in the ROM), behind the old PP Speech House door:
+  // the eight Johto GYM LEADERS sit around the table. Talk to one to battle them.
+  fanClub: {
+    title: 'POKéMON FAN CLUB',
+    music: 'vermilionCity',
+    start: { x: 2, y: 7, facing: 'up' },
+    exit: { x: 33, y: 10, facing: 'down' },
+    battleHref: 'red-battle/?vs=',
+    buildings: {},
+    signs: {
+      '7,0': 'GOLDENROD GYM LEADERS CLUB. All eight Johto LEADERS are here. Pick anyone to battle!',
+      '9,0': 'Every POKéMON battles at Lv60. The LEADERS bring their real teams from the badge battles.',
+    },
+    npcs: [
+      { x: 0, y: 2, sprite: 'FALKNER', facing: 'right', trainer: 'falkner' },
+      { x: 0, y: 3, sprite: 'BUGSY', facing: 'right', trainer: 'bugsy' },
+      { x: 0, y: 5, sprite: 'MORTY', facing: 'right', trainer: 'morty' },
+      { x: 5, y: 1, sprite: 'WHITNEY', facing: 'down', trainer: 'whitney' },
+      { x: 6, y: 1, sprite: 'CLAIR', facing: 'down', trainer: 'clair' },
+      { x: 9, y: 3, sprite: 'CHUCK', facing: 'left', trainer: 'chuck' },
+      { x: 9, y: 4, sprite: 'JASMINE', facing: 'left', trainer: 'jasmine' },
+      { x: 9, y: 5, sprite: 'PRYCE', facing: 'left', trainer: 'pryce' },
+      { x: 1, y: 6, sprite: 'GENTLEMAN', facing: 'right',
+        text: "Welcome to the FAN CLUB! I'm the chairman. Every GYM LEADER in Johto is a member, and they all love a battle!" },
+    ],
+  },
 
   // Inside the Gym (GoldenrodGym from the ROM): RED stands where WHITNEY would, LANCE beside
   // him, and the ELITE FOUR on the gym trainers' spots. Talk to one to battle them.
   gym: {
     title: 'GOLDENROD GYM',
+    music: 'gym',
     start: { x: 2, y: 17, facing: 'up' },
     exit: { x: 24, y: 8, facing: 'down' },
     battleHref: 'red-battle/?vs=',

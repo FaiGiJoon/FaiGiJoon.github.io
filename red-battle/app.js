@@ -1,4 +1,4 @@
-import { Battle, makeRng, randomTeam, trainerTeam, TRAINER_KEYS } from './engine.js';
+import { Battle, makeRng, randomTeam, trainerTeam, TRAINER_KEYS, LEADER_KEYS } from './engine.js';
 import { createGameAudio } from './gbsound.js';
 import { soundEvents, hurtSides, hitSfx, moveMissed, HIT_LEAD } from './battle-audio.js';
 import { BattleAnimPlayer, FRAME_HZ } from './anims.js';
@@ -11,9 +11,9 @@ const SPEEDS = [['NORMAL', 22], ['FAST', 8], ['INSTANT', 0]];
 
 let data; let foe; let team; let battle; let shown = 0; let speedIdx = 0; let typing = null; let busy = false;
 const spriteCache = new Map();
-// Which Gym trainer to fight: ?vs=will|koga|bruno|karen|lance|red (default RED).
+// Which trainer to fight: ?vs=<key from TRAINER_KEYS> (default RED).
 const VS = TRAINER_KEYS.find((k) => k === new URLSearchParams(location.search).get('vs')) || 'red';
-const ITEM_NAMES = { 14: 'FULL RESTORE', 15: 'MAX POTION', 38: 'FULL HEAL' };
+const ITEM_NAMES = { 14: 'FULL RESTORE', 15: 'MAX POTION', 16: 'HYPER POTION', 38: 'FULL HEAL' };
 
 // ---------- audio (Crystal's sound engine, see gbsound.js) ----------
 let audio = null;
@@ -155,7 +155,11 @@ function rerollTeam() {
 
 function renderFoe() {
   const title = `${foe.className} ${foe.name}`;
-  document.title = `${title} — Goldenrod Gym`;
+  // Gym Leaders wait in the town's POKéMON FAN CLUB; everyone else in the Goldenrod Gym.
+  const room = LEADER_KEYS.includes(VS) ? { name: 'POKéMON Fan Club', at: 'fanClub' } : { name: 'Goldenrod Gym', at: 'gym' };
+  document.title = `${title} — ${room.name}`;
+  $('back').href = `../?at=${room.at}`;
+  $('back').textContent = `← Back to the ${room.name.replace('Goldenrod ', '')}`;
   $('foetitle').textContent = title;
   $('foeh1').textContent = `Battle ${foe.name[0]}${foe.name.slice(1).toLowerCase()}`;
   $('foepic').src = `sprites/${VS}.png`;
@@ -163,7 +167,7 @@ function renderFoe() {
   $('foeinline').textContent = foe.name;
   $('start').textContent = `BATTLE ${foe.name} ▶`;
   $('foeai').textContent = `SHOW ${foe.name}'S AI`;
-  $('foesub').textContent = `Goldenrod Gym · Pokémon Crystal · ${title} · data read from the ROM`;
+  $('foesub').textContent = `${room.name} · Pokémon Crystal · ${title} · data read from the ROM`;
   $('redteam').innerHTML = trainerTeam(data, foe).map(teamRow).join('');
   hydrateMinis($('redteam'));
   const d = foe.dvs;
