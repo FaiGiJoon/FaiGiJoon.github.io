@@ -25,7 +25,8 @@ SONGS = {"championBattle": ("Music_ChampionBattle", "MUSIC_CHAMPION_BATTLE"),
          "gymVictory": ("Music_GymLeaderVictory", "MUSIC_GYM_VICTORY"),
          "goldenrodCity": ("Music_GoldenrodCity", "MUSIC_GOLDENROD_CITY"),
          "johtoGymBattle": ("Music_JohtoGymBattle", "MUSIC_JOHTO_GYM_LEADER_BATTLE"),
-         "gym": ("Music_Gym", "MUSIC_GYM")}
+         "gym": ("Music_Gym", "MUSIC_GYM"),
+         "vermilionCity": ("Music_VermilionCity", "MUSIC_VERMILION_CITY")}
 
 # Audio command parameter byte counts ($d0-$ff), see audio/engine.asm MusicCommands.
 # $d8 (note_type) and $e3/$f0 (toggle_noise) depend on channel/state; handled in trace.

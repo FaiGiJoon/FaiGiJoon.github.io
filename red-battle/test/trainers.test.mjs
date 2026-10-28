@@ -1,14 +1,19 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync, existsSync } from 'node:fs';
-import { Battle, randomTeam, trainerTeam, makeRng, BATTLE_LEVEL, TRAINER_KEYS } from '../engine.js';
+import { Battle, randomTeam, trainerTeam, makeRng, BATTLE_LEVEL, TRAINER_KEYS, GYM_KEYS, LEADER_KEYS } from '../engine.js';
 
 const data = JSON.parse(readFileSync(new URL('../data.json', import.meta.url)));
 const DISASM = process.env.POKECRYSTAL || `${process.env.HOME}/src/pokecrystal`;
-const GROUPS = { red: 'RedGroup', will: 'WillGroup', koga: 'KogaGroup', bruno: 'BrunoGroup', karen: 'KarenGroup', lance: 'ChampionGroup' };
+const GROUPS = { red: 'RedGroup', will: 'WillGroup', koga: 'KogaGroup', bruno: 'BrunoGroup', karen: 'KarenGroup', lance: 'ChampionGroup',
+  falkner: 'FalknerGroup', bugsy: 'BugsyGroup', whitney: 'WhitneyGroup', morty: 'MortyGroup', chuck: 'ChuckGroup',
+  jasmine: 'JasmineGroup', pryce: 'PryceGroup', clair: 'ClairGroup' };
 
-test('the Gym holds RED, the Elite Four and Champion LANCE', () => {
-  assert.deepEqual(TRAINER_KEYS, ['will', 'koga', 'bruno', 'karen', 'lance', 'red']);
+test('the Gym holds RED, the Elite Four and Champion LANCE; the Fan Club the Johto Gym Leaders', () => {
+  assert.deepEqual(GYM_KEYS, ['will', 'koga', 'bruno', 'karen', 'lance', 'red']);
+  assert.deepEqual(LEADER_KEYS, ['falkner', 'bugsy', 'whitney', 'morty', 'chuck', 'jasmine', 'pryce', 'clair']);
+  assert.equal(TRAINER_KEYS.length, 14);
+  assert.equal(data.trainers.whitney.className, 'LEADER');
   for (const k of TRAINER_KEYS) assert.ok(data.trainers[k], k);
   assert.equal(data.trainers.lance.className, 'CHAMPION');
   assert.equal(data.trainers.will.className, 'ELITE FOUR');
@@ -20,7 +25,7 @@ test('every party matches data/trainers/parties.asm', { skip: !existsSync(DISASM
   const parties = readFileSync(`${DISASM}/data/trainers/parties.asm`, 'utf8');
   for (const [key, group] of Object.entries(GROUPS)) {
     const block = parties.split(`${group}:`)[1].split('db -1')[0];
-    const rows = [...block.matchAll(/db (\d+), (\w+),\s+([\w, ]+)/g)];
+    const rows = [...block.matchAll(/db\s+(\d+), (\w+),\s+([\w, ]+)/g)];
     const team = trainerTeam(data, data.trainers[key]);
     assert.equal(team.length, rows.length, key);
     rows.forEach((m, i) => {
@@ -28,7 +33,7 @@ test('every party matches data/trainers/parties.asm', { skip: !existsSync(DISASM
       assert.equal(team[i].level, BATTLE_LEVEL); // fought at Lv60
       assert.equal(team[i].name, m[2]);
       const names = team[i].moves.map((mv) => data.moves[mv.id].name.replace(/[ -]/g, '_'));
-      assert.deepEqual(names, m[3].split(',').map((x) => x.trim().replace('PSYCHIC_M', 'PSYCHIC')), `${key} ${m[2]}`);
+      assert.deepEqual(names, m[3].split(',').map((x) => x.trim().replace('PSYCHIC_M', 'PSYCHIC')).filter((x) => x !== 'NO_MOVE'), `${key} ${m[2]}`);
     });
   }
 });
@@ -103,4 +108,14 @@ test('winning shows the trainer\'s own defeat line', () => {
   const texts = b.log.map((l) => l.text);
   assert.ok(texts.includes('You defeated ELITE FOUR WILL!'), texts.slice(-3).join(' | '));
   assert.ok(texts.includes("WILL: I… I can't… believe it…"));
+});
+
+test('a Gym Leader heals 200 HP with a HYPER POTION', () => {
+  const b = new Battle(data, randomTeam(data, makeRng(1)), { seed: 5, trainer: 'jasmine' });
+  const m = b.mon(1);
+  m.hp = 1;
+  assert.deepEqual(b.aiTryItem(), { type: 'item', item: 16 });
+  b.useItem(1, 16);
+  assert.equal(m.hp, Math.min(m.maxHp, 201));
+  assert.ok(b.log.at(-1).text.startsWith('JASMINE used HYPER POTION on'));
 });

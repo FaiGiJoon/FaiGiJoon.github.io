@@ -111,14 +111,17 @@ def main(rom_path, disasm, out_dir):
     # palette index = trainer class (index 0 is the player). All are 7x7 tiles.
     tp = syms["TrainerPalettes"]
     pics = re.findall(r"dba_pic (\w+)", open(f"{disasm}/data/trainers/pic_pointers.asm").read())
-    for key, cls in {"red": 0x3F, "will": 0x0B, "bruno": 0x0D, "karen": 0x0E, "koga": 0x0F, "lance": 0x10}.items():
+    trainers = {"red": 0x3F, "will": 0x0B, "bruno": 0x0D, "karen": 0x0E, "koga": 0x0F, "lance": 0x10,
+                "falkner": 0x01, "whitney": 0x02, "bugsy": 0x03, "morty": 0x04, "pryce": 0x05,
+                "jasmine": 0x06, "chuck": 0x07, "clair": 0x08}
+    for key, cls in trainers.items():
         pal = [(255, 255, 255), rgb555(rom[tp + cls * 4], rom[tp + cls * 4 + 1]),
                rgb555(rom[tp + cls * 4 + 2], rom[tp + cls * 4 + 3]), (0, 0, 0)]
         pic = syms[pics[cls - 1]]
         write_png(f"{out_dir}/{key}.png", 56, 56, tiles_to_pixels(lz_decompress(rom, pic), 7, 7), pal)
     chris_pal = [(255, 255, 255), rgb555(rom[tp], rom[tp + 1]), rgb555(rom[tp + 2], rom[tp + 3]), (0, 0, 0)]
     write_png(f"{out_dir}/back/player.png", 48, 48, tiles_to_pixels(lz_decompress(rom, syms["ChrisBackpic"]), 6, 6), chris_pal)
-    print(f"wrote {count} front+back pics, 6 trainer pics, back/player.png to {out_dir}")
+    print(f"wrote {count} front+back pics, {len(trainers)} trainer pics, back/player.png to {out_dir}")
 
 
 if __name__ == "__main__":

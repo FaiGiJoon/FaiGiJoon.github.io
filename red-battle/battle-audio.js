@@ -30,7 +30,7 @@ export function soundEvents(log, k, dexOf, { animated = false } = {}) {
   } else if (/ fainted!$/.test(text)) {
     // FaintYourPokemon: the player's mon cries as it faints
     ev.push({ at: 0, cry: dexOf(0, entry), opts: { tracks: 'left' } });
-  } else if (/ used (FULL RESTORE|MAX POTION|FULL HEAL) on /.test(text)) {
+  } else if (/ used (FULL RESTORE|MAX POTION|HYPER POTION|FULL HEAL) on /.test(text)) {
     ev.push({ at: 0, sfx: 'fullHeal', opts: { force: true } });
   } else if (!animated && (/, come back!$/.test(text) || / withdrew /.test(text))) {
     ev.push({ at: 0, sfx: 'switchPokemon', opts: { force: true } });

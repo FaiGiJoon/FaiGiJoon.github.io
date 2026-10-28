@@ -89,7 +89,7 @@ let view;
 let trainers = {}; // red-battle/trainers.json: the Gym trainers' names and ROM dialogue
 const maps = {}; // city / gym: { data, content, world }
 let mapName = 'city';
-const mapMusic = () => (mapName === 'gym' ? 'gym' : 'goldenrodCity');
+const mapMusic = () => maps[mapName]?.content.music || 'goldenrodCity';
 const player = { x: 0, y: 0, facing: 'down', sprite: 'CHRIS', palette: 0, step: 0, from: null, phase: 0, parity: 0, turn: 0 };
 let ui = { mode: 'walk' };
 let bumpCooldown = 0;
@@ -150,7 +150,7 @@ function enterMap(name, pos) {
   ({ data, world } = maps[name]);
   view.setData(data);
   Object.assign(player, { x: pos.x, y: pos.y, facing: pos.facing, from: null, step: 0 });
-  nameSign = name === 'gym' ? 120 : 0;
+  nameSign = name === 'city' ? 0 : 120;
   audio?.music(mapMusic());
 }
 
@@ -252,7 +252,7 @@ function updateWalk() {
   if (r.kind === 'exit') {
     sfx('exitBuilding');
     ui = { mode: 'fade', t: 0, dir: 1, then: () => {
-      enterMap('city', content.gym.exit);
+      enterMap('city', maps[mapName].content.exit);
       ui = { mode: 'fade', t: 1, dir: -1, then: closeUi };
     } };
     return;
@@ -274,7 +274,7 @@ function challenge(key) {
   if (!t) { say('...'); return; }
   const title = `${t.className} ${t.name}`;
   say(speech(t.text.before), () => ask([`Battle ${title}?`], ['YES', 'NO'], (i) => {
-    if (i === 0) location.href = `${content.gym.battleHref}${key}`;
+    if (i === 0) location.href = `${maps[mapName].content.battleHref}${key}`;
   }));
 }
 
@@ -395,17 +395,20 @@ function frame(now) {
 
 async function boot() {
   const load = async (path) => (await fetch(new URL(path, import.meta.url))).json();
-  const [city, gym] = await Promise.all([load('./data/goldenrod.json'), load('./data/goldenrod-gym.json')]);
+  const [city, gym, fanClub] = await Promise.all([
+    load('./data/goldenrod.json'), load('./data/goldenrod-gym.json'), load('./data/fan-club.json')]);
   trainers = await load('../red-battle/trainers.json').catch(() => ({}));
   maps.city = { data: city, content, world: new World(city, content) };
   maps.gym = { data: gym, content: content.gym, world: new World(gym, content.gym) };
+  maps.fanClub = { data: fanClub, content: content.fanClub, world: new World(fanClub, content.fanClub) };
   ({ data, world } = maps.city);
   view = new Renderer(canvas, data);
   fit();
   addEventListener('resize', fit);
-  // ?at=gym: back from a battle, the player is standing in the Gym again.
-  if (new URLSearchParams(location.search).get('at') === 'gym') {
-    enterMap('gym', content.gym.start);
+  // ?at=gym|fanClub: back from a battle, the player is standing in that room again.
+  const at = new URLSearchParams(location.search).get('at');
+  if (at === 'gym' || at === 'fanClub') {
+    enterMap(at, content[at].start);
   } else {
     Object.assign(player, { x: content.start.x, y: content.start.y, facing: content.start.facing });
     say(content.intro);
