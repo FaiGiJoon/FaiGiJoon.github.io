@@ -3,7 +3,9 @@ import { World, DIRS, COLL, wrapText, paginate, speech } from './engine.js';
 import { Renderer, Page, SCREEN_H, timeOfDay } from './render.js';
 import content from './content.js';
 
-const STEP_FRAMES = 16; // walking speed: one 16 px step per 16 frames
+const STEP_FRAMES = 16; // NPCs' walking speed: one 16 px step per 16 frames
+const WALK_FRAMES = 12; // the player walks a bit quicker than that
+const RUN_FRAMES = 6; // and runs with Space held, or when walking to a click
 const TURN_FRAMES = 4; // a tap turns the player without stepping
 const NPC_PAUSE = [60, 180]; // frames between a wanderer's steps
 const OPPOSITE = { up: 'down', down: 'up', left: 'right', right: 'left' };
@@ -25,6 +27,7 @@ function storage(fn, fallback = null) {
 const held = new Set();
 const pressed = new Set();
 let lastDir = null;
+let spaceHeld = false;
 function press(btn) {
   if (!held.has(btn)) pressed.add(btn);
   held.add(btn);
@@ -37,21 +40,44 @@ function release(btn) {
 }
 addEventListener('keydown', (e) => {
   if (e.key === 'm' || e.key === 'M') { toggleMute(); return; }
+  if (e.key === ' ') spaceHeld = true;
   const btn = KEYS[e.key];
   if (!btn) return;
   e.preventDefault();
   press(btn);
 });
-addEventListener('keyup', (e) => { const btn = KEYS[e.key]; if (btn) release(btn); });
-addEventListener('blur', () => { held.clear(); lastDir = null; });
+addEventListener('keyup', (e) => {
+  if (e.key === ' ') spaceHeld = false;
+  const btn = KEYS[e.key];
+  if (btn) release(btn);
+});
+addEventListener('blur', () => { held.clear(); lastDir = null; spaceHeld = false; });
 for (const el of document.querySelectorAll('[data-btn]')) {
   const btn = el.dataset.btn;
   el.addEventListener('pointerdown', (e) => { e.preventDefault(); el.setPointerCapture?.(e.pointerId); press(btn); });
   for (const ev of ['pointerup', 'pointercancel', 'lostpointercapture']) el.addEventListener(ev, () => release(btn));
 }
-// Tapping the screen works as A while text is up.
-canvas.addEventListener('pointerdown', () => { if (ui.mode !== 'walk') press('A'); });
-canvas.addEventListener('pointerup', () => release('A'));
+// Tapping the screen works as A while text is up; while walking, click (or hold
+// and drag) to walk there, or click someone to go and talk to them.
+let dragging = false;
+canvas.addEventListener('pointerdown', (e) => {
+  if (ui.mode !== 'walk') { press('A'); return; }
+  startAudio();
+  canvas.setPointerCapture?.(e.pointerId);
+  dragging = true;
+  aim(e);
+});
+canvas.addEventListener('pointermove', (e) => { if (dragging && ui.mode === 'walk') aim(e); });
+for (const ev of ['pointerup', 'pointercancel']) canvas.addEventListener(ev, () => { dragging = false; release('A'); });
+
+function aim(e) {
+  const r = canvas.getBoundingClientRect();
+  const px = cam.x + ((e.clientX - r.left) * view.w) / r.width;
+  const py = cam.y + ((e.clientY - r.top) * SCREEN_H) / r.height;
+  // NPCs are drawn 4 px above their step, so hit-test their sprite first.
+  const npc = world.npcs.find((n) => px >= n.x * 16 && px < n.x * 16 + 16 && py >= n.y * 16 - 4 && py < n.y * 16 + 12);
+  walkTo = npc ? { npc } : { x: Math.floor(px / 16), y: Math.floor(py / 16) };
+}
 
 // ---------- audio (Crystal's sound engine from Battle Red) ----------
 let audio = null;
@@ -90,8 +116,10 @@ let trainers = {}; // red-battle/trainers.json: the Gym trainers' names and ROM 
 const maps = {}; // city / gym: { data, content, world }
 let mapName = 'city';
 const mapMusic = () => maps[mapName]?.content.music || 'goldenrodCity';
-const player = { x: 0, y: 0, facing: 'down', sprite: 'CHRIS', palette: 0, step: 0, from: null, phase: 0, parity: 0, turn: 0 };
+const player = { x: 0, y: 0, facing: 'down', sprite: 'CHRIS', palette: 0, step: 0, stepFrames: WALK_FRAMES, from: null, phase: 0, parity: 0, turn: 0 };
 let ui = { mode: 'walk' };
+let walkTo = null; // click-to-walk target: { x, y } or { npc }
+let cam = { x: 0, y: 0 };
 let bumpCooldown = 0;
 let nameSign = 150;
 // ?time=morn|day|nite previews another time of day; otherwise the visitor's clock decides.
@@ -150,6 +178,7 @@ function enterMap(name, pos) {
   ({ data, world } = maps[name]);
   view.setData(data);
   Object.assign(player, { x: pos.x, y: pos.y, facing: pos.facing, from: null, step: 0 });
+  walkTo = null;
   nameSign = name === 'city' ? 0 : 120;
   audio?.music(mapMusic());
 }
@@ -219,6 +248,7 @@ function updateWalk() {
       player.from = null;
       const b = world.buildingAt(player.x, player.y);
       if (world.collisionAt(player.x, player.y) === COLL.DOOR) {
+        walkTo = null;
         sfx('enterDoor');
         const door = { x: player.x, y: player.y };
         ui = { mode: 'fade', t: 0, dir: 1, then: () => openBuilding(b, door) };
@@ -228,19 +258,11 @@ function updateWalk() {
     if (player.step > 0) return;
   }
 
-  if (pressed.has('A')) {
-    const t = world.facing(player, player.facing);
-    if (t?.type === 'npc') {
-      t.npc.facing = OPPOSITE[player.facing];
-      t.npc.busy = true;
-      if (t.npc.trainer) challenge(t.npc.trainer);
-      else say(t.npc.text);
-      return;
-    }
-    if (t?.type === 'sign') { say(t.sign.text); return; }
-  }
+  if (pressed.has('A') && interact()) return;
 
   const dir = lastDir;
+  if (dir) walkTo = null; // the keys take over from a click
+  else if (walkTo) { followClick(); return; }
   if (!dir) { player.turn = 0; return; }
   if (player.facing !== dir) {
     player.facing = dir;
@@ -248,6 +270,48 @@ function updateWalk() {
     return;
   }
   if (player.turn > 0) { player.turn--; return; }
+  walk(dir, spaceHeld ? RUN_FRAMES : WALK_FRAMES);
+}
+
+// Talk to whoever or whatever the player is facing.
+function interact() {
+  const t = world.facing(player, player.facing);
+  if (t?.type === 'npc') {
+    t.npc.facing = OPPOSITE[player.facing];
+    t.npc.busy = true;
+    if (t.npc.trainer) challenge(t.npc.trainer);
+    else say(t.npc.text);
+    return true;
+  }
+  if (t?.type === 'sign') { say(t.sign.text); return true; }
+  return false;
+}
+
+// One running step along the shortest path to the clicked spot. Clicking an NPC
+// or a sign walks up to it and talks; clicking an exit mat walks out.
+function followClick() {
+  const tx = walkTo.npc ? walkTo.npc.x : walkTo.x;
+  const ty = walkTo.npc ? walkTo.npc.y : walkTo.y;
+  const talk = walkTo.npc || world.signAt(tx, ty);
+  const goals = talk ? Object.values(DIRS).map(([dx, dy]) => ({ x: tx + dx, y: ty + dy })) : [{ x: tx, y: ty }];
+  const next = world.firstStep(player, goals);
+  if (next?.dir) {
+    player.facing = next.dir;
+    walk(next.dir, RUN_FRAMES);
+    return;
+  }
+  walkTo = null;
+  if (!next) return;
+  if (talk) {
+    player.facing = Object.keys(DIRS).find((d) => DIRS[d][0] === tx - player.x && DIRS[d][1] === ty - player.y);
+    interact();
+  } else if (world.collisionAt(player.x, player.y) === COLL.WARP_DOWN) {
+    player.facing = 'down';
+    walk('down', RUN_FRAMES);
+  }
+}
+
+function walk(dir, frames) {
   const r = world.tryStep(player, dir);
   if (r.kind === 'exit') {
     sfx('exitBuilding');
@@ -264,7 +328,7 @@ function updateWalk() {
   player.from = { x: player.x, y: player.y };
   player.x = r.x;
   player.y = r.y;
-  player.step = STEP_FRAMES;
+  player.step = player.stepFrames = frames;
   player.parity ^= 1;
 }
 
@@ -323,9 +387,9 @@ function updateUi() {
 }
 
 // ---------- draw ----------
-function actorPos(a, frames) {
+function actorPos(a, frames, total = STEP_FRAMES) {
   if (!a.from || !frames) return { px: a.x * 16, py: a.y * 16 };
-  const k = frames / STEP_FRAMES;
+  const k = frames / total;
   return { px: (a.x - (a.x - a.from.x) * k) * 16, py: (a.y - (a.y - a.from.y) * k) * 16 };
 }
 
@@ -336,8 +400,8 @@ function draw() {
     renderStatus();
     return;
   }
-  const p = actorPos(player, player.step);
-  const half = player.step > STEP_FRAMES / 2;
+  const p = actorPos(player, player.step, player.stepFrames);
+  const half = player.step > player.stepFrames / 2;
   const phase = player.step ? (half ? 1 + 2 * player.parity : 0) : 0;
   const actors = [
     { ...p, facing: player.facing, phase, sprite: player.sprite, palette: player.palette },
@@ -349,7 +413,8 @@ function draw() {
     }),
   ];
   // Camera: the player sits at screen (W/2 - 16, 64) like the GB's 10x9 view.
-  view.drawWorld(p.px - (view.w / 2 - 16), p.py - 64, actors);
+  cam = { x: p.px - (view.w / 2 - 16), y: p.py - 64 };
+  view.drawWorld(cam.x, cam.y, actors);
   if (nameSign > 0 && ui.mode === 'walk') view.mapName(maps[mapName].content.title);
   if (ui.mode === 'dialog') {
     const page = ui.pages[ui.page] || [];

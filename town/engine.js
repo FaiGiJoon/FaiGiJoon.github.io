@@ -80,6 +80,37 @@ export class World {
     return null;
   }
 
+  // Click-to-walk: the first step of a shortest path from `pos` to any of `goals`,
+  // or null if none can be reached. Doors only end a path (stepping on one goes
+  // inside), and the path never steps down off an exit mat.
+  firstStep(pos, goals) {
+    const key = (x, y) => `${x},${y}`;
+    const want = new Set(goals.map((g) => key(g.x, g.y)));
+    if (want.has(key(pos.x, pos.y))) return { dir: null };
+    const seen = new Map([[key(pos.x, pos.y), null]]);
+    let frontier = [pos];
+    while (frontier.length) {
+      const next = [];
+      for (const p of frontier) {
+        const first = seen.get(key(p.x, p.y));
+        if (first && this.collisionAt(p.x, p.y) === COLL.DOOR) continue;
+        for (const dir of DIR_NAMES) {
+          if (dir === 'down' && this.collisionAt(p.x, p.y) === COLL.WARP_DOWN) continue;
+          const [dx, dy] = DIRS[dir];
+          const x = p.x + dx;
+          const y = p.y + dy;
+          const k = key(x, y);
+          if (seen.has(k) || !this.isWalkable(x, y)) continue;
+          seen.set(k, first || dir);
+          if (want.has(k)) return { dir: first || dir };
+          next.push({ x, y });
+        }
+      }
+      frontier = next;
+    }
+    return null;
+  }
+
   // One movement decision per NPC. Wanderers step within their radius, the way
   // SPRITEMOVEDATA_WANDER keeps an object near its home tile; others just stand.
   tickNpcs(player) {

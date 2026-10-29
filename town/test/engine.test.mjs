@@ -1,7 +1,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
-import { World, wrapText, paginate, COLL } from '../engine.js';
+import { World, wrapText, paginate, COLL, DIRS } from '../engine.js';
 import content from '../content.js';
 
 const data = JSON.parse(readFileSync(new URL('../data/goldenrod.json', import.meta.url)));
@@ -129,4 +129,47 @@ test('an NPC never steps onto the player', () => {
     w.tickNpcs(player);
     assert.ok(!(n.x === player.x && n.y === player.y));
   }
+});
+
+// Follow firstStep until it says "here" (or gives up), like clicking a spot.
+function walkPath(w, from, goals, limit = 200) {
+  const pos = { x: from.x, y: from.y };
+  const steps = [];
+  for (let i = 0; i < limit; i++) {
+    const r = w.firstStep(pos, goals);
+    if (!r) return null;
+    if (!r.dir) return { pos, steps };
+    const s = w.tryStep(pos, r.dir);
+    assert.ok(s.kind === 'move' || s.kind === 'door', `step ${r.dir} from ${pos.x},${pos.y}: ${s.kind}`);
+    assert.ok(!steps.some((t) => w.collisionAt(t.x, t.y) === COLL.DOOR), 'walked through a door');
+    pos.x = s.x; pos.y = s.y;
+    steps.push({ ...pos });
+  }
+  throw new Error('path never arrived');
+}
+
+test('click-to-walk finds a shortest path that only uses walkable steps', () => {
+  const w = world();
+  const { start } = content;
+  const r = walkPath(w, start, [{ x: 24, y: 8 }]); // in front of the gym
+  assert.deepEqual(r.pos, { x: 24, y: 8 });
+  assert.ok(r.steps.length >= Math.abs(start.x - 24) + Math.abs(start.y - 8));
+});
+
+test('click-to-walk can end on a door, the way into a building', () => {
+  const w = world();
+  for (const d of data.warps) {
+    const r = walkPath(w, content.start, [{ x: d.x, y: d.y }]);
+    if (r) assert.equal(w.collisionAt(r.pos.x, r.pos.y), COLL.DOOR);
+  }
+  assert.ok(walkPath(w, content.start, [{ x: 24, y: 7 }]), 'the gym door is reachable');
+});
+
+test('click-to-walk gives up on unreachable spots and stops next to an NPC', () => {
+  const w = world();
+  assert.equal(w.firstStep(content.start, [{ x: 26, y: 9 }]), null); // a sign is a wall
+  const npc = w.npcs.find((n) => !n.wander);
+  const goals = Object.values(DIRS).map(([dx, dy]) => ({ x: npc.x + dx, y: npc.y + dy }));
+  const r = walkPath(w, content.start, goals);
+  assert.equal(Math.abs(r.pos.x - npc.x) + Math.abs(r.pos.y - npc.y), 1);
 });
