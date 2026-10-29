@@ -76,3 +76,11 @@ test('trainer speech comes from the ROM and fits the Crystal font', () => {
   assert.ok(speech(trainers.lance.text.before)[0].startsWith("LANCE: I've been waiting"));
   assert.ok(!speech(trainers.will.text.before).join(' ').includes('{PLAYER}'));
 });
+
+test('click-to-walk never steps down off the entrance mat by accident', () => {
+  const w = gym();
+  const { x, y } = content.gym.start;
+  const r = w.firstStep({ x, y: y - 3 }, [{ x, y }]);
+  assert.ok(r?.dir);
+  assert.equal(w.firstStep({ x, y }, [{ x, y: y + 1 }]), null);
+});

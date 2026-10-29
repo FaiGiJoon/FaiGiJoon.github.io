@@ -19,7 +19,7 @@ part of the portfolio, the signs and NPCs talk about Casper, and the Gym leads t
 | Flower Shop | Blog |
 | Route 35 gate, Underground | Classic site / source |
 
-Controls: arrows or WASD to walk, Z / Enter / Space for A, X / Esc for B, M toggles sound.
+Controls: arrows or WASD to walk (hold Space to run), or click / tap a spot to run there and click someone to talk to them; Z / Enter / Space for A, X / Esc for B, M toggles sound.
 On touch screens a D-pad and A/B buttons appear. `?time=morn|day|nite` previews another time of
 day (otherwise the visitor's clock picks the palette, like the game).
 
