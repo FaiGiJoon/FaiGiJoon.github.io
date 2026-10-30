@@ -113,7 +113,7 @@ export default {
     '19,1': {
       name: 'ROUTE 35 GATE', kind: 'page', title: 'LEAVING TOWN?',
       body: ['Prefer a plain web page? The classic portfolio has everything on one page.'],
-      links: [{ label: 'CLASSIC SITE', href: 'classic.html' }],
+      links: [{ label: 'CLASSIC SITE', href: './' }],
     },
     '9,5': {
       name: 'UNDERGROUND', kind: 'page', title: 'UNDERGROUND',
@@ -123,7 +123,7 @@ export default {
     '11,29': {
       name: 'UNDERGROUND', kind: 'page', title: 'UNDERGROUND',
       body: ['Prefer a plain web page? The classic portfolio has everything on one page.'],
-      links: [{ label: 'CLASSIC SITE', href: 'classic.html' }],
+      links: [{ label: 'CLASSIC SITE', href: './' }],
     },
   },
 

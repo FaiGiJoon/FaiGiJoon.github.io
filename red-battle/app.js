@@ -158,7 +158,7 @@ function renderFoe() {
   // Gym Leaders wait in the town's POKéMON FAN CLUB; everyone else in the Goldenrod Gym.
   const room = LEADER_KEYS.includes(VS) ? { name: 'POKéMON Fan Club', at: 'fanClub' } : { name: 'Goldenrod Gym', at: 'gym' };
   document.title = `${title} — ${room.name}`;
-  $('back').href = `../?at=${room.at}`;
+  $('back').href = `../town.html?at=${room.at}`;
   $('back').textContent = `← Back to the ${room.name.replace('Goldenrod ', '')}`;
   $('foetitle').textContent = title;
   $('foeh1').textContent = `Battle ${foe.name[0]}${foe.name.slice(1).toLowerCase()}`;

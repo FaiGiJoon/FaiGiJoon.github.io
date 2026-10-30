@@ -1,11 +1,12 @@
 # FaiGiJoon.github.io
 
-Personal portfolio website with a dark, minimal design built on Tailwind CSS. `index.html` is a one-page layout:
+Personal portfolio website with a dark, minimal design built on Tailwind CSS. `index.html` is the home page, a one-page layout:
 
 - **Hero** with name, role, availability badge, CV download and key stats
 - **About** with an "At a glance" card and personal interests
 - **Experience** timeline of past roles
 - **Skills & tools** grouped by area
+- **Goldenrod City** card linking to `town.html`, the portfolio as a walkable Pokémon Crystal town
 - **Recent projects** loaded live from the GitHub API
 - **Contact** with email and GitHub links
 
