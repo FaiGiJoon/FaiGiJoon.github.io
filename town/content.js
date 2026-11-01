@@ -21,9 +21,9 @@ export default {
       body: [
         'Casper Klootwijk is a System Support Engineer from Utrecht, Netherlands.',
         'Hands-on with IT infrastructure, network configuration and cloud workplace tools.',
-        'Supported employees at global companies like FedEx and Prosus, configures network equipment at Axis, and taught networks, servers and cybersecurity at ROC van Amsterdam.',
+        'Supported employees at global companies like FedEx and Prosus, configures network equipment at Trusted, and taught networks, servers and cybersecurity at ROC van Amsterdam.',
         'AT A GLANCE',
-        'Currently: System Support Engineer at Axis',
+        'Currently: System Support Engineer at Trusted',
         'Focus: networking, identity & access, workplace IT',
         'Availability: open to freelance & full-time roles',
       ],
@@ -31,7 +31,7 @@ export default {
     '9,13': {
       name: 'MAGNET TRAIN STATION', kind: 'page', title: 'CAREER LINE',
       body: [
-        'NOW: AXIS',
+        'NOW: TRUSTED',
         'System Support Engineer, Oct 2025 - now. Configures MikroTik network equipment over SSH, maintains and refurbishes IoT devices and restores systems fast so client services stay safe.',
         'PROSUS GROUP',
         'Google Workspace Support, Jun 2025 - Oct 2025. Helped migrate the company from Microsoft 365 to Google Workspace, managed identity with Okta and Active Directory, and built Google AppSheet apps with JavaScript.',
@@ -148,7 +148,7 @@ export default {
     { x: 30, y: 17, sprite: 'YOUNGSTER', wander: [1, 1],
       text: "Casper got into computers through POKéMON PLATINUM. BILL's house down south-west has the story." },
     { x: 12, y: 16, sprite: 'COOLTRAINER_F', facing: 'left', palette: 2,
-      text: 'Casper is a System Support Engineer at AXIS, setting up MikroTik network gear over SSH.' },
+      text: 'Casper is a System Support Engineer at TRUSTED, setting up MikroTik network gear over SSH.' },
     { x: 20, y: 26, sprite: 'COOLTRAINER_F', wander: [1, 2],
       text: 'At PROSUS, Casper helped the whole company move from Microsoft 365 to Google Workspace!' },
     { x: 19, y: 17, sprite: 'YOUNGSTER', wander: [1, 1], palette: 0,
