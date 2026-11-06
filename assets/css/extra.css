@@ -320,6 +320,10 @@ button:focus-visible {
 .type-psychic  { --type: #f472b6; }
 .type-steel    { --type: #94a3b8; }
 .type-grass    { --type: #4ade80; }
+.type-water    { --type: #38bdf8; }
+.type-dark     { --type: #a78bfa; }
+.type-fire     { --type: #fb923c; }
+.type-normal   { --type: #d6d3d1; }
 
 @media (prefers-reduced-motion: reduce) {
     html { scroll-behavior: auto; }
