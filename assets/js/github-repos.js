@@ -58,9 +58,9 @@ function formatUpdated(dateString) {
 
 function renderMessage(container, title, body) {
     container.innerHTML = `
-        <div class="col-span-full glass-card p-8 text-center">
-            <p class="font-semibold text-gray-100">${escapeHtml(title)}</p>
-            <p class="text-gray-400 text-sm mt-2">${escapeHtml(body)}</p>
+        <div class="col-span-full card p-8 text-center">
+            <p class="font-semibold text-ink">${escapeHtml(title)}</p>
+            <p class="text-muted text-sm mt-2">${escapeHtml(body)}</p>
         </div>`;
 }
 
@@ -72,22 +72,22 @@ function renderRepos(repos, container) {
         card.href = safeUrl(repo.html_url);
         card.target = '_blank';
         card.rel = 'noopener noreferrer';
-        card.className = 'glass-card is-interactive reveal p-6 flex flex-col group';
+        card.className = 'card is-interactive p-6 flex flex-col group';
         card.setAttribute('aria-label', `${prettyName(repo.name)} on GitHub (opens in a new tab)`);
 
         card.innerHTML = `
             <div class="flex items-start justify-between mb-5">
-                <span class="w-10 h-10 rounded-lg bg-primary/15 flex items-center justify-center" aria-hidden="true">
-                    <i data-lucide="folder-git-2" class="w-5 h-5 text-primary-light"></i>
+                <span class="w-10 h-10 rounded-lg bg-brand/10 flex items-center justify-center" aria-hidden="true">
+                    <i data-lucide="folder-git-2" class="w-5 h-5 text-brand"></i>
                 </span>
-                <i data-lucide="arrow-up-right" class="w-5 h-5 text-gray-500 group-hover:text-primary-light transition-colors" aria-hidden="true"></i>
+                <i data-lucide="arrow-up-right" class="w-5 h-5 text-faint group-hover:text-brand transition-colors" aria-hidden="true"></i>
             </div>
-            <h3 class="text-lg font-semibold text-gray-100 mb-2">${escapeHtml(prettyName(repo.name))}</h3>
-            <p class="text-gray-400 text-sm leading-relaxed mb-6 line-clamp-3">${escapeHtml(repo.description || 'No description yet.')}</p>
-            <div class="mt-auto flex items-center gap-4 text-xs text-gray-400">
+            <h3 class="text-lg font-semibold text-ink mb-2">${escapeHtml(prettyName(repo.name))}</h3>
+            <p class="text-muted text-sm leading-relaxed mb-6 line-clamp-3">${escapeHtml(repo.description || 'No description yet.')}</p>
+            <div class="mt-auto flex items-center gap-4 text-xs text-muted">
                 ${repo.language ? `
                     <span class="flex items-center gap-1.5">
-                        <span class="w-2.5 h-2.5 rounded-full bg-accent" aria-hidden="true"></span>
+                        <span class="w-2.5 h-2.5 rounded-full bg-brand" aria-hidden="true"></span>
                         ${escapeHtml(repo.language)}
                     </span>` : ''}
                 ${repo.stargazers_count > 0 ? `

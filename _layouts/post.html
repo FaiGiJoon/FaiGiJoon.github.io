@@ -4,9 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>{{ page.title }} — Casper Klootwijk</title>
+    <title>{{ page.title }} — Casper</title>
     <meta name="description" content="{{ page.excerpt | strip_html | strip_newlines | truncate: 160 | escape }}">
-    <meta name="theme-color" content="#020617">
+    <meta name="theme-color" content="#eff2ee">
     <link rel="icon" href="{{ site.baseurl }}/assets/img/logo.svg" type="image/svg+xml">
     <meta property="og:type" content="article">
     <meta property="og:title" content="{{ page.title | escape }}">
@@ -19,11 +19,11 @@
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
     <link rel="stylesheet" href="{{ site.baseurl }}/assets/css/extra.css">
 </head>
-<body class="bg-darker text-gray-100 overflow-x-hidden">
+<body class="bg-paper text-ink overflow-x-hidden">
     <a href="#main" class="skip-link">Skip to content</a>
 
     {% include nav.html active="blog" %}
@@ -31,11 +31,11 @@
     <main id="main" class="pt-32 pb-24">
         <article class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
             <header class="mb-12">
-                <a href="{{ site.baseurl }}/blog.html" class="inline-flex items-center gap-2 text-sm text-primary-light hover:gap-1 transition-all mb-8">
+                <a href="{{ site.baseurl }}/blog.html" class="inline-flex items-center gap-2 text-sm text-brand hover:gap-1 transition-all mb-8">
                     <i data-lucide="arrow-left" class="w-4 h-4" aria-hidden="true"></i> All posts
                 </a>
-                <time datetime="{{ page.date | date_to_xmlschema }}" class="block text-sm font-mono text-indigo-200">{{ page.date | date: "%B %d, %Y" }}</time>
-                <h1 class="text-4xl md:text-5xl font-bold tracking-tight leading-tight mt-3">{{ page.title }}</h1>
+                <time datetime="{{ page.date | date_to_xmlschema }}" class="block text-sm font-mono text-muted">{{ page.date | date: "%B %d, %Y" }}</time>
+                <h1 class="text-4xl md:text-5xl display leading-tight mt-3">{{ page.title }}</h1>
             </header>
 
             <div class="prose max-w-none">
@@ -48,5 +48,6 @@
 
     <script src="https://unpkg.com/lucide@0.469.0/dist/umd/lucide.min.js"></script>
     <script src="{{ site.baseurl }}/assets/js/main.js"></script>
+    <script src="{{ site.baseurl }}/assets/js/wallpaper.js"></script>
 </body>
 </html>

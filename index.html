@@ -17,19 +17,18 @@
         upgrade-insecure-requests">
     <meta name="referrer" content="strict-origin-when-cross-origin">
 
-    <title>Casper Klootwijk — IT Operations Specialist</title>
-    <meta name="description" content="Casper Klootwijk is an IT Operations Specialist in Doorn, Netherlands, working on network infrastructure, camera and server systems, IT security and automation.">
-    <meta name="author" content="Casper Klootwijk">
-    <meta name="theme-color" content="#020617">
+    <title>Casper — IT Operations Specialist</title>
+    <meta name="description" content="Casper is an IT Operations Specialist in Doorn, Netherlands, working on network infrastructure, camera and server systems, IT security and automation.">
+    <meta name="author" content="Casper">
+    <meta name="theme-color" content="#eff2ee">
     <link rel="canonical" href="https://faigijoon.github.io/">
     <link rel="icon" href="assets/img/logo.svg" type="image/svg+xml">
 
     <!-- Open Graph -->
     <meta property="og:type" content="website">
-    <meta property="og:title" content="Casper Klootwijk — IT Operations Specialist">
+    <meta property="og:title" content="Casper — IT Operations Specialist">
     <meta property="og:description" content="Network infrastructure, IT security and automation, based in Doorn, Netherlands.">
     <meta property="og:url" content="https://faigijoon.github.io/">
-    <meta property="og:image" content="https://faigijoon.github.io/assets/img/casper.jpg">
 
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -38,24 +37,56 @@
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
     <link rel="stylesheet" href="assets/css/extra.css">
 </head>
-<body class="bg-darker text-gray-100 overflow-x-hidden">
+<body class="bg-paper text-ink overflow-x-hidden">
     <a href="#main" class="skip-link">Skip to content</a>
 
+    <!-- Start screen: classic or retro portfolio. Only shown when scripts run (see tailwind-config.js). -->
+    <div id="start" class="start" role="dialog" aria-modal="true" aria-labelledby="start-title">
+        <div class="start-inner">
+            <p class="prompt mb-3" aria-hidden="true"><b>casper@doorn</b>:~$ ./portfolio</p>
+            <h1 id="start-title" class="display text-3xl md:text-5xl">Two ways to look around</h1>
+            <p class="text-muted mt-4 max-w-2xl">Same portfolio, two versions. Pick a window, or press 1 or 2.</p>
+
+            <div class="start-grid">
+                <button type="button" class="start-opt" data-start-classic>
+                    <span class="start-bar"><span>classic.html</span><span class="start-key" aria-hidden="true">1</span></span>
+                    <span class="start-view" aria-hidden="true"><pre><b>$</b> ls portfolio/
+about/        experience/   skills/
+training/     home-lab/     projects/
+<b>$</b> cat about/role
+IT Operations Specialist, Doorn NL</pre></span>
+                    <span class="start-text">
+                        <span class="start-name">Classic portfolio</span>
+                        <span class="start-desc">One page with my experience, skills, certificates and projects. The quick way to read everything.</span>
+                    </span>
+                </button>
+                <a class="start-opt" href="town.html" data-start-retro>
+                    <span class="start-bar"><span>town.html</span><span class="start-key" aria-hidden="true">2</span></span>
+                    <span class="start-view"><img src="assets/img/screenshots/goldenrod-town.png" alt=""></span>
+                    <span class="start-text">
+                        <span class="start-name">Retro portfolio</span>
+                        <span class="start-desc">The same story as a walkable Goldenrod City. Enter buildings, talk to people, challenge the Gym.</span>
+                    </span>
+                </a>
+            </div>
+        </div>
+    </div>
+
     <!-- Navigation -->
-    <header class="fixed top-0 w-full z-50 glass transition-shadow duration-300" id="navbar">
+    <header class="site-header glass fixed top-0 left-0 right-0 z-50" id="navbar">
         <nav class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8" aria-label="Main">
             <div class="flex items-center justify-between h-16">
-                <a href="#home" class="flex items-center gap-3 font-semibold text-gray-100">
-                    <span class="w-8 h-8 rounded-lg bg-indigo-600 flex items-center justify-center text-sm font-bold text-white" aria-hidden="true">CK</span>
-                    Casper Klootwijk
+                <a href="#home" class="flex items-center gap-3 font-semibold text-ink whitespace-nowrap">
+                    <span class="logo-mark" aria-hidden="true">CK</span>
+                    Casper
                 </a>
 
                 <!-- Desktop Menu -->
-                <div class="hidden md:flex items-center gap-8">
+                <div class="hidden lg:flex items-center gap-6">
                     <a href="#about" data-nav-section="about" class="nav-link text-sm font-medium">About</a>
                     <a href="#experience" data-nav-section="experience" class="nav-link text-sm font-medium">Experience</a>
                     <a href="#skills" data-nav-section="skills" class="nav-link text-sm font-medium">Skills</a>
@@ -63,120 +94,149 @@
                     <a href="blog.html" class="nav-link text-sm font-medium">Blog</a>
                     <a href="red-battle/" class="nav-link text-sm font-medium inline-flex items-center gap-1.5"><i data-lucide="gamepad-2" class="w-4 h-4" aria-hidden="true"></i>Battle Red</a>
                     <a href="town.html" class="nav-link text-sm font-medium inline-flex items-center gap-1.5"><i data-lucide="map" class="w-4 h-4" aria-hidden="true"></i>Goldenrod town</a>
+                    <button type="button" class="theme-toggle" data-theme-toggle aria-label="Switch between light and dark theme">
+                        <i data-lucide="sun" class="icon-sun w-5 h-5" aria-hidden="true"></i>
+                        <i data-lucide="moon" class="icon-moon w-5 h-5" aria-hidden="true"></i>
+                    </button>
                     <a href="#contact" class="btn btn-primary !min-h-0 !py-2 !px-4 text-sm">Get in touch</a>
                 </div>
 
                 <!-- Mobile Menu Button -->
-                <button id="mobile-menu-btn" type="button" class="md:hidden w-11 h-11 flex items-center justify-center rounded-lg hover:bg-white/10 transition-colors" aria-label="Open menu" aria-expanded="false" aria-controls="mobile-menu">
+                <div class="flex items-center gap-1 lg:hidden">
+                    <button type="button" class="theme-toggle" data-theme-toggle aria-label="Switch between light and dark theme">
+                        <i data-lucide="sun" class="icon-sun w-5 h-5" aria-hidden="true"></i>
+                        <i data-lucide="moon" class="icon-moon w-5 h-5" aria-hidden="true"></i>
+                    </button>
+                    <button id="mobile-menu-btn" type="button" class="lg:hidden w-11 h-11 flex items-center justify-center rounded-lg hover:bg-ink/5 transition-colors" aria-label="Open menu" aria-expanded="false" aria-controls="mobile-menu">
                     <i data-lucide="menu" class="w-6 h-6" aria-hidden="true"></i>
                 </button>
+                </div>
             </div>
         </nav>
 
         <!-- Mobile Menu -->
-        <div id="mobile-menu" class="hidden md:hidden border-t border-white/10">
+        <div id="mobile-menu" class="hidden lg:hidden border-t border-line">
             <div class="px-4 py-3 flex flex-col">
-                <a href="#about" class="py-3 text-sm font-medium text-gray-200">About</a>
-                <a href="#experience" class="py-3 text-sm font-medium text-gray-200">Experience</a>
-                <a href="#skills" class="py-3 text-sm font-medium text-gray-200">Skills</a>
-                <a href="#projects" class="py-3 text-sm font-medium text-gray-200">Projects</a>
-                <a href="blog.html" class="py-3 text-sm font-medium text-gray-200">Blog</a>
-                <a href="red-battle/" class="py-3 text-sm font-medium text-gray-200">Battle Red</a>
-                <a href="town.html" class="py-3 text-sm font-medium text-gray-200">Goldenrod town</a>
-                <a href="#contact" class="py-3 text-sm font-semibold text-primary-light">Get in touch</a>
+                <a href="#about" class="py-3 text-sm font-medium text-ink">About</a>
+                <a href="#experience" class="py-3 text-sm font-medium text-ink">Experience</a>
+                <a href="#skills" class="py-3 text-sm font-medium text-ink">Skills</a>
+                <a href="#projects" class="py-3 text-sm font-medium text-ink">Projects</a>
+                <a href="blog.html" class="py-3 text-sm font-medium text-ink">Blog</a>
+                <a href="red-battle/" class="py-3 text-sm font-medium text-ink">Battle Red</a>
+                <a href="town.html" class="py-3 text-sm font-medium text-ink">Goldenrod town</a>
+                <a href="#contact" class="py-3 text-sm font-semibold text-brand">Get in touch</a>
             </div>
         </div>
     </header>
 
     <main id="main">
         <!-- Hero -->
-        <section id="home" class="relative min-h-[92vh] flex items-center overflow-hidden pt-16">
-
-            <div class="relative z-10 max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-20 w-full">
-                <div class="flex flex-col-reverse lg:flex-row lg:items-center lg:justify-between gap-10 lg:gap-16">
-                <div class="max-w-3xl">
-                    <p class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-emerald-400/25 bg-emerald-400/10 text-emerald-300 text-sm font-medium mb-8">
-                        <span class="w-2 h-2 rounded-full bg-emerald-400" aria-hidden="true"></span>
-                        Open to new opportunities
-                    </p>
-                    <h1 class="text-5xl sm:text-6xl lg:text-7xl font-bold tracking-tight leading-[1.05] mb-6">
-                        Casper <span class="gradient-text">Klootwijk</span>
-                    </h1>
-                    <p class="text-xl sm:text-2xl text-gray-200 font-medium mb-2">
-                        IT Operations Specialist <span class="text-gray-500">·</span> Doorn, Netherlands
-                    </p>
-                    <p class="text-base text-primary-light font-medium mb-4">Network infrastructure · IT security · Automation</p>
-                    <div class="text-lg text-gray-400 leading-relaxed max-w-2xl mb-10 space-y-4">
-                        <p>IT Operations Specialist with a solid background in network management, system administration, IT support and cybersecurity. Experienced in managing and troubleshooting network infrastructure, servers, IoT equipment and business-critical systems, with hands-on knowledge of MikroTik RouterOS, Windows Server, Active Directory, Linux, virtualization and cloud environments.</p>
-                        <p>Combines technical depth with an analytical, solution-focused approach. Automates repetitive work with Python, TypeScript and JavaScript, and builds practical security skills through CTFs, bug bounty challenges and malware analysis. Driven to make infrastructure more reliable, secure and efficient, with the ambition to grow into network engineering, system administration and cybersecurity.</p>
-                    </div>
-                    <div class="flex flex-col sm:flex-row gap-3">
-                        <a href="assets/CV_Casper_Klootwijk_NL.pdf" download class="btn btn-primary">
-                            <i data-lucide="download" class="w-5 h-5" aria-hidden="true"></i>
-                            Download CV <span class="font-normal text-indigo-100/80 text-sm">(PDF, Dutch)</span>
-                        </a>
-                        <a href="#contact" class="btn btn-secondary">
-                            <i data-lucide="mail" class="w-5 h-5" aria-hidden="true"></i>
-                            Get in touch
-                        </a>
-                        <a href="town.html" class="btn btn-secondary">
-                            <i data-lucide="map" class="w-5 h-5" aria-hidden="true"></i>
-                            Explore Goldenrod City
-                        </a>
+        <section id="home" class="pt-16">
+            <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 pt-14 sm:pt-20 pb-20">
+                <div>
+                    <div>
+                        <p class="status mb-8">
+                            <span class="status-led" aria-hidden="true"></span>
+                            Open to new opportunities
+                        </p>
+                        <p class="prompt mb-3" aria-hidden="true"><b>casper@doorn</b>:~$ whoami</p>
+                        <h1 class="hero-name mb-8">Casper</h1>
+                        <p class="text-xl sm:text-2xl text-ink font-medium">IT Operations Specialist in Doorn, Netherlands</p>
+                        <p class="text-base sm:text-lg text-muted mt-1">Network infrastructure, IT security and automation</p>
                     </div>
                 </div>
 
-                <img src="assets/img/casper.jpg" width="640" height="640" alt="Portrait of Casper Klootwijk in a navy blazer in front of a green plant wall"
-                     class="w-40 sm:w-56 lg:w-80 aspect-square object-cover rounded-3xl ring-1 ring-white/15 shadow-2xl shadow-indigo-950/60 shrink-0">
+                <div class="mt-12 pt-10 border-t border-line grid md:grid-cols-2 gap-6 md:gap-12 text-body leading-relaxed">
+                    <p class="text-lg text-ink">IT Operations Specialist with a solid background in network management, system administration, IT support and cybersecurity. Experienced in managing and troubleshooting network infrastructure, servers, IoT equipment and business-critical systems, with hands-on knowledge of MikroTik RouterOS, Windows Server, Active Directory, Linux, virtualization and cloud environments.</p>
+                    <p>Combines technical depth with an analytical, solution-focused approach. Automates repetitive work with Python, TypeScript and JavaScript, and builds practical security skills through CTFs, bug bounty challenges and malware analysis. Driven to make infrastructure more reliable, secure and efficient, with the ambition to grow into network engineering, system administration and cybersecurity.</p>
                 </div>
 
-                <!-- Stats -->
-                <div class="mt-16 grid grid-cols-2 lg:grid-cols-4 gap-4 max-w-4xl">
-                    <div class="glass-card p-5">
-                        <dl class="flex flex-col-reverse">
-                            <dt class="text-sm text-gray-400">Sites monitored daily</dt>
-                            <dd class="text-3xl font-bold text-gray-100 mb-1">~8,000</dd>
-                        </dl>
-                        <span class="hp-bar" aria-hidden="true">HP<span class="hp-bar-track"><span class="hp-bar-fill"></span></span></span>
-                    </div>
-                    <div class="glass-card p-5">
-                        <dl class="flex flex-col-reverse">
-                            <dt class="text-sm text-gray-400">Years in IT</dt>
-                            <dd class="text-3xl font-bold text-gray-100 mb-1">5+</dd>
-                        </dl>
-                        <span class="hp-bar" aria-hidden="true">HP<span class="hp-bar-track"><span class="hp-bar-fill"></span></span></span>
-                    </div>
-                    <div class="glass-card p-5">
-                        <dl class="flex flex-col-reverse">
-                            <dt class="text-sm text-gray-400">Repositories on GitHub</dt>
-                            <dd class="text-3xl font-bold text-gray-100 mb-1">60+</dd>
-                        </dl>
-                        <span class="hp-bar" aria-hidden="true">HP<span class="hp-bar-track"><span class="hp-bar-fill"></span></span></span>
-                    </div>
-                    <div class="glass-card p-5">
-                        <dl class="flex flex-col-reverse">
-                            <dt class="text-sm text-gray-400">MBO 4 diploma grade</dt>
-                            <dd class="text-3xl font-bold text-gray-100 mb-1">8.0</dd>
-                        </dl>
-                        <span class="hp-bar" aria-hidden="true">HP<span class="hp-bar-track"><span class="hp-bar-fill"></span></span></span>
-                    </div>
+                <div class="mt-10 flex flex-col sm:flex-row sm:flex-wrap gap-3">
+                    <a href="assets/CV_Casper_NL.pdf" download class="btn btn-primary">
+                        <i data-lucide="download" class="w-5 h-5" aria-hidden="true"></i>
+                        Download CV <span class="font-normal opacity-75 text-sm">(PDF, Dutch)</span>
+                    </a>
+                    <a href="#contact" class="btn btn-secondary">
+                        <i data-lucide="mail" class="w-5 h-5" aria-hidden="true"></i>
+                        Get in touch
+                    </a>
                 </div>
+
+                <!-- The switch: every port is a link to a part of the site -->
+                <nav class="switch mt-16" aria-label="Site sections">
+                    <span class="switch-ear" aria-hidden="true"></span>
+                    <div class="switch-body">
+                        <p class="switch-id" aria-hidden="true">
+                            <span class="switch-model">CK-8000</span>
+                            <span class="switch-power"><i class="led is-on"></i>Power</span>
+                        </p>
+                        <ul class="switch-ports">
+                            <li><a class="port" href="#about">
+                                <span class="port-leds" aria-hidden="true"><i class="led is-link"></i><i class="led is-act" style="--d: -0.00s"></i></span>
+                                <span class="port-jack" aria-hidden="true"></span>
+                                About
+                            </a></li>
+                            <li><a class="port" href="#experience">
+                                <span class="port-leds" aria-hidden="true"><i class="led is-link"></i><i class="led is-act" style="--d: -0.37s"></i></span>
+                                <span class="port-jack" aria-hidden="true"></span>
+                                Experience
+                            </a></li>
+                            <li><a class="port" href="#skills">
+                                <span class="port-leds" aria-hidden="true"><i class="led is-link"></i><i class="led is-act" style="--d: -0.74s"></i></span>
+                                <span class="port-jack" aria-hidden="true"></span>
+                                Skills
+                            </a></li>
+                            <li><a class="port" href="#learning">
+                                <span class="port-leds" aria-hidden="true"><i class="led is-link"></i><i class="led is-act" style="--d: -1.11s"></i></span>
+                                <span class="port-jack" aria-hidden="true"></span>
+                                Training
+                            </a></li>
+                            <li><a class="port" href="#projects">
+                                <span class="port-leds" aria-hidden="true"><i class="led is-link"></i><i class="led is-act" style="--d: -1.48s"></i></span>
+                                <span class="port-jack" aria-hidden="true"></span>
+                                Projects
+                            </a></li>
+                            <li><a class="port" href="blog.html">
+                                <span class="port-leds" aria-hidden="true"><i class="led is-link"></i><i class="led is-act" style="--d: -1.85s"></i></span>
+                                <span class="port-jack" aria-hidden="true"></span>
+                                Blog
+                            </a></li>
+                            <li><a class="port" href="red-battle/">
+                                <span class="port-leds" aria-hidden="true"><i class="led is-link"></i><i class="led is-act" style="--d: -2.22s"></i></span>
+                                <span class="port-jack" aria-hidden="true"></span>
+                                Battle Red
+                            </a></li>
+                            <li><a class="port" href="town.html">
+                                <span class="port-leds" aria-hidden="true"><i class="led is-link"></i><i class="led is-act" style="--d: -2.59s"></i></span>
+                                <span class="port-jack" aria-hidden="true"></span>
+                                Goldenrod
+                            </a></li>
+                        </ul>
+                    </div>
+                    <span class="switch-ear" aria-hidden="true"></span>
+                </nav>
+
+                <dl class="facts mt-14">
+                    <div><dt>Fan since Platinum</dt><dd>Pokémon</dd></div>
+                    <div><dt>Years in IT</dt><dd>5+</dd></div>
+                    <div><dt>Repos on GitHub</dt><dd>60+</dd></div>
+                    <div><dt>Diplomas: MBO 3, MBO 4</dt><dd>2</dd></div>
+                </dl>
             </div>
         </section>
 
         <!-- About -->
-        <section id="about" class="py-24 border-t border-white/5" aria-labelledby="about-title">
+        <section id="about" class="py-24 border-t border-line" aria-labelledby="about-title">
             <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div class="grid lg:grid-cols-5 gap-12 lg:gap-16">
-                    <div class="lg:col-span-3 reveal">
-                        <p class="eyebrow mb-3">About</p>
-                        <h2 id="about-title" class="text-3xl md:text-4xl font-bold tracking-tight mb-8">Helping people through technology</h2>
-                        <div class="space-y-5 text-gray-300 text-lg leading-relaxed">
+                    <div class="lg:col-span-3">
+                        <h2 id="about-title" class="text-4xl md:text-5xl display mb-8">Helping people through technology</h2>
+                        <div class="space-y-5 text-body text-lg leading-relaxed">
                             <p>
                                 I'm an IT Operations Specialist with a background in network management, system administration, IT support and cybersecurity. In my latest role I was responsible for the network infrastructure, camera systems, servers and workstations of a security company with around 8,000 monitored locations, from configuration and rollout to fixing outages remotely on my own.
                             </p>
                             <p>
-                                Before that I supported employees at global companies like FedEx and Prosus, and taught networks, servers and cybersecurity to MBO Level 4 students at ROC van Amsterdam.
+                                Before that I supported employees at global companies like FedEx and Prosus, and taught networks, servers and cybersecurity to MBO 4 students at ROC van Amsterdam.
                             </p>
                             <p>
                                 My interest in tech started with Pokémon Platinum and the DeSmuME emulator. Figuring out how an emulator worked was my lightbulb moment, and by 13 I was hooked on computers. In 2015 I did my first IT internship, building and refurbishing PCs and setting them up with the brand-new Windows 10. Seeing someone's "slow" computer feel new again is what made me want to help people through technology.
@@ -184,42 +244,63 @@
                             <p>
                                 Long term, I want to build automation software and new technology that helps hospitals around the world.
                             </p>
+                            <details class="more">
+                                <summary><span class="when-closed">More about me</span><span class="when-open">Show less</span><i data-lucide="chevron-down" class="chev w-4 h-4" aria-hidden="true"></i></summary>
+                                <div class="more-body space-y-5">
+                                    <p>
+                                        On LinkedIn I describe myself as a creative thinker who blends technical skill with empathy, always looking to help others and improve the world around me. That is still the shortest honest version.
+                                    </p>
+                                    <p>
+                                        I've been into programming, networking and security since I was 16, and most of what I know I taught myself by building things: first PCs, then networks, then my own tools. School gave me the foundations; the home lab is where it stuck.
+                                    </p>
+                                    <p>
+                                        The work I enjoy most starts where the routine stops: an outage nobody can explain, a device that refuses to authenticate, a task repeated so often it should have been a script. That's why I'm moving towards network engineering, systems and security work with room to build and automate, not only maintain. Healthcare is where I'd most like that work to end up.
+                                    </p>
+                                    <p>
+                                        I care about people looking out for each other. "We're all in this together" is how I try to work: sharing what I know, onboarding new colleagues properly, and writing things down so the next person isn't stuck.
+                                    </p>
+                                    <p>
+                                        Away from the screen I walk my dog every day, and I go to the gym, run, cycle and hike.
+                                    </p>
+                                </div>
+                            </details>
                         </div>
                     </div>
 
-                    <aside class="lg:col-span-2 space-y-4 reveal" aria-label="At a glance">
-                        <div class="glass-card p-6">
-                            <h3 class="text-sm font-semibold text-gray-100 mb-4">At a glance</h3>
+                    <aside class="lg:col-span-2 space-y-4" aria-label="At a glance">
+                        <div class="card p-6">
+                            <h3 class="text-sm font-semibold text-ink mb-4">At a glance</h3>
                             <ul class="space-y-4 text-sm">
                                 <li class="flex gap-3">
-                                    <i data-lucide="briefcase" class="w-5 h-5 text-primary-light shrink-0" aria-hidden="true"></i>
-                                    <span><span class="block text-gray-400">Latest role</span><span class="text-gray-100">IT Operations Specialist, security &amp; camera infrastructure</span></span>
+                                    <i data-lucide="briefcase" class="w-5 h-5 text-brand shrink-0" aria-hidden="true"></i>
+                                    <span><span class="block text-muted">Latest role</span><span class="text-ink">IT Operations Specialist, security &amp; camera infrastructure</span></span>
                                 </li>
                                 <li class="flex gap-3">
-                                    <i data-lucide="map-pin" class="w-5 h-5 text-primary-light shrink-0" aria-hidden="true"></i>
-                                    <span><span class="block text-gray-400">Based in</span><span class="text-gray-100">Doorn, Netherlands</span></span>
+                                    <i data-lucide="map-pin" class="w-5 h-5 text-brand shrink-0" aria-hidden="true"></i>
+                                    <span><span class="block text-muted">Based in</span><span class="text-ink">Doorn, Netherlands</span></span>
                                 </li>
                                 <li class="flex gap-3">
-                                    <i data-lucide="target" class="w-5 h-5 text-primary-light shrink-0" aria-hidden="true"></i>
-                                    <span><span class="block text-gray-400">Growing towards</span><span class="text-gray-100">Network engineering, system administration &amp; cybersecurity</span></span>
+                                    <i data-lucide="target" class="w-5 h-5 text-brand shrink-0" aria-hidden="true"></i>
+                                    <span><span class="block text-muted">Growing towards</span><span class="text-ink">Network engineering, system administration &amp; cybersecurity</span></span>
                                 </li>
                                 <li class="flex gap-3">
-                                    <i data-lucide="languages" class="w-5 h-5 text-primary-light shrink-0" aria-hidden="true"></i>
-                                    <span><span class="block text-gray-400">Languages</span><span class="text-gray-100">Dutch (native) · English (fluent, professional)</span></span>
+                                    <i data-lucide="languages" class="w-5 h-5 text-brand shrink-0" aria-hidden="true"></i>
+                                    <span><span class="block text-muted">Languages</span><span class="text-ink">Dutch (native) · English (fluent, professional)</span></span>
                                 </li>
                                 <li class="flex gap-3">
-                                    <i data-lucide="calendar-check" class="w-5 h-5 text-primary-light shrink-0" aria-hidden="true"></i>
-                                    <span><span class="block text-gray-400">Availability</span><span class="text-gray-100">Open to new roles, full-time &amp; freelance</span></span>
+                                    <i data-lucide="calendar-check" class="w-5 h-5 text-brand shrink-0" aria-hidden="true"></i>
+                                    <span><span class="block text-muted">Availability</span><span class="text-ink">Open to new roles, full-time &amp; freelance</span></span>
                                 </li>
                             </ul>
                         </div>
-                        <div class="glass-card p-6">
-                            <h3 class="text-sm font-semibold text-gray-100 mb-4">Outside of work</h3>
-                            <ul class="space-y-3 text-sm text-gray-300">
-                                <li class="flex gap-3"><i data-lucide="bike" class="w-5 h-5 text-accent shrink-0" aria-hidden="true"></i>Hiking, cycling and the gym, preferably out in nature</li>
-                                <li class="flex gap-3"><i data-lucide="plane" class="w-5 h-5 text-accent shrink-0" aria-hidden="true"></i>Travelling and learning new things</li>
-                                <li class="flex gap-3"><i data-lucide="headphones" class="w-5 h-5 text-accent shrink-0" aria-hidden="true"></i>Drum &amp; Bass</li>
-                                <li class="flex gap-3"><i data-lucide="gamepad-2" class="w-5 h-5 text-accent shrink-0" aria-hidden="true"></i>Pokémon Nuzlockes for the challenge</li>
+                        <div class="card p-6">
+                            <h3 class="text-sm font-semibold text-ink mb-4">Outside of work</h3>
+                            <ul class="space-y-3 text-sm text-body">
+                                <li class="flex gap-3"><i data-lucide="dog" class="w-5 h-5 text-brand shrink-0" aria-hidden="true"></i>Daily walks with my dog</li>
+                                <li class="flex gap-3"><i data-lucide="bike" class="w-5 h-5 text-brand shrink-0" aria-hidden="true"></i>Running, hiking, cycling and the gym, preferably out in nature</li>
+                                <li class="flex gap-3"><i data-lucide="plane" class="w-5 h-5 text-brand shrink-0" aria-hidden="true"></i>Travelling and learning new things</li>
+                                <li class="flex gap-3"><i data-lucide="headphones" class="w-5 h-5 text-brand shrink-0" aria-hidden="true"></i>Drum &amp; Bass</li>
+                                <li class="flex gap-3"><i data-lucide="gamepad-2" class="w-5 h-5 text-brand shrink-0" aria-hidden="true"></i>Pokémon Nuzlockes for the challenge</li>
                             </ul>
                         </div>
                     </aside>
@@ -228,61 +309,82 @@
         </section>
 
         <!-- Experience -->
-        <section id="experience" class="py-24 border-t border-white/5" aria-labelledby="experience-title">
+        <section id="experience" class="py-24 border-t border-line" aria-labelledby="experience-title">
             <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-                <div class="mb-12 reveal">
-                    <p class="eyebrow mb-3">Career</p>
-                    <h2 id="experience-title" class="text-3xl md:text-4xl font-bold tracking-tight">Experience</h2>
+                <div class="mb-12">
+                    <h2 id="experience-title" class="text-4xl md:text-5xl display">Experience</h2>
                 </div>
 
-                <ol class="timeline space-y-6">
+                <ol class="timeline">
                     <!-- IT Operations Specialist (employer kept confidential, as on the CV) -->
-                    <li class="relative pl-10 reveal">
-                        <span class="timeline-dot is-current" aria-hidden="true"></span>
-                        <article class="glass-card p-6 md:p-8">
+                    <li class="job">
+                        <article>
                             <header class="flex flex-col md:flex-row md:items-start md:justify-between gap-2 mb-4">
                                 <div>
-                                    <h3 class="text-xl font-semibold text-gray-100">IT Operations Specialist</h3>
-                                    <p class="text-primary-light font-medium">Security &amp; camera infrastructure company · Full-time · On-site</p>
+                                    <h3 class="text-xl font-semibold text-ink">IT Operations Specialist</h3>
+                                    <p class="text-brand font-medium">Security &amp; camera infrastructure company · Full-time · On-site</p>
                                 </div>
-                                <p class="text-sm text-gray-400 shrink-0">Oct 2025 – Oct 2026 · 1 yr 1 mo</p>
+                                <p class="job-date">Oct 2025 – Oct 2026 · 1 yr 1 mo</p>
                             </header>
-                            <p class="text-gray-300 mb-4">Responsible for the camera and network infrastructure, servers, recorders and workstations behind around 8,000 monitored locations, combining remote and on-site support to keep everything online.</p>
-                            <div class="grid md:grid-cols-2 gap-x-8 gap-y-5 mb-5">
-                                <div>
-                                    <h4 class="text-sm font-semibold text-gray-200 mb-2">Network management &amp; monitoring</h4>
-                                    <ul class="list-disc pl-5 space-y-1.5 text-gray-400 marker:text-primary-light text-sm">
-                                        <li>Monitored ~8,000 sites daily through SaaS monitoring platforms and resolved outages independently</li>
-                                        <li>Logged in to routers and switches over WinBox, SSH and PuTTY to change configs or reset PoE ports, avoiding site visits</li>
-                                        <li>Configured MikroTik RouterOS (hEX) and Netgear switches: VLANs, interfaces, Ethernet ports and DHCP</li>
-                                        <li>Kept the network inventory and configuration records up to date</li>
-                                    </ul>
+                            <p class="text-body mb-4">Responsible for the camera and network infrastructure, servers, recorders and workstations behind around 8,000 monitored locations, combining remote and on-site support to keep everything online.</p>
+                            <details class="more mb-5">
+                                <summary><span class="when-closed">What I did in this role</span><span class="when-open">Show less</span><i data-lucide="chevron-down" class="chev w-4 h-4" aria-hidden="true"></i></summary>
+                                <div class="more-body">
+                                <div class="grid md:grid-cols-2 gap-x-8 gap-y-5">
+                                    <div>
+                                        <h4 class="text-sm font-semibold text-ink mb-2">Network management &amp; monitoring</h4>
+                                        <ul class="list-disc pl-5 space-y-1.5 text-muted marker:text-brand text-sm">
+                                            <li>Monitored ~8,000 sites daily through SaaS monitoring platforms and resolved outages independently</li>
+                                            <li>Logged in to routers and switches over WinBox, SSH and PuTTY to change configs or reset PoE ports, avoiding site visits</li>
+                                            <li>Configured MikroTik RouterOS (hEX) and Netgear switches: VLANs, interfaces, Ethernet ports and DHCP</li>
+                                            <li>Built API automation to optimise device settings programmatically instead of by hand</li>
+                                            <li>Kept the network inventory and configuration records up to date</li>
+                                        </ul>
+                                    </div>
+                                    <div>
+                                        <h4 class="text-sm font-semibold text-ink mb-2">Cameras &amp; security systems</h4>
+                                        <ul class="list-disc pl-5 space-y-1.5 text-muted marker:text-brand text-sm">
+                                            <li>Installed, configured and tested Axis, Hanwha/Wisenet and Vivotek IP cameras over the network</li>
+                                            <li>Registered cameras in the in-house SaaS platform and fixed connectivity and authentication issues</li>
+                                            <li>Refurbished and tested cameras (mostly Axis) so they could be deployed again</li>
+                                        </ul>
+                                    </div>
+                                    <div>
+                                        <h4 class="text-sm font-semibold text-ink mb-2">Servers, NVRs &amp; site rollouts</h4>
+                                        <ul class="list-disc pl-5 space-y-1.5 text-muted marker:text-brand text-sm">
+                                            <li>Built NVR systems on HP ProLiant Gen10/Gen11 servers, installing Linux through HPE iLO</li>
+                                            <li>Prepared full rollout kits (server, MikroTik hEX, Netgear switch, cabling) and guided field engineers remotely until each site was live</li>
+                                            <li>Managed Promise NVR systems, including HDD and SSD upgrades, over SSH, RDP and PuTTY</li>
+                                        </ul>
+                                    </div>
+                                    <div>
+                                        <h4 class="text-sm font-semibold text-ink mb-2">Windows Server, automation &amp; teamwork</h4>
+                                        <ul class="list-disc pl-5 space-y-1.5 text-muted marker:text-brand text-sm">
+                                            <li>User management, password resets and access in Windows Server and Active Directory</li>
+                                            <li>Worked with domain controllers, organisational units and Entra ID in the same environment</li>
+                                            <li>Configured temperature sensors with a WebRelay X-400 and BASIC scripts for automated climate control</li>
+                                            <li>Onboarded new team members, shared out tasks and joined daily stand-ups</li>
+                                        </ul>
+                                    </div>
+                                    <div>
+                                        <h4 class="text-sm font-semibold text-ink mb-2">Hardware &amp; stock</h4>
+                                        <ul class="list-disc pl-5 space-y-1.5 text-muted marker:text-brand text-sm">
+                                            <li>Refurbished and tested cameras, servers and NVR recorders before they went back into service</li>
+                                            <li>Managed IT stock and the technical asset records</li>
+                                            <li>The temperature sensors fed an automated climate setup for heating and air conditioning</li>
+                                        </ul>
+                                    </div>
+                                    <div>
+                                        <h4 class="text-sm font-semibold text-ink mb-2">Workplaces &amp; support</h4>
+                                        <ul class="list-disc pl-5 space-y-1.5 text-muted marker:text-brand text-sm">
+                                            <li>Got workplaces and equipment fully ready for use</li>
+                                            <li>Solved connection and authentication problems on the network and in Active Directory</li>
+                                            <li>Helped colleagues with technical problems, on site and remotely</li>
+                                        </ul>
+                                    </div>
                                 </div>
-                                <div>
-                                    <h4 class="text-sm font-semibold text-gray-200 mb-2">Cameras &amp; security systems</h4>
-                                    <ul class="list-disc pl-5 space-y-1.5 text-gray-400 marker:text-primary-light text-sm">
-                                        <li>Installed, configured and tested Axis, Hanwha/Wisenet and Vivotek IP cameras over the network</li>
-                                        <li>Registered cameras in the in-house SaaS platform and fixed connectivity and authentication issues</li>
-                                        <li>Refurbished and tested cameras (mostly Axis) so they could be deployed again</li>
-                                    </ul>
                                 </div>
-                                <div>
-                                    <h4 class="text-sm font-semibold text-gray-200 mb-2">Servers, NVRs &amp; site rollouts</h4>
-                                    <ul class="list-disc pl-5 space-y-1.5 text-gray-400 marker:text-primary-light text-sm">
-                                        <li>Built NVR systems on HP ProLiant Gen10/Gen11 servers, installing Linux through HPE iLO</li>
-                                        <li>Prepared full rollout kits (server, MikroTik hEX, Netgear switch, cabling) and guided field engineers remotely until each site was live</li>
-                                        <li>Managed Promise NVR systems, including HDD and SSD upgrades, over SSH, RDP and PuTTY</li>
-                                    </ul>
-                                </div>
-                                <div>
-                                    <h4 class="text-sm font-semibold text-gray-200 mb-2">Windows Server, automation &amp; teamwork</h4>
-                                    <ul class="list-disc pl-5 space-y-1.5 text-gray-400 marker:text-primary-light text-sm">
-                                        <li>User management, password resets and access in Windows Server and Active Directory</li>
-                                        <li>Configured temperature sensors with a WebRelay X-400 and BASIC scripts for automated climate control</li>
-                                        <li>Onboarded new team members, shared out tasks and joined daily stand-ups</li>
-                                    </ul>
-                                </div>
-                            </div>
+                            </details>
                             <ul class="flex flex-wrap gap-2" aria-label="Technologies">
                                 <li class="tag">MikroTik RouterOS</li><li class="tag">VLANs &amp; DHCP</li><li class="tag">Axis / Hanwha / Vivotek</li><li class="tag">HPE iLO</li><li class="tag">Linux</li><li class="tag">Active Directory</li><li class="tag">SSH / RDP</li>
                             </ul>
@@ -290,23 +392,30 @@
                     </li>
 
                     <!-- Prosus -->
-                    <li class="relative pl-10 reveal">
-                        <span class="timeline-dot" aria-hidden="true"></span>
-                        <article class="glass-card p-6 md:p-8">
+                    <li class="job">
+                        <article>
                             <header class="flex flex-col md:flex-row md:items-start md:justify-between gap-2 mb-4">
                                 <div>
-                                    <h3 class="text-xl font-semibold text-gray-100">Google Workspace Support / On-site IT Support</h3>
-                                    <p class="text-primary-light font-medium">Prosus Group · Amsterdam</p>
+                                    <h3 class="text-xl font-semibold text-ink">Google Workspace Support / On-site IT Support</h3>
+                                    <p class="text-brand font-medium">Prosus Group · Amsterdam</p>
                                 </div>
-                                <p class="text-sm text-gray-400 shrink-0">Jun 2025 – Oct 2025 · 5 mos</p>
+                                <p class="job-date">Jun 2025 – Oct 2025 · 5 mos</p>
                             </header>
-                            <p class="text-gray-300 mb-4">First-line IT support in a walk-in, Genius Bar–style environment, with an active role in the company-wide move from Microsoft 365 to Google Workspace.</p>
-                            <ul class="list-disc pl-5 space-y-1.5 text-gray-400 marker:text-primary-light mb-5">
-                                <li>Helped users with Gmail, Drive, Docs, Sheets and Slides: sync issues, sharing permissions and accounts</li>
-                                <li>Managed identity and access with Okta and Active Directory, so new colleagues had a configured laptop, accounts and access from day one</li>
-                                <li>Installed and integrated wireless access points, fixed printers and network connections, and set up screens, microphones and rooms for internal events</li>
-                                <li>Built internal automation with Google AppSheet, Google Sheets and JavaScript, including a meeting-room booking app and an IT asset management app</li>
-                            </ul>
+                            <p class="text-body mb-4">First-line IT support in a walk-in, Genius Bar–style environment, with an active role in the company-wide move from Microsoft 365 to Google Workspace.</p>
+                            <details class="more mb-5">
+                                <summary><span class="when-closed">What I did in this role</span><span class="when-open">Show less</span><i data-lucide="chevron-down" class="chev w-4 h-4" aria-hidden="true"></i></summary>
+                                <div class="more-body">
+                                <ul class="list-disc pl-5 space-y-1.5 text-muted marker:text-brand">
+                                    <li>Helped users with Gmail, Drive, Docs, Sheets and Slides: sync issues, sharing permissions and accounts</li>
+                                    <li>Managed identity and access with Okta and Active Directory, so new colleagues had a configured laptop, accounts and access from day one</li>
+                                    <li>Installed and integrated wireless access points, fixed printers and network connections, and set up screens, microphones and rooms for internal events</li>
+                                    <li>Built internal automation with Google AppSheet, Google Sheets and JavaScript, including a meeting-room booking app and an IT asset management app</li>
+                                    <li>Helped build out the infrastructure for the Prosus AI House and was there for its opening</li>
+                                    <li>Ran the Google Hub walk-in desk, guiding colleagues through new Workspace features during the migration</li>
+                                    <li>User provisioning, access control and authentication support for joiners and movers</li>
+                                </ul>
+                                </div>
+                            </details>
                             <ul class="flex flex-wrap gap-2" aria-label="Technologies">
                                 <li class="tag">Google Workspace</li><li class="tag">Okta</li><li class="tag">Active Directory</li><li class="tag">Google AppSheet</li><li class="tag">JavaScript</li><li class="tag">Wireless networking</li>
                             </ul>
@@ -314,23 +423,28 @@
                     </li>
 
                     <!-- FedEx -->
-                    <li class="relative pl-10 reveal">
-                        <span class="timeline-dot" aria-hidden="true"></span>
-                        <article class="glass-card p-6 md:p-8">
+                    <li class="job">
+                        <article>
                             <header class="flex flex-col md:flex-row md:items-start md:justify-between gap-2 mb-4">
                                 <div>
-                                    <h3 class="text-xl font-semibold text-gray-100">ICT Support Specialist</h3>
-                                    <p class="text-primary-light font-medium">FedEx Logistics · Utrecht</p>
+                                    <h3 class="text-xl font-semibold text-ink">ICT Support Specialist</h3>
+                                    <p class="text-brand font-medium">FedEx Logistics · Utrecht</p>
                                 </div>
-                                <p class="text-sm text-gray-400 shrink-0">Jan 2024 – Jun 2025 · 1 yr 6 mos</p>
+                                <p class="job-date">Jan 2024 – Jun 2025 · 1 yr 6 mos</p>
                             </header>
-                            <p class="text-gray-300 mb-4">First-line support for hardware, software and Microsoft 365 in a logistics environment.</p>
-                            <ul class="list-disc pl-5 space-y-1.5 text-gray-400 marker:text-primary-light mb-5">
-                                <li>Logged, prioritised and resolved incidents and service requests in the ticketing system</li>
-                                <li>Monitored and maintained operational IT systems, including sorting systems, conveyor belts and camera infrastructure</li>
-                                <li>Troubleshot printers, workstations and technical installations, and supported tracking and tracing systems</li>
-                                <li>Worked with other departments and second-line partners to fix outages fast and keep the business running</li>
-                            </ul>
+                            <p class="text-body mb-4">First-line support for hardware, software and Microsoft 365 in a logistics environment.</p>
+                            <details class="more mb-5">
+                                <summary><span class="when-closed">What I did in this role</span><span class="when-open">Show less</span><i data-lucide="chevron-down" class="chev w-4 h-4" aria-hidden="true"></i></summary>
+                                <div class="more-body">
+                                <ul class="list-disc pl-5 space-y-1.5 text-muted marker:text-brand">
+                                    <li>Logged, prioritised and resolved incidents and service requests in the ticketing system</li>
+                                    <li>Monitored and maintained operational IT systems, including sorting systems, conveyor belts and camera infrastructure</li>
+                                    <li>Troubleshot printers, workstations and technical installations, and supported tracking and tracing systems</li>
+                                    <li>Worked with other departments and second-line partners to fix outages fast and keep the business running</li>
+                                    <li>Supported meetings and other workplace technology on the warehouse floor and in the offices</li>
+                                </ul>
+                                </div>
+                            </details>
                             <ul class="flex flex-wrap gap-2" aria-label="Technologies">
                                 <li class="tag">Microsoft 365</li><li class="tag">Ticketing</li><li class="tag">Warehouse IT systems</li><li class="tag">Camera infrastructure</li><li class="tag">Hardware troubleshooting</li>
                             </ul>
@@ -338,22 +452,29 @@
                     </li>
 
                     <!-- ROC van Amsterdam -->
-                    <li class="relative pl-10 reveal">
-                        <span class="timeline-dot" aria-hidden="true"></span>
-                        <article class="glass-card p-6 md:p-8">
+                    <li class="job">
+                        <article>
                             <header class="flex flex-col md:flex-row md:items-start md:justify-between gap-2 mb-4">
                                 <div>
-                                    <h3 class="text-xl font-semibold text-gray-100">Assistant ICT Teacher (Assistent-docent)</h3>
-                                    <p class="text-primary-light font-medium">ROC van Amsterdam · Hilversum</p>
+                                    <h3 class="text-xl font-semibold text-ink">Assistant ICT Teacher (Assistent-docent)</h3>
+                                    <p class="text-brand font-medium">ROC van Amsterdam · Hilversum</p>
                                 </div>
-                                <p class="text-sm text-gray-400 shrink-0">Jul 2023 – Nov 2023 · 5 mos</p>
+                                <p class="job-date">Jul 2023 – Nov 2023 · 5 mos</p>
                             </header>
-                            <p class="text-gray-300 mb-4">Stepped in during a temporary teacher shortage to teach MBO Level 4 ICT students.</p>
-                            <ul class="list-disc pl-5 space-y-1.5 text-gray-400 marker:text-primary-light mb-5">
-                                <li>Taught network management, the OSI model, operating systems, cybersecurity, Windows Server, server roles and Hyper-V</li>
-                                <li>Supervised hands-on network configuration and troubleshooting labs, wrote lesson material and graded assignments</li>
-                                <li>Guided a practical project with fixed checkpoints and feedback, aligned with the MBO 4 curriculum</li>
-                            </ul>
+                            <p class="text-body mb-4">Stepped in during a temporary teacher shortage to teach MBO 4 ICT students.</p>
+                            <details class="more mb-5">
+                                <summary><span class="when-closed">What I did in this role</span><span class="when-open">Show less</span><i data-lucide="chevron-down" class="chev w-4 h-4" aria-hidden="true"></i></summary>
+                                <div class="more-body">
+                                <ul class="list-disc pl-5 space-y-1.5 text-muted marker:text-brand">
+                                    <li>Taught network management, the OSI model, operating systems, cybersecurity, Windows Server, server roles and Hyper-V</li>
+                                    <li>Supervised hands-on network configuration and troubleshooting labs, wrote lesson material and graded assignments</li>
+                                    <li>Guided a practical project with fixed checkpoints and feedback, aligned with the MBO 4 curriculum</li>
+                                    <li>Ran hands-on labs: OS installation and administration, Windows Server roles and services, and a first look at virtualization</li>
+                                    <li>Assessed students through assignments and practical evaluations, with individual support where needed</li>
+                                    <li>Aligned course content with colleagues so the modules fitted together and matched what the industry expects</li>
+                                </ul>
+                                </div>
+                            </details>
                             <ul class="flex flex-wrap gap-2" aria-label="Technologies">
                                 <li class="tag">Teaching</li><li class="tag">Windows Server</li><li class="tag">Hyper-V</li><li class="tag">OSI model</li><li class="tag">Cybersecurity</li>
                             </ul>
@@ -361,37 +482,49 @@
                     </li>
 
                     <!-- Simple Hotel Group -->
-                    <li class="relative pl-10 reveal">
-                        <span class="timeline-dot" aria-hidden="true"></span>
-                        <article class="glass-card p-6 md:p-8">
+                    <li class="job">
+                        <article>
                             <header class="flex flex-col md:flex-row md:items-start md:justify-between gap-2 mb-4">
                                 <div>
-                                    <h3 class="text-xl font-semibold text-gray-100">Front Office Administrator</h3>
-                                    <p class="text-primary-light font-medium">Simple Hotel Group · Part-time · Utrecht</p>
+                                    <h3 class="text-xl font-semibold text-ink">Front Office Administrator</h3>
+                                    <p class="text-brand font-medium">Simple Hotel Group · Part-time · Utrecht</p>
                                 </div>
-                                <p class="text-sm text-gray-400 shrink-0">Apr 2021 – May 2023 · 2 yrs 2 mos</p>
+                                <p class="job-date">Apr 2021 – May 2023 · 2 yrs 2 mos</p>
                             </header>
-                            <ul class="list-disc pl-5 space-y-1.5 text-gray-400 marker:text-primary-light">
-                                <li>Guest reception, check-ins and payments; scheduled and led the housekeeping team; organised events and weddings</li>
-                                <li>Installed extra access points for reliable Wi-Fi in every room, and tuned up computers and software</li>
-                            </ul>
+                            <p class="text-body mb-4">Part-time front office work alongside my Network Administrator studies, where I also ended up looking after the hotel's Wi-Fi and computers.</p>
+                            <details class="more mb-5">
+                                <summary><span class="when-closed">What I did in this role</span><span class="when-open">Show less</span><i data-lucide="chevron-down" class="chev w-4 h-4" aria-hidden="true"></i></summary>
+                                <div class="more-body">
+                                <ul class="list-disc pl-5 space-y-1.5 text-muted marker:text-brand">
+                                    <li>Guest reception, check-ins and payments; scheduled and led the housekeeping team; organised events and weddings</li>
+                                    <li>Installed extra access points for reliable Wi-Fi in every room, and tuned up computers and software</li>
+                                    <li>Managed inventory and supplies for housekeeping and the kitchen</li>
+                                    <li>Seasonal events on top of weddings: Valentine's Day, Easter, summer events and Christmas</li>
+                                </ul>
+                                </div>
+                            </details>
                         </article>
                     </li>
 
                     <!-- FedEx handler -->
-                    <li class="relative pl-10 reveal">
-                        <span class="timeline-dot" aria-hidden="true"></span>
-                        <article class="glass-card p-6 md:p-8">
+                    <li class="job">
+                        <article>
                             <header class="flex flex-col md:flex-row md:items-start md:justify-between gap-2 mb-4">
                                 <div>
-                                    <h3 class="text-xl font-semibold text-gray-100">Handler / Team Leader / Dangerous Goods Agent</h3>
-                                    <p class="text-primary-light font-medium">FedEx</p>
+                                    <h3 class="text-xl font-semibold text-ink">Handler / Team Leader / Dangerous Goods Agent</h3>
+                                    <p class="text-brand font-medium">FedEx</p>
                                 </div>
-                                <p class="text-sm text-gray-400 shrink-0">2020 – 2022</p>
+                                <p class="job-date">2020 – 2022</p>
                             </header>
-                            <ul class="list-disc pl-5 space-y-1.5 text-gray-400 marker:text-primary-light">
-                                <li>Trained and coached new staff, coordinated logistics work and checked dangerous goods against safety regulations</li>
-                            </ul>
+                            <p class="text-body mb-4">Warehouse work alongside my studies, as handler, team leader and dangerous goods agent.</p>
+                            <details class="more mb-5">
+                                <summary><span class="when-closed">What I did in this role</span><span class="when-open">Show less</span><i data-lucide="chevron-down" class="chev w-4 h-4" aria-hidden="true"></i></summary>
+                                <div class="more-body">
+                                <ul class="list-disc pl-5 space-y-1.5 text-muted marker:text-brand">
+                                    <li>Trained and coached new staff, coordinated logistics work and checked dangerous goods against safety regulations</li>
+                                </ul>
+                                </div>
+                            </details>
                         </article>
                     </li>
                 </ol>
@@ -399,75 +532,66 @@
         </section>
 
         <!-- Skills -->
-        <section id="skills" class="py-24 border-t border-white/5" aria-labelledby="skills-title">
+        <section id="skills" class="py-24 border-t border-line" aria-labelledby="skills-title">
             <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-                <div class="mb-12 reveal">
-                    <p class="eyebrow mb-3">Expertise</p>
-                    <h2 id="skills-title" class="text-3xl md:text-4xl font-bold tracking-tight">Skills &amp; tools</h2>
+                <div class="mb-12">
+                    <h2 id="skills-title" class="text-4xl md:text-5xl display">Skills &amp; tools</h2>
                 </div>
 
                 <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                    <div class="glass-card move-plate type-electric p-6 reveal">
-                        <span class="w-10 h-10 rounded-lg bg-primary/15 flex items-center justify-center mb-4" aria-hidden="true"><i data-lucide="network" class="w-5 h-5 text-primary-light"></i></span>
-                        <span class="move-type mb-3">Electric</span>
-                        <h3 class="font-semibold text-gray-100 mb-3">Networking &amp; infrastructure</h3>
-                        <ul class="space-y-2 text-sm text-gray-400">
+                    <div class="card p-6">
+                        <span class="w-10 h-10 rounded-lg bg-brand/10 flex items-center justify-center mb-4" aria-hidden="true"><i data-lucide="network" class="w-5 h-5 text-brand"></i></span>
+                        <h3 class="font-semibold text-ink mb-3">Networking &amp; infrastructure</h3>
+                        <ul class="space-y-2 text-sm text-muted">
                             <li>LAN/WAN, TCP/IP, DNS, DHCP, VLANs</li><li>MikroTik RouterOS &amp; WinBox</li><li>Netgear switches &amp; PoE</li><li>Wireless networking</li><li>Network monitoring &amp; inventory</li>
                         </ul>
                     </div>
-                    <div class="glass-card move-plate type-water p-6 reveal">
-                        <span class="w-10 h-10 rounded-lg bg-primary/15 flex items-center justify-center mb-4" aria-hidden="true"><i data-lucide="cctv" class="w-5 h-5 text-primary-light"></i></span>
-                        <span class="move-type mb-3">Water</span>
-                        <h3 class="font-semibold text-gray-100 mb-3">Cameras &amp; recorders</h3>
-                        <ul class="space-y-2 text-sm text-gray-400">
+                    <div class="card p-6">
+                        <span class="w-10 h-10 rounded-lg bg-brand/10 flex items-center justify-center mb-4" aria-hidden="true"><i data-lucide="cctv" class="w-5 h-5 text-brand"></i></span>
+                        <h3 class="font-semibold text-ink mb-3">Cameras &amp; recorders</h3>
+                        <ul class="space-y-2 text-sm text-muted">
                             <li>Axis, Hanwha/Wisenet, Vivotek</li><li>Promise NVR systems</li><li>NVR servers on HPE hardware</li><li>SaaS platform registration</li><li>Refurbishment &amp; testing</li>
                         </ul>
                     </div>
-                    <div class="glass-card move-plate type-steel p-6 reveal">
-                        <span class="w-10 h-10 rounded-lg bg-primary/15 flex items-center justify-center mb-4" aria-hidden="true"><i data-lucide="server" class="w-5 h-5 text-primary-light"></i></span>
-                        <span class="move-type mb-3">Steel</span>
-                        <h3 class="font-semibold text-gray-100 mb-3">System administration</h3>
-                        <ul class="space-y-2 text-sm text-gray-400">
-                            <li>Windows Server &amp; Active Directory</li><li>Linux</li><li>HP ProLiant Gen10/Gen11 &amp; iLO</li><li>Hyper-V virtualization</li><li>SSH, RDP &amp; PuTTY</li>
+                    <div class="card p-6">
+                        <span class="w-10 h-10 rounded-lg bg-brand/10 flex items-center justify-center mb-4" aria-hidden="true"><i data-lucide="server" class="w-5 h-5 text-brand"></i></span>
+                        <h3 class="font-semibold text-ink mb-3">System administration</h3>
+                        <ul class="space-y-2 text-sm text-muted">
+                            <li>Windows Server &amp; Active Directory</li><li>Linux, across many distributions</li><li>HP ProLiant Gen10/Gen11 &amp; iLO</li><li>Hyper-V virtualization</li><li>SSH, RDP &amp; PuTTY</li>
                         </ul>
                     </div>
-                    <div class="glass-card move-plate type-psychic p-6 reveal">
-                        <span class="w-10 h-10 rounded-lg bg-primary/15 flex items-center justify-center mb-4" aria-hidden="true"><i data-lucide="shield-check" class="w-5 h-5 text-primary-light"></i></span>
-                        <span class="move-type mb-3">Psychic</span>
-                        <h3 class="font-semibold text-gray-100 mb-3">Security &amp; cloud</h3>
-                        <ul class="space-y-2 text-sm text-gray-400">
+                    <div class="card p-6">
+                        <span class="w-10 h-10 rounded-lg bg-brand/10 flex items-center justify-center mb-4" aria-hidden="true"><i data-lucide="shield-check" class="w-5 h-5 text-brand"></i></span>
+                        <h3 class="font-semibold text-ink mb-3">Security &amp; cloud</h3>
+                        <ul class="space-y-2 text-sm text-muted">
                             <li>Network security &amp; segmentation</li><li>Identity &amp; access management</li><li>Okta</li><li>Microsoft Azure</li><li>Security monitoring &amp; SIEM</li>
                         </ul>
                     </div>
-                    <div class="glass-card move-plate type-dark p-6 reveal">
-                        <span class="w-10 h-10 rounded-lg bg-primary/15 flex items-center justify-center mb-4" aria-hidden="true"><i data-lucide="terminal" class="w-5 h-5 text-primary-light"></i></span>
-                        <span class="move-type mb-3">Dark</span>
-                        <h3 class="font-semibold text-gray-100 mb-3">Ethical hacking</h3>
-                        <ul class="space-y-2 text-sm text-gray-400">
+                    <div class="card p-6">
+                        <span class="w-10 h-10 rounded-lg bg-brand/10 flex items-center justify-center mb-4" aria-hidden="true"><i data-lucide="terminal" class="w-5 h-5 text-brand"></i></span>
+                        <h3 class="font-semibold text-ink mb-3">Ethical hacking</h3>
+                        <ul class="space-y-2 text-sm text-muted">
                             <li>Kali Linux &amp; Parrot OS</li><li>Nmap, Hydra, Wireshark</li><li>any.run malware analysis</li><li>TryHackMe CTFs</li><li>White-hat bug bounties</li>
                         </ul>
                     </div>
-                    <div class="glass-card move-plate type-grass p-6 reveal">
-                        <span class="w-10 h-10 rounded-lg bg-primary/15 flex items-center justify-center mb-4" aria-hidden="true"><i data-lucide="workflow" class="w-5 h-5 text-primary-light"></i></span>
-                        <span class="move-type mb-3">Grass</span>
-                        <h3 class="font-semibold text-gray-100 mb-3">Automation &amp; development</h3>
-                        <ul class="space-y-2 text-sm text-gray-400">
+                    <div class="card p-6">
+                        <span class="w-10 h-10 rounded-lg bg-brand/10 flex items-center justify-center mb-4" aria-hidden="true"><i data-lucide="workflow" class="w-5 h-5 text-brand"></i></span>
+                        <h3 class="font-semibold text-ink mb-3">Automation &amp; development</h3>
+                        <ul class="space-y-2 text-sm text-muted">
                             <li>Python, TypeScript, JavaScript</li><li>API integrations &amp; workflows</li><li>Google AppSheet &amp; Sheets</li><li>Local LLMs</li><li>Own AI-assisted ticket system</li>
                         </ul>
                     </div>
-                    <div class="glass-card move-plate type-fire p-6 reveal">
-                        <span class="w-10 h-10 rounded-lg bg-primary/15 flex items-center justify-center mb-4" aria-hidden="true"><i data-lucide="ticket" class="w-5 h-5 text-primary-light"></i></span>
-                        <span class="move-type mb-3">Fire</span>
-                        <h3 class="font-semibold text-gray-100 mb-3">IT operations &amp; ticketing</h3>
-                        <ul class="space-y-2 text-sm text-gray-400">
+                    <div class="card p-6">
+                        <span class="w-10 h-10 rounded-lg bg-brand/10 flex items-center justify-center mb-4" aria-hidden="true"><i data-lucide="ticket" class="w-5 h-5 text-brand"></i></span>
+                        <h3 class="font-semibold text-ink mb-3">IT operations &amp; ticketing</h3>
+                        <ul class="space-y-2 text-sm text-muted">
                             <li>iTop, Jira, TOPdesk, Xurrent</li><li>Incident &amp; change management</li><li>Microsoft 365 &amp; Google Workspace</li><li>IT asset &amp; stock management</li><li>Technical documentation</li>
                         </ul>
                     </div>
-                    <div class="glass-card move-plate type-normal p-6 reveal">
-                        <span class="w-10 h-10 rounded-lg bg-primary/15 flex items-center justify-center mb-4" aria-hidden="true"><i data-lucide="users" class="w-5 h-5 text-primary-light"></i></span>
-                        <span class="move-type mb-3">Normal</span>
-                        <h3 class="font-semibold text-gray-100 mb-3">Ways of working</h3>
-                        <ul class="space-y-2 text-sm text-gray-400">
+                    <div class="card p-6">
+                        <span class="w-10 h-10 rounded-lg bg-brand/10 flex items-center justify-center mb-4" aria-hidden="true"><i data-lucide="users" class="w-5 h-5 text-brand"></i></span>
+                        <h3 class="font-semibold text-ink mb-3">Ways of working</h3>
+                        <ul class="space-y-2 text-sm text-muted">
                             <li>Analytical</li><li>Solution-focused</li><li>Eager to learn</li><li>Independent</li><li>Clear communicator</li>
                         </ul>
                     </div>
@@ -476,48 +600,61 @@
         </section>
 
         <!-- Education, certifications & labs -->
-        <section id="learning" class="py-24 border-t border-white/5" aria-labelledby="learning-title">
+        <section id="learning" class="py-24 border-t border-line" aria-labelledby="learning-title">
             <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-                <div class="mb-12 reveal">
-                    <p class="eyebrow mb-3">Training</p>
-                    <h2 id="learning-title" class="text-3xl md:text-4xl font-bold tracking-tight">Education &amp; certifications</h2>
+                <div class="mb-12">
+                    <h2 id="learning-title" class="text-4xl md:text-5xl display">Education &amp; certifications</h2>
                 </div>
 
-                <div class="grid lg:grid-cols-3 gap-4">
-                    <div class="glass-card p-6 reveal">
-                        <span class="w-10 h-10 rounded-lg bg-primary/15 flex items-center justify-center mb-4" aria-hidden="true"><i data-lucide="graduation-cap" class="w-5 h-5 text-primary-light"></i></span>
-                        <h3 class="font-semibold text-gray-100 mb-4">Education</h3>
-                        <div class="space-y-5 text-sm">
-                            <div>
-                                <p class="text-gray-100 font-medium">Network Administrator, MBO Level 4</p>
-                                <p class="text-gray-400">ROC van Amsterdam · Jan 2020 – Jun 2023</p>
-                                <p class="text-gray-400 mt-2">Diploma, average final grade 8. LAN/WAN, Windows and Linux administration, virtualization, network security, Microsoft Azure, scripting and IT automation.</p>
-                            </div>
-                            <div>
-                                <p class="text-gray-100 font-medium">ICT Support Technician, MBO Level 3</p>
-                                <p class="text-gray-400">MBO Utrecht · Jun 2018 – Dec 2020</p>
-                                <p class="text-gray-400 mt-2">Diploma, average final grade 8. IT support and incident management, troubleshooting, networking basics, Active Directory and Microsoft 365.</p>
-                            </div>
+                <div class="grid lg:grid-cols-3 gap-4 items-start">
+                    <div class="card p-6">
+                        <span class="w-10 h-10 rounded-lg bg-brand/10 flex items-center justify-center mb-4" aria-hidden="true"><i data-lucide="graduation-cap" class="w-5 h-5 text-brand"></i></span>
+                        <h3 class="font-semibold text-ink mb-2">Education</h3>
+                        <div class="acc-list text-sm">
+                            <details class="acc">
+                                <summary><span><span class="block text-ink font-medium">Network Administrator, MBO 4</span><span class="block text-muted">ROC van Amsterdam · Jan 2020 – Jun 2023</span></span><i data-lucide="chevron-down" class="chev w-4 h-4" aria-hidden="true"></i></summary>
+                                <div class="acc-body"><p class="mb-2">Diploma, average final grade 8.</p><ul class="list-disc pl-5 space-y-1 marker:text-brand"><li>Network administration: installing and managing LAN, WAN and cloud networks, servers and storage</li><li>System administration: Windows and Linux, applications, virtual machines and software updates</li><li>Security: protecting networks and systems, privacy measures and backups</li><li>Software and programming: programming basics, scripting and small information systems</li><li>Database management: design and management fundamentals</li><li>Service management and projects: supporting users, troubleshooting, documenting procedures and working in teams</li><li>Design and implementation: technical designs, test environments and rolling out IT solutions</li><li>Microsoft Azure and IT automation</li></ul><p class="mt-2">Right after graduating I went back to the same school as an assistant teacher for the MBO 4 ICT students.</p></div>
+                            </details>
+                            <details class="acc">
+                                <summary><span><span class="block text-ink font-medium">ICT Support Technician, MBO 3</span><span class="block text-muted">MBO Utrecht · Jun 2018 – Dec 2020</span></span><i data-lucide="chevron-down" class="chev w-4 h-4" aria-hidden="true"></i></summary>
+                                <div class="acc-body"><p class="mb-2">Diploma, average final grade 8.</p><ul class="list-disc pl-5 space-y-1 marker:text-brand"><li>IT support: diagnosing issues, helping end users and following structured support processes</li><li>Configuring and managing virtual machines and using remote desktop</li><li>Troubleshooting hardware such as routers, printers and user devices</li><li>Networking fundamentals: how networks operate and how to maintain them</li><li>Basics of Active Directory, IT policies and secure system management</li><li>Microsoft 365</li></ul><p class="mt-2">Alongside the course I earned basic Office 365 certificates and introductory CCNA certificates, and helped classmates in peer-to-peer sessions on networking exercises and system configuration.</p></div>
+                            </details>
                         </div>
                     </div>
 
-                    <div class="glass-card p-6 reveal">
-                        <span class="w-10 h-10 rounded-lg bg-primary/15 flex items-center justify-center mb-4" aria-hidden="true"><i data-lucide="award" class="w-5 h-5 text-primary-light"></i></span>
-                        <h3 class="font-semibold text-gray-100 mb-1">Certifications &amp; courses</h3>
-                        <p class="text-xs text-gray-500 mb-4">Skillsoft learning paths, 2025</p>
-                        <ul class="list-disc pl-5 space-y-2 text-sm text-gray-400 marker:text-primary-light">
-                            <li><span class="text-gray-200">Azure Network Engineer Associate:</span> networking, monitoring, Azure DNS, VPN, ExpressRoute, Virtual WAN, NAT Gateway, user-defined routes</li>
-                            <li><span class="text-gray-200">CompTIA CySA+:</span> malware, vulnerability and penetration testing, logging, firewalls and IDS, threat intelligence, hardening, PKI, forensics</li>
-                            <li><span class="text-gray-200">CompTIA CASP+, Cloud+, Server+ and A+</span> (Core 1 &amp; 2) modules</li>
-                            <li><span class="text-gray-200">Cisco:</span> CCNA 2020 networking components (NGFW, NGIPS, DNA Center), firewall and IPS systems, Cisco IOS</li>
-                            <li><span class="text-gray-200">Google:</span> AppSheet, Google Analytics, Google Drive</li>
-                        </ul>
+                    <div class="card p-6">
+                        <span class="w-10 h-10 rounded-lg bg-brand/10 flex items-center justify-center mb-4" aria-hidden="true"><i data-lucide="award" class="w-5 h-5 text-brand"></i></span>
+                        <h3 class="font-semibold text-ink mb-1">Certifications &amp; courses</h3>
+                        <p class="text-xs text-muted mb-2">Skillsoft course badges, earned in September and October 2025. Open a group to see every course.</p>
+                        <div class="acc-list text-sm">
+                            <details class="acc">
+                                <summary><span><span class="block text-ink font-medium">Azure Network Engineer Associate</span><span class="block text-muted">Learning path · 12 badges · Oct 2025</span></span><i data-lucide="chevron-down" class="chev w-4 h-4" aria-hidden="true"></i></summary>
+                                <div class="acc-body"><ul class="list-disc pl-5 space-y-1 marker:text-brand"><li>Networking Fundamentals</li><li>Network Monitoring and Diagnostics</li><li>Designing and Implementing Azure DNS</li><li>Network Routing and Connectivity</li><li>Virtual Network Connectivity</li><li>Azure VPN Solutions</li><li>Azure ExpressRoute Solutions</li><li>Implementing Azure Virtual WAN</li><li>Implementing Azure Route Server</li><li>Implementing and Managing Azure NAT Gateway</li><li>Advanced Routing with User-Defined Routes</li><li>Azure Application Delivery Services</li></ul></div>
+                            </details>
+                            <details class="acc">
+                                <summary><span><span class="block text-ink font-medium">CompTIA Cybersecurity Analyst+ (CySA+)</span><span class="block text-muted">Learning path · 21 badges · Sep 2025</span></span><i data-lucide="chevron-down" class="chev w-4 h-4" aria-hidden="true"></i></summary>
+                                <div class="acc-body"><ul class="list-disc pl-5 space-y-1 marker:text-brand"><li>Network Security Concepts</li><li>Managing Network Settings</li><li>Cryptography</li><li>Public Key Infrastructure</li><li>Authentication</li><li>Authorization</li><li>OS Process Management</li><li>Virtualization and Container Security</li><li>Data Security Standards</li><li>Managing Risk</li><li>Threat Intelligence Information</li><li>Malware</li><li>Malicious Techniques and Procedures</li><li>Analyzing Malicious Activity</li><li>Vulnerability and Penetration Testing</li><li>Firewalls and Intrusion Detection</li><li>Hardening Techniques</li><li>Logging and Monitoring</li><li>Security and Network Monitoring</li><li>Secure Coding and Digital Forensics</li><li>Track 1: Security Operations</li></ul></div>
+                            </details>
+                            <details class="acc">
+                                <summary><span><span class="block text-ink font-medium">Cisco</span><span class="block text-muted">CCNA 2020, RSTECH and firewall courses · 10 badges · Sep to Oct 2025</span></span><i data-lucide="chevron-down" class="chev w-4 h-4" aria-hidden="true"></i></summary>
+                                <div class="acc-body"><ul class="list-disc pl-5 space-y-1 marker:text-brand"><li>CCNA 2020: Networking Components</li><li>CCNA 2020: Networking Components (NGFW, NGIPS and Cisco DNA Center)</li><li>SNCF: Cisco Firewall, IPS Systems and the FMCv in AWS</li><li>RSTECH: Networking Hardware, Models and Technologies</li><li>RSTECH: Network Responsibilities, Addressing and Utilities</li><li>RSTECH: Cisco Equipment, Components and Port Characteristics</li><li>RSTECH: Cisco Memory Functions and Removing Cisco Devices</li><li>RSTECH: OS Types, IOS Access and Terminal Emulation</li><li>RSTECH: IOS Commands, Startup-Config and IOS-XE Modes</li><li>RSTECH: Troubleshooting, Upgrading, Recovering and Resetting</li></ul></div>
+                            </details>
+                            <details class="acc">
+                                <summary><span><span class="block text-ink font-medium">CompTIA CASP+, Cloud+, Server+ and A+</span><span class="block text-muted">Selected courses · 9 badges · Sep 2025</span></span><i data-lucide="chevron-down" class="chev w-4 h-4" aria-hidden="true"></i></summary>
+                                <div class="acc-body"><ul class="list-disc pl-5 space-y-1 marker:text-brand"><li>CASP+: Assessing and Managing Risk</li><li>Cloud+: Network Troubleshooting</li><li>Cloud+: Secure Access in the Cloud</li><li>Cloud+: Authentication and Authorization in the Cloud</li><li>Server+: Server Components</li><li>Server+: Server Troubleshooting</li><li>A+ Core 1: Best Practices for Resolving Problems</li><li>A+ Core 2: Windows OS Problems and Personal Computer Security</li><li>A+ Core 2: Mobile Device Security and Data Destruction</li></ul></div>
+                            </details>
+                            <details class="acc">
+                                <summary><span><span class="block text-ink font-medium">Google</span><span class="block text-muted">AppSheet, Analytics and Drive · 5 badges · Sep 2025</span></span><i data-lucide="chevron-down" class="chev w-4 h-4" aria-hidden="true"></i></summary>
+                                <div class="acc-body"><ul class="list-disc pl-5 space-y-1 marker:text-brand"><li>Getting started creating apps in Google AppSheet 2024</li><li>Managing data in Google AppSheet 2024</li><li>Deploying and configuring apps in Google AppSheet 2024</li><li>Creating and Managing Properties in Google Analytics</li><li>Getting started in Google Drive 2023</li></ul><p class="mt-2">I put AppSheet to work at Prosus, building a meeting-room booking app and an IT asset management app.</p></div>
+                            </details>
+                        </div>
+                        <p class="text-sm mt-4"><a class="text-link" href="https://www.linkedin.com/in/casper-klootwijk-837345373/details/certifications/" target="_blank" rel="noopener noreferrer">See every badge and credential ID on LinkedIn</a></p>
                     </div>
 
-                    <div class="glass-card p-6 reveal">
-                        <span class="w-10 h-10 rounded-lg bg-primary/15 flex items-center justify-center mb-4" aria-hidden="true"><i data-lucide="flask-conical" class="w-5 h-5 text-primary-light"></i></span>
-                        <h3 class="font-semibold text-gray-100 mb-4">Security practice &amp; home lab</h3>
-                        <ul class="list-disc pl-5 space-y-2 text-sm text-gray-400 marker:text-primary-light">
+                    <div class="card p-6">
+                        <span class="w-10 h-10 rounded-lg bg-brand/10 flex items-center justify-center mb-4" aria-hidden="true"><i data-lucide="flask-conical" class="w-5 h-5 text-brand"></i></span>
+                        <h3 class="font-semibold text-ink mb-4">Security practice &amp; home lab</h3>
+                        <ul class="list-disc pl-5 space-y-2 text-sm text-muted marker:text-brand">
                             <li>Ethical hacking in legal labs: TryHackMe capture-the-flag challenges and white-hat bug bounty challenges with Kali Linux and Parrot OS</li>
                             <li>Network scans, vulnerability and traffic analysis with Nmap, Hydra and Wireshark; malware analysis in the any.run sandbox</li>
                             <li>60+ open-source repositories in Python and TypeScript, including a real-time Gmail security scanner, MikroTik automation, a reverse-proxy hardening script for local AI servers and PokeSync</li>
@@ -528,19 +665,72 @@
             </div>
         </section>
 
+        <!-- Home lab & side projects -->
+        <section id="lab" class="py-24 border-t border-line" aria-labelledby="lab-title">
+            <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="mb-12 max-w-2xl">
+                    <h2 id="lab-title" class="text-4xl md:text-5xl display">Home lab &amp; side projects</h2>
+                    <p class="text-muted mt-4">Where I try things before I'd ever do them on a production network, and where most of my tools start.</p>
+                </div>
+
+                <div class="grid lg:grid-cols-5 gap-4 items-start">
+                    <div class="card p-6 lg:col-span-2">
+                        <span class="w-10 h-10 rounded-lg bg-brand/10 flex items-center justify-center mb-4" aria-hidden="true"><i data-lucide="flask-conical" class="w-5 h-5 text-brand"></i></span>
+                        <h3 class="font-semibold text-ink mb-4">The lab</h3>
+                        <dl class="lab-list text-sm">
+                            <div><dt>Local AI</dt><dd>Running models locally with LM Studio, Ollama and Open WebUI. I've spent a lot of time on an NVIDIA DGX Spark with a local Qwen model for object detection and similar vision tasks, and I've hooked a Vector robot up to a local model. I also use Google's LangExtract for pulling structured data out of documents</dd></div>
+                            <div><dt>Security tooling</dt><dd>Snort, Wireshark, Nmap and Ghidra for reverse engineering. Next on the list: Zabbix, Fing and Greenbone</dd></div>
+                            <div><dt>Right now</dt><dd>Making a PlayStation 1 game in C, modding Pokémon Battle Revolution, and working on Pokémon ROM hacks</dd></div>
+                        </dl>
+                    </div>
+
+                    <div class="card p-6 lg:col-span-3">
+                        <span class="w-10 h-10 rounded-lg bg-brand/10 flex items-center justify-center mb-4" aria-hidden="true"><i data-lucide="hammer" class="w-5 h-5 text-brand"></i></span>
+                        <h3 class="font-semibold text-ink mb-1">What I'm building</h3>
+                        <p class="text-xs text-muted mb-2">Open one to read more.</p>
+                        <div class="acc-list text-sm">
+                            <details class="acc">
+                                <summary><span><span class="block text-ink font-medium">Gmail Real-Time Cybersecurity Scanner</span><span class="block text-muted">Flags suspicious email in Gmail as it arrives</span></span><i data-lucide="chevron-down" class="chev w-4 h-4" aria-hidden="true"></i></summary>
+                                <div class="acc-body"><p>My largest open-source project. It has a detection engine, a Gmail add-on, a Chrome extension and a command-line and MCP server part, so the same checks run wherever you read your mail.</p><p class="mt-2">Current work is on reproducible tests and regression checks, PDF attachments, and bringing false alarms down without missing real threats.</p><p class="mt-2"><a class="text-link" href="https://github.com/FaiGiJoon/Gmail-Real-Time-Cybersecurity-Scanner" target="_blank" rel="noopener noreferrer">View on GitHub</a></p></div>
+                            </details>
+                            <details class="acc">
+                                <summary><span><span class="block text-ink font-medium">PokeSync</span><span class="block text-muted">Backs up emulator save files so they can move between PCs</span></span><i data-lucide="chevron-down" class="chev w-4 h-4" aria-hidden="true"></i></summary>
+                                <div class="acc-body"><p>One of my first tools that really worked, written in Python. It finds games across emulators (GameCube, Wii, 3DS and older systems) and backs up their saves with metadata, so a lost save can be restored.</p><p class="mt-2">Next: a cloud backend and the restore flow.</p><p class="mt-2"><a class="text-link" href="https://github.com/FaiGiJoon/PokeSync" target="_blank" rel="noopener noreferrer">View on GitHub</a></p></div>
+                            </details>
+                            <details class="acc">
+                                <summary><span><span class="block text-ink font-medium">Koala Grove</span><span class="block text-muted">Two AI koalas living on a floating island</span></span><i data-lucide="chevron-down" class="chev w-4 h-4" aria-hidden="true"></i></summary>
+                                <div class="acc-body"><p>A small world where two AI agents live, learn from the web, grow their own personalities and build their surroundings. I'm also experimenting with running the koalas on local models through Ollama instead of a cloud model.</p></div>
+                            </details>
+                            <details class="acc">
+                                <summary><span><span class="block text-ink font-medium">MikroTik automation</span><span class="block text-muted">Scripting the RouterOS work I used to do by hand</span></span><i data-lucide="chevron-down" class="chev w-4 h-4" aria-hidden="true"></i></summary>
+                                <div class="acc-body"><p>A tool for automating MikroTik RouterOS configuration, tested on the hEX in my own lab. It comes straight out of a year of configuring VLANs, interfaces and DHCP through WinBox.</p></div>
+                            </details>
+                            <details class="acc">
+                                <summary><span><span class="block text-ink font-medium">Reverse proxy for local AI servers</span><span class="block text-muted">Puts a local model server safely behind a proxy</span></span><i data-lucide="chevron-down" class="chev w-4 h-4" aria-hidden="true"></i></summary>
+                                <div class="acc-body"><p>A hardening script for people who run Ollama or similar servers at home and want to reach them from other devices without exposing them. I wrote about the idea on the <a class="text-link" href="blog.html">blog</a>.</p></div>
+                            </details>
+                            <details class="acc">
+                                <summary><span><span class="block text-ink font-medium">Project Lumen</span><span class="block text-muted">Open-source AI tools for hospitals and for people with dyslexia or a disability</span></span><i data-lucide="chevron-down" class="chev w-4 h-4" aria-hidden="true"></i></summary>
+                                <div class="acc-body"><p>The long-term project behind my goal of helping hospitals. The planned parts are LumenChat, SkillBuilder and De Binnenkring. It is at an early stage; the form matters less to me than that it ends up helping people.</p></div>
+                            </details>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
         <!-- Projects -->
         <!-- Goldenrod City: the portfolio as a walkable town -->
-        <section id="town" class="py-24 border-t border-white/5" aria-labelledby="town-title">
+        <section id="town" class="py-24 border-t border-line" aria-labelledby="town-title">
             <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-                <div class="glass-card relative overflow-hidden p-6 md:p-10 reveal">
+                <div class="band-dark p-6 md:p-10">
                     <div class="relative grid md:grid-cols-2 gap-8 items-center">
-                        <a href="town.html" class="block rounded-xl overflow-hidden border border-white/10" aria-label="Open Goldenrod City">
+                        <a href="town.html" class="block rounded-md overflow-hidden" aria-label="Open Goldenrod City">
                             <img src="assets/img/screenshots/goldenrod-town.png" alt="Goldenrod City from Pokémon Crystal, with the player standing in town" class="w-full h-auto" style="image-rendering: pixelated" loading="lazy">
                         </a>
                         <div>
-                            <p class="eyebrow mb-3">Play the portfolio</p>
-                            <h2 id="town-title" class="text-3xl md:text-4xl font-bold tracking-tight mb-4">Goldenrod City</h2>
-                            <p class="text-gray-300 text-lg leading-relaxed mb-6">
+                            <h2 id="town-title" class="text-4xl md:text-5xl display mb-4">Goldenrod City</h2>
+                            <p class="text-lg leading-relaxed mb-6">
                                 The same portfolio as a walkable Pokémon Crystal town, built from the original map data. Walk into buildings to read about my work, talk to people, and challenge the Gym.
                             </p>
                             <a href="town.html" class="btn btn-primary">
@@ -553,13 +743,12 @@
             </div>
         </section>
 
-        <section id="projects" class="py-24 border-t border-white/5" aria-labelledby="projects-title">
+        <section id="projects" class="py-24 border-t border-line" aria-labelledby="projects-title">
             <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-                <div class="flex flex-col md:flex-row md:items-end md:justify-between gap-4 mb-12 reveal">
+                <div class="flex flex-col md:flex-row md:items-end md:justify-between gap-4 mb-12">
                     <div>
-                        <p class="eyebrow mb-3">Open source</p>
-                        <h2 id="projects-title" class="text-3xl md:text-4xl font-bold tracking-tight">Recent projects</h2>
-                        <p class="text-gray-400 mt-3 max-w-xl">My most recently updated public repositories, pulled live from GitHub.</p>
+                        <h2 id="projects-title" class="text-4xl md:text-5xl display">Recent projects</h2>
+                        <p class="text-muted mt-3 max-w-xl">My most recently updated public repositories, pulled live from GitHub.</p>
                     </div>
                     <a href="https://github.com/FaiGiJoon" target="_blank" rel="noopener noreferrer" class="btn btn-secondary self-start md:self-auto">
                         <i data-lucide="github" class="w-5 h-5" aria-hidden="true"></i>
@@ -569,7 +758,7 @@
 
                 <div id="github-repos-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4" aria-live="polite" aria-busy="true">
                     <div class="col-span-full flex justify-center py-12">
-                        <div class="animate-spin rounded-full h-10 w-10 border-2 border-white/10 border-t-primary-light" role="status">
+                        <div class="animate-spin rounded-full h-10 w-10 border-2 border-line border-t-brand" role="status">
                             <span class="sr-only">Loading projects…</span>
                         </div>
                     </div>
@@ -578,28 +767,30 @@
         </section>
 
         <!-- Contact -->
-        <section id="contact" class="py-24 border-t border-white/5" aria-labelledby="contact-title">
+        <section id="contact" class="py-24 border-t border-line" aria-labelledby="contact-title">
             <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-                <div class="glass-card relative overflow-hidden p-8 md:p-12 reveal">
-                    <div class="hero-glow -right-40 -top-60" aria-hidden="true"></div>
+                <div class="band-dark p-8 md:p-14">
                     <div class="relative grid md:grid-cols-5 gap-10 items-center">
                         <div class="md:col-span-3">
-                            <p class="eyebrow mb-3">Contact</p>
-                            <h2 id="contact-title" class="text-3xl md:text-4xl font-bold tracking-tight mb-4">Let's work together</h2>
-                            <p class="text-gray-300 text-lg leading-relaxed">
-                                I'm open to freelance and full-time roles in IT support, systems and networking. Email is the quickest way to reach me.
+                            <h2 id="contact-title" class="text-4xl md:text-6xl display mb-5">Let's work together</h2>
+                            <p class="text-lg leading-relaxed max-w-xl">
+                                I'm looking for a role as network engineer or systems administrator, focused on administration and infrastructure, around Utrecht, the Utrechtse Heuvelrug or Amersfoort. Email is the quickest way to reach me.
                             </p>
                         </div>
                         <div class="md:col-span-2 flex flex-col gap-3">
                             <a href="mailto:klootwijkc@gmail.com" class="btn btn-primary justify-start">
                                 <i data-lucide="mail" class="w-5 h-5" aria-hidden="true"></i>
-                                klootwijkc@gmail.com
+                                Email me
                             </a>
                             <a href="https://github.com/FaiGiJoon" target="_blank" rel="noopener noreferrer" class="btn btn-secondary justify-start">
                                 <i data-lucide="github" class="w-5 h-5" aria-hidden="true"></i>
                                 github.com/FaiGiJoon
                             </a>
-                            <p class="flex items-center gap-2 text-sm text-gray-400 px-1 pt-1">
+                            <a href="https://www.linkedin.com/in/casper-klootwijk-837345373" target="_blank" rel="noopener noreferrer" class="btn btn-secondary justify-start">
+                                <i data-lucide="linkedin" class="w-5 h-5" aria-hidden="true"></i>
+                                LinkedIn
+                            </a>
+                            <p class="flex items-center gap-2 text-sm px-1 pt-1">
                                 <i data-lucide="map-pin" class="w-4 h-4" aria-hidden="true"></i>
                                 Doorn, Netherlands (CET)
                             </p>
@@ -611,13 +802,14 @@
     </main>
 
     <!-- Footer -->
-    <footer class="py-8 border-t border-white/10">
-        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row items-center justify-between gap-4 text-sm text-gray-400">
-            <p>© 2026 Casper Klootwijk</p>
+    <footer class="py-8 border-t border-line">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row items-center justify-between gap-4 text-sm text-muted">
+            <p>© 2026 Casper</p>
             <div class="flex items-center gap-6">
-                <a href="blog.html" class="hover:text-gray-100 transition-colors">Blog</a>
-                <a href="red-battle/" class="hover:text-gray-100 transition-colors">Battle Red</a>
-                <a href="https://github.com/FaiGiJoon" target="_blank" rel="noopener noreferrer" class="hover:text-gray-100 transition-colors">GitHub</a>
+                <a href="blog.html" class="hover:text-ink transition-colors">Blog</a>
+                <a href="red-battle/" class="hover:text-ink transition-colors">Battle Red</a>
+                <a href="https://github.com/FaiGiJoon" target="_blank" rel="noopener noreferrer" class="hover:text-ink transition-colors">GitHub</a>
+                <a href="https://www.linkedin.com/in/casper-klootwijk-837345373" target="_blank" rel="noopener noreferrer" class="hover:text-ink transition-colors">LinkedIn</a>
             </div>
         </div>
     </footer>
@@ -625,6 +817,7 @@
     <!-- Lucide Icons (pinned so icons can't change or disappear underneath us) -->
     <script src="https://unpkg.com/lucide@0.469.0/dist/umd/lucide.min.js"></script>
     <script src="assets/js/main.js"></script>
+    <script src="assets/js/wallpaper.js"></script>
     <script src="assets/js/github-repos.js"></script>
 </body>
 </html>
