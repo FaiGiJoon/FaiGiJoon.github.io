@@ -17,6 +17,28 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
+    // Start screen: 1 or the classic window stays here, 2 goes to the town.
+    const start = document.getElementById('start');
+    const root = document.documentElement;
+    if (start && root.dataset.start === 'show') {
+        const classic = start.querySelector('[data-start-classic]');
+        const retro = start.querySelector('[data-start-retro]');
+        const remember = () => { try { sessionStorage.setItem('start', '1'); } catch (e) { /* storage blocked */ } };
+        const close = () => {
+            remember();
+            delete root.dataset.start;
+            document.removeEventListener('keydown', onKey);
+        };
+        const onKey = (e) => {
+            if (e.key === '1' || e.key === 'Escape') { close(); }
+            if (e.key === '2' && retro) { remember(); window.location.href = retro.href; }
+        };
+        classic?.addEventListener('click', close);
+        retro?.addEventListener('click', remember);
+        document.addEventListener('keydown', onKey);
+        classic?.focus();
+    }
+
     // Mobile menu
     const menuBtn = document.getElementById('mobile-menu-btn');
     const menu = document.getElementById('mobile-menu');

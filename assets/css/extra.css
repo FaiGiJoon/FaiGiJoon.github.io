@@ -5,30 +5,34 @@
  */
 
 :root {
-    /* Light theme. Channels only, so Tailwind utilities can add their own alpha. */
-    --c-paper: 236 241 240;
-    --c-surface: 255 255 255;
-    --c-ink: 14 27 44;
-    --c-body: 54 67 86;
-    --c-muted: 82 95 113;
-    --c-faint: 128 139 155;
-    --c-line: 203 212 214;
-    --c-brand: 11 122 75;
+    /* Light theme: Curaçao by day. Sand, turquoise sea, flamingo pink.
+       Channels only, so Tailwind utilities can add alpha. */
+    --c-paper: 255 249 235;
+    --c-surface: 252 240 214;
+    --c-ink: 16 48 58;
+    --c-body: 42 76 86;
+    --c-muted: 80 108 112;
+    --c-faint: 140 160 158;
+    --c-line: 228 211 176;
+    --c-brand: 0 121 124;
 
-    --brand-strong: #075c38;
-    --glass-bg: rgba(255, 255, 255, 0.52);
-    --glass-bg-strong: rgba(255, 255, 255, 0.72);
-    --glass-border: rgba(255, 255, 255, 0.85);
-    --glass-edge: rgba(14, 27, 44, 0.08);
-    --glass-shadow: 0 18px 40px -22px rgba(14, 27, 44, 0.35);
-    --band-bg: rgba(16, 24, 36, 0.86);
-    --btn-bg: #0e1b2c;
+    --brand-strong: #b0325a;
+    --win-bg: rgb(var(--c-surface));
+    --win-border: rgb(var(--c-line));
+    --band-bg: #0e1f27;
+    --btn-bg: #00797c;
     --btn-fg: #ffffff;
-    --btn-hover: #0b7a4b;
-    --code-bg: rgba(14, 27, 44, 0.08);
-    --aurora-1: rgba(38, 196, 150, 0.42);
-    --aurora-2: rgba(150, 110, 235, 0.34);
-    --aurora-3: rgba(70, 150, 240, 0.34);
+    --btn-hover: #b0325a;
+    --code-bg: rgba(16, 48, 58, 0.08);
+    --sky-top: #3fb8d8;
+    --sky-bottom: #fde6bf;
+
+    /* kept so older rules keep working */
+    --glass-bg: var(--win-bg);
+    --glass-bg-strong: rgb(var(--c-paper));
+    --glass-border: var(--win-border);
+    --glass-edge: transparent;
+    --glass-shadow: none;
 
     --paper: rgb(var(--c-paper));
     --surface: rgb(var(--c-surface));
@@ -37,39 +41,34 @@
     --muted: rgb(var(--c-muted));
     --line: rgb(var(--c-line));
     --brand: rgb(var(--c-brand));
-    --chassis: #121a26;
-    --led-green: #37e08a;
+    --chassis: #14232a;
+    --led-green: #5fe0a0;
     --led-amber: #ffb627;
-    --font-display: 'Archivo', 'IBM Plex Sans', ui-sans-serif, system-ui, sans-serif;
-    --font-mono: 'IBM Plex Mono', ui-monospace, monospace;
+    --font-display: 'JetBrains Mono', ui-monospace, monospace;
+    --font-mono: 'JetBrains Mono', ui-monospace, monospace;
     --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
     color-scheme: light;
 }
 
+/* Dark theme: the same waterfront at night */
 [data-theme="dark"] {
-    --c-paper: 6 10 17;
-    --c-surface: 18 26 38;
-    --c-ink: 240 245 250;
-    --c-body: 198 208 220;
-    --c-muted: 152 165 182;
-    --c-faint: 112 125 142;
-    --c-line: 44 55 70;
-    --c-brand: 62 226 160;
+    --c-paper: 17 33 41;
+    --c-surface: 24 45 54;
+    --c-ink: 246 235 208;
+    --c-body: 216 207 183;
+    --c-muted: 156 178 176;
+    --c-faint: 110 136 138;
+    --c-line: 52 84 92;
+    --c-brand: 64 211 196;
 
-    --brand-strong: #7cf0bd;
-    --glass-bg: rgba(255, 255, 255, 0.045);
-    --glass-bg-strong: rgba(13, 20, 31, 0.62);
-    --glass-border: rgba(255, 255, 255, 0.11);
-    --glass-edge: rgba(0, 0, 0, 0.4);
-    --glass-shadow: 0 24px 50px -24px rgba(0, 0, 0, 0.8);
-    --band-bg: rgba(255, 255, 255, 0.06);
-    --btn-bg: #3ee2a0;
-    --btn-fg: #04231a;
-    --btn-hover: #8af5c8;
-    --code-bg: rgba(255, 255, 255, 0.1);
-    --aurora-1: rgba(22, 160, 125, 0.5);
-    --aurora-2: rgba(130, 80, 210, 0.42);
-    --aurora-3: rgba(40, 110, 210, 0.4);
+    --brand-strong: #ffd166;
+    --band-bg: #0c181e;
+    --btn-bg: #40d3c4;
+    --btn-fg: #06221f;
+    --btn-hover: #ff9eb0;
+    --code-bg: rgba(246, 235, 208, 0.1);
+    --sky-top: #081726;
+    --sky-bottom: #2c5e68;
     color-scheme: dark;
 }
 
@@ -79,25 +78,28 @@ html {
 }
 
 body {
-    font-family: 'IBM Plex Sans', ui-sans-serif, system-ui, sans-serif;
+    font-family: var(--font-mono);
     -webkit-font-smoothing: antialiased;
 }
 
-/* Aurora: soft colour fields fixed behind the page, which the glass panels blur */
+/* Plain sky behind the page. wallpaper.js draws the animated scene on top of it. */
 body::before {
     content: '';
     position: fixed;
     inset: 0;
-    z-index: -1;
+    z-index: -2;
     pointer-events: none;
-    background:
-        radial-gradient(58rem 34rem at 12% -6%, var(--aurora-1), transparent 62%),
-        radial-gradient(46rem 32rem at 92% 4%, var(--aurora-2), transparent 62%),
-        radial-gradient(40rem 26rem at 56% -4%, var(--aurora-3), transparent 64%),
-        radial-gradient(38rem 30rem at 88% 52%, var(--aurora-3), transparent 68%),
-        radial-gradient(36rem 28rem at 8% 46%, var(--aurora-1), transparent 70%),
-        radial-gradient(44rem 30rem at 100% 100%, var(--aurora-1), transparent 66%),
-        radial-gradient(40rem 28rem at -5% 92%, var(--aurora-2), transparent 66%);
+    background: linear-gradient(var(--sky-top), var(--sky-bottom));
+}
+.wallpaper {
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    image-rendering: pixelated;
+    image-rendering: crisp-edges;
 }
 
 .font-mono {
@@ -697,4 +699,414 @@ summary:focus-visible {
 }
 .lab-list dd {
     color: var(--muted);
+}
+
+
+/* ------------------------------------------------------------------
+ * Omarchy-style pass: monospace everywhere, flat tiled windows with
+ * square corners and a coloured border on the active one.
+ * ------------------------------------------------------------------ */
+.glass,
+.card,
+.band-dark {
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+    box-shadow: none;
+}
+.card,
+.band-dark,
+.glass,
+.btn,
+.tag,
+.logo-mark,
+.theme-toggle,
+.switch,
+.more > summary,
+.skip-link,
+img[class*="rounded"],
+span[class*="rounded-lg"],
+a[class*="rounded"],
+button[class*="rounded-lg"] {
+    border-radius: 0 !important;
+}
+.card {
+    background: var(--win-bg);
+    border: 2px solid var(--win-border);
+}
+.card:hover,
+.card:focus-within,
+.card.is-interactive:hover,
+.card.is-interactive:focus-within {
+    border-color: var(--brand);
+    background: var(--win-bg);
+}
+.band-dark {
+    border: 2px solid var(--brand);
+    color: #c7bda4;
+}
+.band-dark .display {
+    color: #d3c6aa;
+}
+.band-dark .btn-primary {
+    background: #7fbbb3;
+    color: #0c0e10;
+}
+.band-dark .btn-primary:hover {
+    background: #a7c080;
+}
+
+/* Top bar, waybar style */
+.site-header {
+    width: 100%;
+    background: rgb(var(--c-paper));
+    border: 0;
+    border-bottom: 2px solid var(--win-border);
+}
+.nav-link::after {
+    bottom: -4px;
+}
+
+.display {
+    font-weight: 700;
+    font-stretch: normal;
+    letter-spacing: -0.03em;
+    line-height: 1.12;
+}
+h2.display::before {
+    content: '> ';
+    color: var(--brand);
+}
+.hero-name {
+    font-weight: 800;
+    font-stretch: normal;
+    font-size: clamp(3.2rem, 13vw, 8.5rem);
+    line-height: 0.95;
+    letter-spacing: -0.06em;
+}
+.prompt {
+    font-size: 0.9375rem;
+    color: var(--muted);
+}
+.prompt b {
+    font-weight: 500;
+    color: var(--brand-strong);
+}
+.status {
+    color: var(--brand-strong);
+}
+.status-led {
+    border-radius: 0;
+    box-shadow: none;
+}
+.btn {
+    font-weight: 600;
+}
+.btn-secondary {
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+    box-shadow: none;
+    border: 2px solid var(--win-border);
+    background: transparent;
+}
+.btn-secondary:hover {
+    border-color: var(--brand);
+    background: transparent;
+}
+.tag {
+    background: transparent;
+}
+.more > summary {
+    box-shadow: none;
+    border: 2px solid var(--win-border);
+    background: transparent;
+}
+.more > summary:hover {
+    background: transparent;
+}
+.switch {
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.1), inset 0 -1px 0 rgba(0, 0, 0, 0.6);
+    background: linear-gradient(180deg, #2a3135 0%, var(--chassis) 55%, #15191b 100%);
+}
+.switch-model {
+    font-stretch: normal;
+    color: #d3c6aa;
+}
+.port-jack::after {
+    background: linear-gradient(180deg, #a7c080, #7fbbb3);
+}
+.facts dd {
+    font-stretch: normal;
+    font-weight: 700;
+}
+.prose h2 {
+    font-stretch: normal;
+}
+
+/* ------------------------------------------------------------------
+ * Start screen: pick the classic or the retro portfolio
+ * ------------------------------------------------------------------ */
+.start {
+    display: none;
+}
+html[data-start="show"] {
+    overflow: hidden;
+}
+html[data-start="show"] .start {
+    position: fixed;
+    inset: 0;
+    z-index: 200;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1.25rem;
+    overflow-y: auto;
+    background: rgb(var(--c-paper));
+}
+.start-inner {
+    width: 100%;
+    max-width: 62rem;
+    margin: auto;
+}
+.start-grid {
+    display: grid;
+    gap: 0.75rem;
+    margin-top: 2rem;
+}
+@media (min-width: 768px) {
+    .start-grid {
+        grid-template-columns: 1fr 1fr;
+    }
+}
+.start-opt {
+    display: flex;
+    flex-direction: column;
+    text-align: left;
+    background: var(--win-bg);
+    border: 2px solid var(--win-border);
+    color: var(--body);
+    transition: border-color 0.15s ease;
+}
+.start-opt:hover,
+.start-opt:focus-visible {
+    border-color: var(--brand);
+    outline: none;
+}
+.start-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 0.5rem 0.9rem;
+    border-bottom: 2px solid var(--win-border);
+    font-size: 0.8125rem;
+    color: var(--muted);
+}
+.start-key {
+    padding: 0 0.45rem;
+    background: var(--btn-bg);
+    color: var(--btn-fg);
+    font-weight: 700;
+}
+.start-view {
+    height: 11rem;
+    overflow: hidden;
+    border-bottom: 2px solid var(--win-border);
+    background: #1e2326;
+    color: #c7bda4;
+    font-size: 0.8125rem;
+    line-height: 1.7;
+}
+.start-view pre {
+    padding: 0.9rem 1rem;
+    font-family: inherit;
+}
+.start-view pre b {
+    font-weight: 500;
+    color: #a7c080;
+}
+.start-view img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    image-rendering: pixelated;
+}
+.start-text {
+    padding: 1rem 0.9rem 1.1rem;
+}
+.start-name {
+    display: block;
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--ink);
+}
+.start-desc {
+    display: block;
+    margin-top: 0.35rem;
+    font-size: 0.875rem;
+    color: var(--muted);
+}
+
+
+/* ------------------------------------------------------------------
+ * The page as a window floating over the wallpaper, with gaps around
+ * it like a tiling window manager.
+ * ------------------------------------------------------------------ */
+#main {
+    width: calc(100% - 1.25rem);
+    max-width: 80rem;
+    margin: 4.75rem auto 0.75rem;
+    background: rgb(var(--c-paper));
+    border: 2px solid var(--win-border);
+}
+body > footer {
+    /* leave the bottom of the scene (island, iguana, flamingos) in view */
+    padding: 0 0.625rem 46vh !important;
+    border: 0 !important;
+}
+body > footer > div {
+    max-width: 80rem !important;
+    padding-top: 1rem;
+    padding-bottom: 1rem;
+    background: rgb(var(--c-paper));
+    border: 2px solid var(--win-border);
+}
+@media (min-width: 640px) {
+    #main {
+        width: calc(100% - 3rem);
+        margin-bottom: 1rem;
+    }
+    body > footer {
+        padding-left: 1.5rem !important;
+        padding-right: 1.5rem !important;
+    }
+}
+
+/* Start screen sits straight on the wallpaper */
+html[data-start="show"] .start {
+    background: transparent;
+}
+html[data-start="show"] #main,
+html[data-start="show"] #navbar,
+html[data-start="show"] body > footer {
+    visibility: hidden;
+}
+.start-inner {
+    padding: 1.5rem;
+    background: rgb(var(--c-paper));
+    border: 2px solid var(--win-border);
+}
+.start-view {
+    background: #0c181e;
+    color: #d8cfb7;
+}
+.start-view pre b {
+    color: #ffd166;
+}
+
+.band-dark {
+    color: #d8cfb7;
+}
+.band-dark .display {
+    color: #f6ebd0;
+}
+.band-dark .btn-primary {
+    background: #40d3c4;
+    color: #06221f;
+}
+.band-dark .btn-primary:hover {
+    background: #ff9eb0;
+}
+.switch {
+    background: linear-gradient(180deg, #223840 0%, var(--chassis) 55%, #0d181d 100%);
+}
+.switch-model {
+    color: #f6ebd0;
+}
+.port-jack::after {
+    background: linear-gradient(180deg, #ff9eb0, #40d3c4);
+}
+.prompt b {
+    color: var(--brand);
+}
+
+/* ------------------------------------------------------------------
+ * Glass windows: the page lets the wallpaper show through, so the
+ * foreground takes on the colours of the scene behind it.
+ * ------------------------------------------------------------------ */
+:root {
+    --glass-window: rgb(var(--c-paper) / 0.62);
+    --glass-panel: rgb(var(--c-surface) / 0.5);
+    --glass-line: rgb(var(--c-ink) / 0.16);
+    --glass-blur: blur(9px) saturate(125%);
+    --win-border: var(--glass-line);
+}
+[data-theme="dark"] {
+    --glass-window: rgb(var(--c-paper) / 0.66);
+    --glass-panel: rgb(var(--c-surface) / 0.52);
+    --glass-line: rgb(var(--c-ink) / 0.2);
+}
+#main,
+body > footer > div,
+.start-inner,
+.site-header {
+    background: var(--glass-window);
+    -webkit-backdrop-filter: var(--glass-blur);
+    backdrop-filter: var(--glass-blur);
+}
+.site-header {
+    border-bottom-color: var(--glass-line);
+}
+.card,
+.card:hover,
+.card:focus-within,
+.card.is-interactive:hover,
+.card.is-interactive:focus-within,
+.start-opt {
+    background: var(--glass-panel);
+}
+.band-dark {
+    background: rgb(8 22 30 / 0.7);
+}
+.tag,
+.btn-secondary,
+.more > summary {
+    background: rgb(var(--c-paper) / 0.35);
+}
+[class~="border-line"],
+.acc,
+.lab-list > div,
+.facts > div,
+.timeline > .job {
+    border-color: var(--glass-line) !important;
+}
+
+/* Monospace runs wide: keep narrow screens from overflowing */
+.facts > div {
+    min-width: 0;
+    justify-content: flex-end;
+}
+.facts dd,
+.facts dt {
+    overflow-wrap: anywhere;
+}
+body > footer > div > div {
+    flex-wrap: wrap;
+    justify-content: center;
+    row-gap: 0.5rem;
+}
+.band-dark .grid > * {
+    min-width: 0;
+}
+@media (max-width: 639px) {
+    .port {
+        font-size: 0.5625rem;
+        letter-spacing: -0.02em;
+    }
+    .btn {
+        white-space: normal;
+        text-align: left;
+    }
+    .facts dd {
+        font-size: 1.5rem;
+    }
 }

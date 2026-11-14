@@ -17,19 +17,18 @@
         upgrade-insecure-requests">
     <meta name="referrer" content="strict-origin-when-cross-origin">
 
-    <title>Casper Klootwijk — IT Operations Specialist</title>
-    <meta name="description" content="Casper Klootwijk is an IT Operations Specialist in Doorn, Netherlands, working on network infrastructure, camera and server systems, IT security and automation.">
-    <meta name="author" content="Casper Klootwijk">
+    <title>Casper — IT Operations Specialist</title>
+    <meta name="description" content="Casper is an IT Operations Specialist in Doorn, Netherlands, working on network infrastructure, camera and server systems, IT security and automation.">
+    <meta name="author" content="Casper">
     <meta name="theme-color" content="#eff2ee">
     <link rel="canonical" href="https://faigijoon.github.io/">
     <link rel="icon" href="assets/img/logo.svg" type="image/svg+xml">
 
     <!-- Open Graph -->
     <meta property="og:type" content="website">
-    <meta property="og:title" content="Casper Klootwijk — IT Operations Specialist">
+    <meta property="og:title" content="Casper — IT Operations Specialist">
     <meta property="og:description" content="Network infrastructure, IT security and automation, based in Doorn, Netherlands.">
     <meta property="og:url" content="https://faigijoon.github.io/">
-    <meta property="og:image" content="https://faigijoon.github.io/assets/img/casper.jpg">
 
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -38,20 +37,52 @@
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
     <link rel="stylesheet" href="assets/css/extra.css">
 </head>
 <body class="bg-paper text-ink overflow-x-hidden">
     <a href="#main" class="skip-link">Skip to content</a>
 
+    <!-- Start screen: classic or retro portfolio. Only shown when scripts run (see tailwind-config.js). -->
+    <div id="start" class="start" role="dialog" aria-modal="true" aria-labelledby="start-title">
+        <div class="start-inner">
+            <p class="prompt mb-3" aria-hidden="true"><b>casper@doorn</b>:~$ ./portfolio</p>
+            <h1 id="start-title" class="display text-3xl md:text-5xl">Two ways to look around</h1>
+            <p class="text-muted mt-4 max-w-2xl">Same portfolio, two versions. Pick a window, or press 1 or 2.</p>
+
+            <div class="start-grid">
+                <button type="button" class="start-opt" data-start-classic>
+                    <span class="start-bar"><span>classic.html</span><span class="start-key" aria-hidden="true">1</span></span>
+                    <span class="start-view" aria-hidden="true"><pre><b>$</b> ls portfolio/
+about/        experience/   skills/
+training/     home-lab/     projects/
+<b>$</b> cat about/role
+IT Operations Specialist, Doorn NL</pre></span>
+                    <span class="start-text">
+                        <span class="start-name">Classic portfolio</span>
+                        <span class="start-desc">One page with my experience, skills, certificates and projects. The quick way to read everything.</span>
+                    </span>
+                </button>
+                <a class="start-opt" href="town.html" data-start-retro>
+                    <span class="start-bar"><span>town.html</span><span class="start-key" aria-hidden="true">2</span></span>
+                    <span class="start-view"><img src="assets/img/screenshots/goldenrod-town.png" alt=""></span>
+                    <span class="start-text">
+                        <span class="start-name">Retro portfolio</span>
+                        <span class="start-desc">The same story as a walkable Goldenrod City. Enter buildings, talk to people, challenge the Gym.</span>
+                    </span>
+                </a>
+            </div>
+        </div>
+    </div>
+
     <!-- Navigation -->
-    <header class="site-header glass fixed top-3 left-0 right-0 z-50 mx-auto max-w-6xl transition-shadow duration-300" id="navbar">
+    <header class="site-header glass fixed top-0 left-0 right-0 z-50" id="navbar">
         <nav class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8" aria-label="Main">
             <div class="flex items-center justify-between h-16">
                 <a href="#home" class="flex items-center gap-3 font-semibold text-ink whitespace-nowrap">
                     <span class="logo-mark" aria-hidden="true">CK</span>
-                    Casper Klootwijk
+                    Casper
                 </a>
 
                 <!-- Desktop Menu -->
@@ -102,18 +133,17 @@
         <!-- Hero -->
         <section id="home" class="pt-16">
             <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 pt-14 sm:pt-20 pb-20">
-                <div class="grid lg:grid-cols-12 gap-10 lg:gap-12 items-end">
-                    <div class="lg:col-span-8">
+                <div>
+                    <div>
                         <p class="status mb-8">
                             <span class="status-led" aria-hidden="true"></span>
                             Open to new opportunities
                         </p>
-                        <h1 class="hero-name mb-8"><span>Casper</span> <span>Klootwijk</span></h1>
+                        <p class="prompt mb-3" aria-hidden="true"><b>casper@doorn</b>:~$ whoami</p>
+                        <h1 class="hero-name mb-8">Casper</h1>
                         <p class="text-xl sm:text-2xl text-ink font-medium">IT Operations Specialist in Doorn, Netherlands</p>
                         <p class="text-base sm:text-lg text-muted mt-1">Network infrastructure, IT security and automation</p>
                     </div>
-                    <img src="assets/img/casper.jpg" width="640" height="640" alt="Portrait of Casper Klootwijk in a navy blazer in front of a green plant wall"
-                         class="lg:col-span-4 row-start-1 lg:row-start-auto w-36 sm:w-48 lg:w-full aspect-square object-cover rounded-lg border border-line">
                 </div>
 
                 <div class="mt-12 pt-10 border-t border-line grid md:grid-cols-2 gap-6 md:gap-12 text-body leading-relaxed">
@@ -122,7 +152,7 @@
                 </div>
 
                 <div class="mt-10 flex flex-col sm:flex-row sm:flex-wrap gap-3">
-                    <a href="assets/CV_Casper_Klootwijk_NL.pdf" download class="btn btn-primary">
+                    <a href="assets/CV_Casper_NL.pdf" download class="btn btn-primary">
                         <i data-lucide="download" class="w-5 h-5" aria-hidden="true"></i>
                         Download CV <span class="font-normal opacity-75 text-sm">(PDF, Dutch)</span>
                     </a>
@@ -187,10 +217,10 @@
                 </nav>
 
                 <dl class="facts mt-14">
-                    <div><dt>Sites monitored daily</dt><dd>~8,000</dd></div>
+                    <div><dt>Fan since Platinum</dt><dd>Pokémon</dd></div>
                     <div><dt>Years in IT</dt><dd>5+</dd></div>
-                    <div><dt>Repositories on GitHub</dt><dd>60+</dd></div>
-                    <div><dt>MBO 4 diploma grade</dt><dd>8.0</dd></div>
+                    <div><dt>Repos on GitHub</dt><dd>60+</dd></div>
+                    <div><dt>Diplomas: MBO 3, MBO 4</dt><dd>2</dd></div>
                 </dl>
             </div>
         </section>
@@ -206,7 +236,7 @@
                                 I'm an IT Operations Specialist with a background in network management, system administration, IT support and cybersecurity. In my latest role I was responsible for the network infrastructure, camera systems, servers and workstations of a security company with around 8,000 monitored locations, from configuration and rollout to fixing outages remotely on my own.
                             </p>
                             <p>
-                                Before that I supported employees at global companies like FedEx and Prosus, and taught networks, servers and cybersecurity to MBO Level 4 students at ROC van Amsterdam.
+                                Before that I supported employees at global companies like FedEx and Prosus, and taught networks, servers and cybersecurity to MBO 4 students at ROC van Amsterdam.
                             </p>
                             <p>
                                 My interest in tech started with Pokémon Platinum and the DeSmuME emulator. Figuring out how an emulator worked was my lightbulb moment, and by 13 I was hooked on computers. In 2015 I did my first IT internship, building and refurbishing PCs and setting them up with the brand-new Windows 10. Seeing someone's "slow" computer feel new again is what made me want to help people through technology.
@@ -431,7 +461,7 @@
                                 </div>
                                 <p class="job-date">Jul 2023 – Nov 2023 · 5 mos</p>
                             </header>
-                            <p class="text-body mb-4">Stepped in during a temporary teacher shortage to teach MBO Level 4 ICT students.</p>
+                            <p class="text-body mb-4">Stepped in during a temporary teacher shortage to teach MBO 4 ICT students.</p>
                             <details class="more mb-5">
                                 <summary><span class="when-closed">What I did in this role</span><span class="when-open">Show less</span><i data-lucide="chevron-down" class="chev w-4 h-4" aria-hidden="true"></i></summary>
                                 <div class="more-body">
@@ -527,7 +557,7 @@
                         <span class="w-10 h-10 rounded-lg bg-brand/10 flex items-center justify-center mb-4" aria-hidden="true"><i data-lucide="server" class="w-5 h-5 text-brand"></i></span>
                         <h3 class="font-semibold text-ink mb-3">System administration</h3>
                         <ul class="space-y-2 text-sm text-muted">
-                            <li>Windows Server &amp; Active Directory</li><li>Linux</li><li>HP ProLiant Gen10/Gen11 &amp; iLO</li><li>Hyper-V virtualization</li><li>SSH, RDP &amp; PuTTY</li>
+                            <li>Windows Server &amp; Active Directory</li><li>Linux, across many distributions</li><li>HP ProLiant Gen10/Gen11 &amp; iLO</li><li>Hyper-V virtualization</li><li>SSH, RDP &amp; PuTTY</li>
                         </ul>
                     </div>
                     <div class="card p-6">
@@ -582,11 +612,11 @@
                         <h3 class="font-semibold text-ink mb-2">Education</h3>
                         <div class="acc-list text-sm">
                             <details class="acc">
-                                <summary><span><span class="block text-ink font-medium">Network Administrator, MBO Level 4</span><span class="block text-muted">ROC van Amsterdam · Jan 2020 – Jun 2023</span></span><i data-lucide="chevron-down" class="chev w-4 h-4" aria-hidden="true"></i></summary>
-                                <div class="acc-body"><p class="mb-2">Diploma, average final grade 8.</p><ul class="list-disc pl-5 space-y-1 marker:text-brand"><li>Network administration: installing and managing LAN, WAN and cloud networks, servers and storage</li><li>System administration: Windows and Linux, applications, virtual machines and software updates</li><li>Security: protecting networks and systems, privacy measures and backups</li><li>Software and programming: programming basics, scripting and small information systems</li><li>Database management: design and management fundamentals</li><li>Service management and projects: supporting users, troubleshooting, documenting procedures and working in teams</li><li>Design and implementation: technical designs, test environments and rolling out IT solutions</li><li>Microsoft Azure and IT automation</li></ul><p class="mt-2">Right after graduating I went back to the same school as an assistant teacher for the Level 4 ICT students.</p></div>
+                                <summary><span><span class="block text-ink font-medium">Network Administrator, MBO 4</span><span class="block text-muted">ROC van Amsterdam · Jan 2020 – Jun 2023</span></span><i data-lucide="chevron-down" class="chev w-4 h-4" aria-hidden="true"></i></summary>
+                                <div class="acc-body"><p class="mb-2">Diploma, average final grade 8.</p><ul class="list-disc pl-5 space-y-1 marker:text-brand"><li>Network administration: installing and managing LAN, WAN and cloud networks, servers and storage</li><li>System administration: Windows and Linux, applications, virtual machines and software updates</li><li>Security: protecting networks and systems, privacy measures and backups</li><li>Software and programming: programming basics, scripting and small information systems</li><li>Database management: design and management fundamentals</li><li>Service management and projects: supporting users, troubleshooting, documenting procedures and working in teams</li><li>Design and implementation: technical designs, test environments and rolling out IT solutions</li><li>Microsoft Azure and IT automation</li></ul><p class="mt-2">Right after graduating I went back to the same school as an assistant teacher for the MBO 4 ICT students.</p></div>
                             </details>
                             <details class="acc">
-                                <summary><span><span class="block text-ink font-medium">ICT Support Technician, MBO Level 3</span><span class="block text-muted">MBO Utrecht · Jun 2018 – Dec 2020</span></span><i data-lucide="chevron-down" class="chev w-4 h-4" aria-hidden="true"></i></summary>
+                                <summary><span><span class="block text-ink font-medium">ICT Support Technician, MBO 3</span><span class="block text-muted">MBO Utrecht · Jun 2018 – Dec 2020</span></span><i data-lucide="chevron-down" class="chev w-4 h-4" aria-hidden="true"></i></summary>
                                 <div class="acc-body"><p class="mb-2">Diploma, average final grade 8.</p><ul class="list-disc pl-5 space-y-1 marker:text-brand"><li>IT support: diagnosing issues, helping end users and following structured support processes</li><li>Configuring and managing virtual machines and using remote desktop</li><li>Troubleshooting hardware such as routers, printers and user devices</li><li>Networking fundamentals: how networks operate and how to maintain them</li><li>Basics of Active Directory, IT policies and secure system management</li><li>Microsoft 365</li></ul><p class="mt-2">Alongside the course I earned basic Office 365 certificates and introductory CCNA certificates, and helped classmates in peer-to-peer sessions on networking exercises and system configuration.</p></div>
                             </details>
                         </div>
@@ -750,7 +780,7 @@
                         <div class="md:col-span-2 flex flex-col gap-3">
                             <a href="mailto:klootwijkc@gmail.com" class="btn btn-primary justify-start">
                                 <i data-lucide="mail" class="w-5 h-5" aria-hidden="true"></i>
-                                klootwijkc@gmail.com
+                                Email me
                             </a>
                             <a href="https://github.com/FaiGiJoon" target="_blank" rel="noopener noreferrer" class="btn btn-secondary justify-start">
                                 <i data-lucide="github" class="w-5 h-5" aria-hidden="true"></i>
@@ -774,7 +804,7 @@
     <!-- Footer -->
     <footer class="py-8 border-t border-line">
         <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row items-center justify-between gap-4 text-sm text-muted">
-            <p>© 2026 Casper Klootwijk</p>
+            <p>© 2026 Casper</p>
             <div class="flex items-center gap-6">
                 <a href="blog.html" class="hover:text-ink transition-colors">Blog</a>
                 <a href="red-battle/" class="hover:text-ink transition-colors">Battle Red</a>
@@ -787,6 +817,7 @@
     <!-- Lucide Icons (pinned so icons can't change or disappear underneath us) -->
     <script src="https://unpkg.com/lucide@0.469.0/dist/umd/lucide.min.js"></script>
     <script src="assets/js/main.js"></script>
+    <script src="assets/js/wallpaper.js"></script>
     <script src="assets/js/github-repos.js"></script>
 </body>
 </html>

@@ -17,8 +17,8 @@ tailwind.config = {
                 brand: themed('brand')
             },
             fontFamily: {
-                sans: ['IBM Plex Sans', 'ui-sans-serif', 'system-ui', 'sans-serif'],
-                mono: ['IBM Plex Mono', 'ui-monospace', 'monospace']
+                sans: ['JetBrains Mono', 'ui-monospace', 'monospace'],
+                mono: ['JetBrains Mono', 'ui-monospace', 'monospace']
             }
         }
     }
@@ -33,4 +33,12 @@ tailwind.config = {
     }
     document.documentElement.dataset.theme = theme;
     document.documentElement.classList.add('js');
+
+    // Start screen (classic or retro portfolio): shown once per visit, and never
+    // when the link points at a section of the page.
+    let seen = false;
+    try { seen = sessionStorage.getItem('start') === '1'; } catch (e) { /* storage blocked */ }
+    if (!seen && !location.hash) {
+        document.documentElement.dataset.start = 'show';
+    }
 })();
