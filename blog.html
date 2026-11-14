@@ -8,7 +8,7 @@
 
     <title>Blog — Casper Klootwijk</title>
     <meta name="description" content="Writing by Casper Klootwijk on systems engineering, cybersecurity and life in tech.">
-    <meta name="theme-color" content="#020617">
+    <meta name="theme-color" content="#eff2ee">
     <link rel="icon" href="{{ site.baseurl }}/assets/img/logo.svg" type="image/svg+xml">
 
     <!-- Tailwind CSS -->
@@ -18,11 +18,11 @@
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
 
     <link rel="stylesheet" href="{{ site.baseurl }}/assets/css/extra.css">
 </head>
-<body class="bg-darker text-gray-100 overflow-x-hidden">
+<body class="bg-paper text-ink overflow-x-hidden">
     <a href="#main" class="skip-link">Skip to content</a>
 
     {% include nav.html active="blog" %}
@@ -30,22 +30,21 @@
     <main id="main" class="pt-32 pb-24">
         <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="mb-16 max-w-2xl">
-                <p class="eyebrow mb-3">Insights &amp; stories</p>
-                <h1 class="text-4xl md:text-6xl font-bold tracking-tight mb-6">Blog</h1>
-                <p class="text-lg text-gray-400 leading-relaxed">Notes on systems engineering, cybersecurity and life in tech.</p>
+                <h1 class="text-4xl md:text-6xl display mb-6">Blog</h1>
+                <p class="text-lg text-muted leading-relaxed">Notes on systems engineering, cybersecurity and life in tech.</p>
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                 {% for post in site.posts %}
-                <article class="glass-card is-interactive reveal p-6 flex flex-col">
-                    <time datetime="{{ post.date | date_to_xmlschema }}" class="text-xs font-mono text-indigo-200 mb-4">{{ post.date | date: "%B %d, %Y" }}</time>
-                    <h2 class="text-xl font-semibold text-gray-100 mb-3">
-                        <a href="{{ site.baseurl }}{{ post.url }}" class="hover:text-primary-light transition-colors">{{ post.title }}</a>
+                <article class="card is-interactive p-6 flex flex-col">
+                    <time datetime="{{ post.date | date_to_xmlschema }}" class="text-xs font-mono text-muted mb-4">{{ post.date | date: "%B %d, %Y" }}</time>
+                    <h2 class="text-xl font-semibold text-ink mb-3">
+                        <a href="{{ site.baseurl }}{{ post.url }}" class="hover:text-brand transition-colors">{{ post.title }}</a>
                     </h2>
-                    <p class="text-gray-400 text-sm leading-relaxed mb-6 flex-grow">
+                    <p class="text-muted text-sm leading-relaxed mb-6 flex-grow">
                         {{ post.excerpt | strip_html | truncatewords: 30 }}
                     </p>
-                    <a href="{{ site.baseurl }}{{ post.url }}" class="inline-flex items-center gap-2 text-sm text-primary-light font-semibold hover:gap-3 transition-all" aria-label="Read {{ post.title | escape }}">
+                    <a href="{{ site.baseurl }}{{ post.url }}" class="inline-flex items-center gap-2 text-sm text-brand font-semibold hover:gap-3 transition-all" aria-label="Read {{ post.title | escape }}">
                         Read post <i data-lucide="arrow-right" class="w-4 h-4" aria-hidden="true"></i>
                     </a>
                 </article>

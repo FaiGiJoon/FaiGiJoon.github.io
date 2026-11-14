@@ -8,6 +8,15 @@ document.addEventListener('DOMContentLoaded', () => {
         globalThis.lucide.createIcons();
     }
 
+    // Light / dark theme switch (the initial theme is set in tailwind-config.js)
+    document.querySelectorAll('[data-theme-toggle]').forEach(btn => {
+        btn.addEventListener('click', () => {
+            const next = document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark';
+            document.documentElement.dataset.theme = next;
+            try { localStorage.setItem('theme', next); } catch (e) { /* storage blocked */ }
+        });
+    });
+
     // Mobile menu
     const menuBtn = document.getElementById('mobile-menu-btn');
     const menu = document.getElementById('mobile-menu');
