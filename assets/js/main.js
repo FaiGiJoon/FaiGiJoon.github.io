@@ -39,6 +39,34 @@ document.addEventListener('DOMContentLoaded', () => {
         classic?.focus();
     }
 
+    // Hero: the answer to `whoami` types itself out, one role after another.
+    const whoami = document.getElementById('whoami-text');
+    if (whoami) {
+        const phrases = (whoami.dataset.phrases || '').split('|').filter(Boolean);
+        const calm = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        if (calm) {
+            // no typing: swap the whole line every few seconds
+            let n = 0;
+            setInterval(() => { n = (n + 1) % phrases.length; whoami.textContent = phrases[n]; }, 4000);
+        } else if (phrases.length > 1) {
+            let n = 0, shown = phrases[0].length, erasing = true;
+            const step = () => {
+                const phrase = phrases[n];
+                let wait = erasing ? 28 : 55;
+                if (erasing) {
+                    shown--;
+                    if (shown === 0) { erasing = false; n = (n + 1) % phrases.length; wait = 350; }
+                } else {
+                    shown++;
+                    if (shown === phrase.length) { erasing = true; wait = 2200; }
+                }
+                whoami.textContent = phrases[n].slice(0, shown);
+                setTimeout(step, wait);
+            };
+            setTimeout(step, 2200);
+        }
+    }
+
     // Mobile menu
     const menuBtn = document.getElementById('mobile-menu-btn');
     const menu = document.getElementById('mobile-menu');

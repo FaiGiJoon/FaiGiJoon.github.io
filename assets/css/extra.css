@@ -1110,3 +1110,107 @@ body > footer > div > div {
         font-size: 1.5rem;
     }
 }
+
+
+/* Hero: typed answer to `whoami` */
+.whoami {
+    min-height: 2lh; /* the longest role wraps on a phone; keep the layout still */
+}
+.whoami-mark {
+    color: var(--brand);
+}
+.whoami-caret {
+    display: inline-block;
+    width: 0.55em;
+    height: 1.05em;
+    margin-left: 0.12em;
+    vertical-align: text-bottom;
+    background: var(--brand);
+    animation: caret-blink 1.1s steps(1, end) infinite;
+}
+@keyframes caret-blink {
+    50% { opacity: 0; }
+}
+@media (min-width: 640px) {
+    .whoami {
+        min-height: 0;
+    }
+}
+
+/* Pointer parrot: follows the mouse and talks about what it is pointing at */
+.pet {
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 300;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    will-change: transform;
+}
+.pet.is-here {
+    opacity: 1;
+}
+.pet-bird {
+    display: block;
+    image-rendering: pixelated;
+    image-rendering: crisp-edges;
+}
+.pet-bubble {
+    position: absolute;
+    left: 2.6rem;
+    bottom: calc(100% + 0.45rem);
+    width: max-content;
+    max-width: 15rem;
+    padding: 0.4rem 0.6rem;
+    background: rgb(var(--c-paper));
+    border: 2px solid var(--brand);
+    color: var(--ink);
+    font-size: 0.8125rem;
+    line-height: 1.35;
+    opacity: 0;
+    transform: translateY(4px);
+    transition: opacity 0.15s ease, transform 0.15s ease;
+}
+.pet-bubble.is-open {
+    opacity: 1;
+    transform: none;
+}
+.pet.bubble-left .pet-bubble {
+    left: auto;
+    right: 0.4rem;
+}
+.pet.bubble-below .pet-bubble {
+    bottom: auto;
+    top: calc(100% + 0.45rem);
+}
+.pet-bird {
+    transition: transform 0.15s ease-out;
+}
+
+/* The parrot's branch in the bottom-right corner */
+.pet-perch {
+    position: fixed;
+    right: 18px;
+    bottom: 26px;
+    z-index: 299;
+    width: 74px;
+    height: 5px;
+    background: #7a4a2a;
+    box-shadow: 0 2px 0 #5b3a22;
+    pointer-events: none;
+}
+.pet-perch::after {
+    content: '';
+    position: absolute;
+    left: 10px;
+    top: -6px;
+    width: 8px;
+    height: 6px;
+    background: #2e9e5b;
+}
+@media (hover: none), (pointer: coarse), (prefers-reduced-motion: reduce) {
+    .pet-perch {
+        display: none;
+    }
+}
