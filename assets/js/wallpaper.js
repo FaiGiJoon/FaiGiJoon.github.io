@@ -3,7 +3,8 @@
 // Animated 8-bit wallpaper behind the page: a Curaçao waterfront with pastel
 // gabled houses, a palm, a kadushi cactus with a troupial on it, an iguana on a
 // rock, a blò-blò lizard, flamingos, a goat under a divi-divi tree, a sea turtle,
-// a pelican, a flock of prikichi parakeets and a parrot that flies past. Everything is original pixel art drawn in code on a
+// a pelican, a flock of prikichi parakeets, a parrot that flies past, dolphins
+// leaping in the sea and a plane crossing high overhead. Everything is original pixel art drawn in code on a
 // low-resolution canvas that the browser scales up without smoothing.
 (function () {
     const canvas = document.createElement('canvas');
@@ -174,6 +175,55 @@
     ];
     const GOAT_PAL = { w: '#efe7d6', b: '#8a5a3c', h: '#5b4a3a' };
 
+    // Dolphin in three poses of a leap: rising, level at the top, diving.
+    const DOLPHIN = {
+        up: [
+            '.........dd.',
+            '........dkdd',
+            '.......dddd.',
+            '......dddw..',
+            '...D.dddww..',
+            '...DDdddw...',
+            '...ddddww...',
+            '..ddddw.....',
+            '..ddd.......',
+            '.DDd........',
+            'DD.D........',
+        ],
+        level: [
+            '.......DD.......',
+            '...dddddDddd....',
+            '.ddddddddddddd..',
+            'Ddddddddddddkddd',
+            'D..wwwwwwwwwd...',
+        ],
+        down: [
+            'DD.D........',
+            '.DDd........',
+            '..ddd.......',
+            '..ddddd.....',
+            '...ddddddD..',
+            '....wdddDD..',
+            '.....wwdddd.',
+            '......wwdddd',
+            '.......wdkdd',
+            '........ddd.',
+            '.........d..',
+        ],
+    };
+    const DOLPHIN_PAL = { d: '#5f8fb0', D: '#3f6f90', w: '#dfe9ee', k: '#1b1b1b' };
+
+    const PLANE = [
+        '....t.................',
+        '...tt.................',
+        '..ttwwwwwwwwwwwwww....',
+        '.twwbwbwbwbwbwbwbwwwc.',
+        '..wwwwwwgggggwwwwwww..',
+        '.......ggggg..........',
+        '........ggg...........',
+    ];
+    const PLANE_PAL = { w: '#f5f7fa', t: '#e85d75', g: '#b8c2cc', b: '#4a90c2', c: '#2b3a4a' };
+
     const HOUSES = ['#f6c945', '#f08fa4', '#5fb0e6', '#f28b50', '#7fcf9a', '#efe6c8', '#d96c6c', '#4fc3b8'];
 
     // ---------- backdrop (static) ----------
@@ -214,23 +264,70 @@
         }
 
         // the waterfront: a row of gabled houses in pastel colours
-        let x = Math.round(W * 0.03);
-        for (let i = 0; x < W * 0.97; i++) {
-            const w = 11 + Math.floor(rnd(i + 1) * 6);
-            const h = 13 + Math.floor(rnd(i + 7) * 9);
-            const top = horizon - h;
-            const body = toneFor(HOUSES[i % HOUSES.length]);
-            rect(c, x, top, w, h, body);
-            for (let k = 0; k < 3 && w - 2 - k * 2 > 2; k++) rect(c, x + 1 + k, top - 1 - k, w - 2 - k * 2, 1, body);
-            rect(c, x, top, w, 1, toneFor('#fffaf0'));
-            rect(c, x + 3, top - 4, w - 6, 1, toneFor('#fffaf0'));
+        // The waterfront. Mostly gabled town houses, mixed with other buildings you
+        // see on the island: a wide landhuis, a small kunuku house and tiled-roof houses.
+        const white = toneFor('#fffaf0');
+        const windows = (x, w, top, i) => {
             for (let wy = top + 3; wy < horizon - 6; wy += 5) {
                 for (let wx = x + 2; wx < x + w - 3; wx += 4) {
                     const lit = rnd(i * 13 + wx + wy) > 0.45;
                     rect(c, wx, wy, 2, 2, dark ? (lit ? '#ffd166' : '#16293a') : '#fffdf3');
                 }
             }
-            rect(c, x + Math.floor(w / 2) - 1, horizon - 4, 2, 4, toneFor('#7a4a2a'));
+        };
+        const door = (x, w) => rect(c, x + Math.floor(w / 2) - 1, horizon - 4, 2, 4, toneFor('#7a4a2a'));
+        // rows that narrow towards the top: a hip or pitched roof
+        const roof = (x, w, top, rows, colour) => {
+            for (let k = 0; k < rows && w + 2 - k * 2 > 0; k++) rect(c, x - 1 + k, top - 1 - k, w + 2 - k * 2, 1, colour);
+        };
+
+        let x = Math.round(W * 0.03);
+        for (let i = 0; x < W * 0.97; i++) {
+            const kind = Math.floor(rnd(i + 11) * 10);
+            let w;
+            if (kind >= 8) {
+                // landhuis: wide ochre plantation house, red hip roof, white columns along the front
+                w = 22 + Math.floor(rnd(i + 5) * 7);
+                const top = horizon - 11;
+                rect(c, x, top, w, 11, toneFor('#f2c230'));
+                roof(x, w, top, 6, toneFor('#d2603a'));
+                rect(c, x, top, w, 1, white);
+                for (let cx = x + 1; cx < x + w; cx += 4) rect(c, cx, horizon - 7, 1, 7, white);
+                rect(c, x, horizon - 8, w, 1, white);
+                windows(x, w, top - 1, i);
+                door(x, w);
+            } else if (kind === 7) {
+                // kunuku house: low plastered walls under a thatched roof
+                w = 13;
+                const top = horizon - 7;
+                rect(c, x, top, w, 7, toneFor('#f3ead2'));
+                roof(x, w, top, 6, toneFor('#a8763e'));
+                rect(c, x + 2, top + 2, 2, 2, dark ? '#ffd166' : toneFor('#5b8fb0'));
+                rect(c, x + w - 4, top + 2, 2, 2, dark ? '#16293a' : toneFor('#5b8fb0'));
+                door(x, w);
+            } else if (kind === 6) {
+                // town house with a pitched red-tile roof
+                w = 11 + Math.floor(rnd(i + 1) * 4);
+                const h = 12 + Math.floor(rnd(i + 7) * 6);
+                const top = horizon - h;
+                rect(c, x, top, w, h, toneFor(HOUSES[i % HOUSES.length]));
+                roof(x, w, top, 8, toneFor('#c4553f'));
+                rect(c, x, top, w, 1, white);
+                windows(x, w, top, i);
+                door(x, w);
+            } else {
+                // gabled town house
+                w = 11 + Math.floor(rnd(i + 1) * 6);
+                const h = 13 + Math.floor(rnd(i + 7) * 9);
+                const top = horizon - h;
+                const body = toneFor(HOUSES[i % HOUSES.length]);
+                rect(c, x, top, w, h, body);
+                for (let k = 0; k < 3 && w - 2 - k * 2 > 2; k++) rect(c, x + 1 + k, top - 1 - k, w - 2 - k * 2, 1, body);
+                rect(c, x, top, w, 1, white);
+                rect(c, x + 3, top - 4, w - 6, 1, white);
+                windows(x, w, top, i);
+                door(x, w);
+            }
             x += w + (rnd(i + 3) < 0.18 ? 4 : 1);
         }
         rect(c, 0, horizon, W, 2, toneFor('#d9c7a0'));
@@ -388,6 +485,57 @@
         });
     }
 
+    // Two dolphins leaping one after the other. Whatever is below the waterline is clipped away.
+    function drawDolphins() {
+        const PERIOD = 210, LEAP = 26;
+        const surface = Math.round(horizon + (H - horizon) * 0.3);
+        const rightward = Math.floor(tick / PERIOD) % 2 === 0;
+        const startX = W * (0.3 + rnd(Math.floor(tick / PERIOD) + 3) * 0.35);
+        ctx.save();
+        ctx.beginPath();
+        ctx.rect(0, 0, W, surface);
+        ctx.clip();
+        const splashes = [];
+        [0, 9].forEach((delay, n) => {
+            const t = (tick % PERIOD) - 40 - delay;
+            if (t < 0 || t > LEAP) return;
+            const p = t / LEAP;
+            const pose = p < 0.36 ? 'up' : p < 0.64 ? 'level' : 'down';
+            const rows = DOLPHIN[pose];
+            const span = 34;
+            const cx = startX + (rightward ? 1 : -1) * (p * span - n * 16);
+            const cy = surface + 3 - Math.sin(p * Math.PI) * 17;
+            sprite(rows, DOLPHIN_PAL, Math.round(cx - rows[0].length / 2), Math.round(cy - rows.length / 2), !rightward);
+            if (p < 0.2 || p > 0.8) splashes.push(Math.round(cx));
+        });
+        ctx.restore();
+        const foam = dark ? '#7fc4cc' : '#ffffff';
+        splashes.forEach((sx) => {
+            rect(ctx, sx - 4, surface, 9, 1, foam);
+            rect(ctx, sx - 6, surface - 2, 1, 1, foam);
+            rect(ctx, sx + 5, surface - 3, 1, 1, foam);
+            rect(ctx, sx - 1, surface - 4, 1, 1, foam);
+        });
+    }
+
+    // A plane high in the sky with a short vapour trail.
+    function drawPlane() {
+        const PERIOD = 480, FLIGHT = 230;
+        const t = (tick + 100) % PERIOD;
+        if (t >= FLIGHT) return;
+        const leftward = Math.floor((tick + 100) / PERIOD) % 2 === 1;
+        const p = t / FLIGHT;
+        const x = Math.round(leftward ? W + 24 - p * (W + 80) : -24 + p * (W + 80));
+        const y = Math.round(H * 0.07 + p * 5);
+        const trail = dark ? '#3a5a70' : '#ffffff';
+        for (let k = 0; k < 34; k += 2) {
+            if (k > 20 && k % 4) continue; // the far end of the trail breaks up
+            rect(ctx, leftward ? x + 22 + k : x - 2 - k, y + 3, 1, 1, trail);
+        }
+        sprite(PLANE, PLANE_PAL, x, y, leftward);
+        if (dark && tick % 8 < 4) rect(ctx, leftward ? x + 14 : x + 7, y + 6, 1, 1, '#ff5d5d');
+    }
+
     function drawParrot() {
         const PERIOD = 230, FLIGHT = 120;
         const t = tick % PERIOD;
@@ -411,6 +559,8 @@
         drawSky();
         drawSea();
         drawIsland();
+        drawPlane();
+        drawDolphins();
         drawTurtle();
         // On wide screens the flamingos move left to make room for the sand bar.
         const wide = W >= 190;
