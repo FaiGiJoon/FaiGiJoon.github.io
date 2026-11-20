@@ -20,6 +20,44 @@ The scanner looks at the email you have open and shows a score with the findings
 
 All three run the same detection code. It lives in one file, `core/scanner-core.js`, and a small sync script copies it into the Apps Script file, the extension and the CLI. Apps Script cannot import files, so copy-and-sync was the simplest way to avoid three engines slowly drifting apart. A test fails if the copies ever differ.
 
+### The pipeline I started with
+
+This is the pipeline from the first design of the project. I still like how it is structured: an email comes in, gets split into parts, each part goes through its own checks, and everything meets in one scoring step that decides what to do.
+
+<div class="my-8 p-4 rounded-xl bg-darker border border-primary/20 overflow-x-auto" markdown="0">
+<pre class="mermaid">
+graph TD
+    A[Incoming Email] --> B{Extraction}
+    B --> C[MIME Parsing]
+    B --> D[OCR / QR Detection]
+    C --> E[Recursive URI Unshortening]
+    C --> F[Header Relay Auditing]
+    C --> G[Linguistic Drift Analysis]
+    D --> E
+    E --> H[Multi-Stage Reputation Check]
+    F --> I[Weighted Scoring Engine]
+    G --> I
+    H --> I
+    I --> J{Mitigation}
+    J --> K[Neutralize / Spam]
+    J --> L[Quarantine / Review]
+    J --> M[Sanitized Preview]
+</pre>
+<noscript><p>Diagram: incoming email, extraction, MIME parsing and OCR/QR detection, then URL unshortening, header relay auditing and linguistic analysis, then a reputation check, a weighted scoring engine and finally a mitigation step.</p></noscript>
+</div>
+<script type="module">
+    import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs';
+    mermaid.initialize({ startOnLoad: true, theme: 'dark', securityLevel: 'strict' });
+</script>
+
+That diagram is the design, not a promise that every box ships today. Here is how it maps to the current code:
+
+* **Shipping:** MIME parsing, link checks, header checks and the weighted scoring engine.
+* **Lighter than the picture:** a passive scan only expands known URL shorteners, and the Chrome extension cannot follow redirects at all. "Header relay auditing" today means reading the authentication results and comparing Reply-To and Return-Path. The only Received-header check is whether the message travelled over TLS.
+* **Simple rules, not a language model:** "linguistic drift" is a list of pressure phrases plus patterns that look like prompt injection.
+* **Needs your keys:** the reputation check uses Safe Browsing, domain age and, optionally, VirusTotal.
+* **Not there yet:** OCR and QR detection. An early branch started on it, but the current engine does not decode QR codes. There is also no sanitized preview, and quarantine only exists in the CLI, behind an explicit write permission.
+
 ### How a message gets scored
 
 The model is deliberately boring. Every message starts at 100. Each distinct finding subtracts a weight based on its severity:
