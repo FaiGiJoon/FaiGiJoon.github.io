@@ -48,6 +48,10 @@ There are two kinds of files. `data/devices.yml` lists every managed device: its
 
 That is the whole change. You do not write a single router command yourself.
 
+![The Inventory page of the NetAuto console: three devices, two sites and three VLANs read from the repo, with platform, management IP, role and trunk ports per device]({{ site.baseurl }}/assets/img/netauto-inventory.png)
+
+*The console's Inventory page reads the same files and shows the devices and the VLANs per site.*
+
 ### Validate: refuse bad changes early
 
 `scripts/validate.py` runs on every merge request and stops anything that would hurt later. It catches:
@@ -71,6 +75,10 @@ The plan always compares against a Git tag called `deployed`, which marks what i
 
 For RouterOS, every object the pipeline creates gets the comment `netauto:vlan<id>`. Each command is written as "create if missing, otherwise update", so running the same plan twice does no harm. And removals only touch objects with that comment, so VLANs someone made by hand are left alone. NetAuto only manages what NetAuto created.
 
+![The Change plan page: validation passed for 3 devices, 2 sites and 3 VLANs, followed by the exact Cisco IOS and RouterOS commands per device]({{ site.baseurl }}/assets/img/netauto-change-plan.png)
+
+*You can run the same checks and plan from the console before you push. Nothing is written and no device is touched.*
+
 ### Deploy: backups first, one device at a time
 
 The Ansible playbook (`community.routeros` and `cisco.ios`) follows a fixed order for every device:
@@ -82,6 +90,10 @@ The Ansible playbook (`community.routeros` and `cisco.ios`) follows a fixed orde
 One RouterOS detail cost me some thought: RouterOS often prints an error instead of returning an error code. So the playbook reads the output and fails on phrases like `failure:`, `syntax error`, `bad command` or `no such item`. Without that, a failed command would look like a success.
 
 The first device that fails stops the whole run, and the error message says exactly how to roll back, including the backup name on the router. A `resource_group: network` setting in the pipeline makes sure two deploys can never run at the same time.
+
+![The Guides page at the Deploy step of the VLAN change workflow: the CI runner asks Oxidized for a fresh backup of every device before Ansible pushes the plan]({{ site.baseurl }}/assets/img/netauto-guide-vlan.png)
+
+*The VLAN change guide at the deploy step: the CI runner asks Oxidized for a fresh backup before anything is pushed.*
 
 ### Verify and rollback
 
@@ -146,6 +158,14 @@ Changes are only half the job. The repo also has six setups for **operating** a 
 5. An enterprise reference: FortiGate, Splunk, PRTG and ServiceNow for the same jobs.
 6. Uptime Kuma + ntopng + n8n: visual home lab automation with Telegram alerts.
 
+![The Wazuh SOC workflow in the Guides sequence view: sensors see the traffic, the Wazuh manager correlates several alerts into one level-12 event, then a reputation check follows]({{ site.baseurl }}/assets/img/netauto-guide-soc.png)
+
+*The SOC workflow as a sequence diagram: several IDS alerts from one source become a single level-12 event in Wazuh.*
+
+![The Prometheus workflow in the Guides network view: Alertmanager sends a webhook to the remediation service after a camera stops answering pings]({{ site.baseurl }}/assets/img/netauto-guide-metrics.png)
+
+*The monitoring workflow: a camera goes quiet, the DeviceDown rule fires, and Alertmanager calls the remediation service.*
+
 Automatic actions are the dangerous kind, so all six share one safety library (`workflows/common/netops/`):
 
 * **Dry run first:** with `NETOPS_DRY_RUN=true`, every script only says what it would do.
@@ -155,6 +175,10 @@ Automatic actions are the dangerous kind, so all six share one safety library (`
 * **Least privilege:** a separate MikroTik user with only REST rights.
 
 Every workflow is also built into a single program (a Windows `.exe`, Linux and macOS binaries, or a `.pyz` for any system with Python) by a GitHub Actions job. You run `setup`, answer a few questions, and it configures the rest.
+
+![The Programs page: one card per program, such as netauto, netops-ids and netops-soc, each with its commands and Play the workflow and Run check buttons]({{ site.baseurl }}/assets/img/netauto-programs.png)
+
+*The Programs page: one card per program with its commands, a button to play the workflow in the guides, and a Run check that tests its config and connections.*
 
 ### Testing
 
