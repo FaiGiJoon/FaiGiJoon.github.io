@@ -99,6 +99,10 @@ Pipelines are great for changes, but I also wanted one place to look at the netw
 
 It has pages for the guides, the inventory, the change plan, diagnostics and settings, and a set of tools: a Wi-Fi scan, a network scan with nmap, packet capture with Wireshark's tshark (with a live table, top talkers and a `.pcapng` download), ping, trace route, Zabbix problems and Git/GitHub status. It is styled like an Omarchy desktop with Tokyo Night colours and bundled JetBrains Mono, so it works offline.
 
+![The NetAuto console on the Guides page, walking through the IDS + Zabbix workflow step by step on a network map with a live event table]({{ site.baseurl }}/assets/img/netauto-console.png)
+
+*The Guides page walks through each workflow on a network map, one event at a time. Every address on it is an example, and the page says so.*
+
 Because it can run real network tools, the console is locked down:
 
 * It only listens on `127.0.0.1` and only answers requests for a local host name.
